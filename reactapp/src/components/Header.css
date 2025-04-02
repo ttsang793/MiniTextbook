@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+#search {
+  @apply bg-pink-800/90 text-pink-50 flex-1 rounded-s-full px-3 text-lg outline-0;
+}
+
+#search::placeholder {
+  @apply italic
+}

@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  outline: none;
+}
+
+a {
+  text-decoration: none!important;
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 1px rgba(0,0,0,0.4);
+}

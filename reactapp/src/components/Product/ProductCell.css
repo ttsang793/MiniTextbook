@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+.product-sale-tag {
+  aspect-ratio: 1;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);  
+
+  @apply absolute bg-pink-800/90 top-0 right-0 p-7;
+}
+
+.product-sale-percent {
+  rotate: 45deg;
+
+  @apply absolute text-white top-1.5 right-0 font-bold;
+}

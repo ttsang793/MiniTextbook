@@ -1,0 +1,11 @@
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\bin\Debug\net8.0\Core.deps.json
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\bin\Debug\net8.0\Core.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\bin\Debug\net8.0\Core.pdb
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\Core.AssemblyInfoInputs.cache
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\Core.AssemblyInfo.cs
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\Core.csproj.CoreCompileInputs.cache
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\Core.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\refint\Core.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\Core.pdb
+D:\SGU\DoAnCode\MiniTextbook\backend\Core\obj\Debug\net8.0\ref\Core.dll
