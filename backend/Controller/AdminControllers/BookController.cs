@@ -23,9 +23,10 @@ public class BookController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<Book> GetById(int id)
+    public async Task<IEnumerable<Book>> Search(int? id, string? name)
     {
-        return await _service.Books.GetById(id);
+        if (id == null) return await _service.Books.GetAll(s => s.Name.ToLower().Contains(name.ToLower()));
+        return new List<Book>() { await _service.Books.GetById((int)id) };
     }
 
     [HttpPost("insert")]

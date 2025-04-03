@@ -23,9 +23,10 @@ public class SeriesController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<Series> GetById(int id)
+    public async Task<IEnumerable<Series>> Search(int? id, string? name)
     {
-        return await _service.Series.GetById(id);
+        if (id == null) return await _service.Series.GetAll(s => s.Name.ToLower().Contains(name.ToLower()));
+        return new List<Series>() { await _service.Series.GetById((int)id) };
     }
 
     [HttpPost("insert")]

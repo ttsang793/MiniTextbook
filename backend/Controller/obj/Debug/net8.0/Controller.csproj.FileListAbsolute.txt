@@ -72,3 +72,4 @@ D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Core.pdb
 D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Infrastructure.pdb
 D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Application.dll
 D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Application.pdb
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\obj\Debug\net8.0\Controller.sourcelink.json

@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router'
 
 //user
 import Header from '/src/components/Header'
@@ -26,7 +26,7 @@ function loadPage() {
   else if (location.pathname.startsWith("/quan-tri")) return (
     <StrictMode>
       <AHeader />
-      <Router>
+      <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
         <Routes>
           <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
           <Route path="/quan-tri/bo-sach" element={<ASeries />} />
@@ -41,7 +41,7 @@ function loadPage() {
   else return (
     <StrictMode>
       <Header />
-      <Router>
+      <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/san-pham" element={<Product />} />

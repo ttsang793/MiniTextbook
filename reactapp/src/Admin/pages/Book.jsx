@@ -1,11 +1,15 @@
 import { React, useState, useEffect } from "react";
 import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/react";
 import axios from "axios";
+import Search from "/src/Admin/components/Search";
 
 const ABook = () => {
+  // Hằng số mặc định
+  const gradeList = [10, 11, 12];
+  const defaultThumbnail = "/src/images/products/default.png";
+
   // Danh sách các tập hợp sử dụng trong trang
   const [bookList, setBookList] = useState([]);
-  const gradeList = [10, 11, 12];
   const [publisherList, setPublisherList] = useState([]);
   const [seriesList, setSeriesList] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
@@ -13,7 +17,7 @@ const ABook = () => {
   // Các tham số của sách
   const [bId, setBID] = useState("");
   const [bName, setBName] = useState("");
-  const [bImage, setBImage] = useState("");
+  const [bImage, setBImage] = useState(defaultThumbnail);
   const [bGrade, setBGrade] = useState(10);
   const [bSubject, setBSubject] = useState("");
   const [bPublisher, setBPublisher] = useState("");
@@ -44,11 +48,6 @@ const ABook = () => {
           <div className="mb-3">
             <label htmlFor="name" className="block font-bold italic">Tên:</label>
             <input type="text" id="name" value={bName} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBName(e.target.value)} />
-          </div>
-          
-          <div className="mb-3">
-            <label htmlFor="image" className="block font-bold italic">Đường dẫn ảnh: </label>
-            <input type="text" id="image" value={bImage} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBImage(e.target.value)} />
           </div>
 
           <div className="mb-3">
@@ -91,61 +90,65 @@ const ABook = () => {
             <input type="number" id="price" value={bPrice} step={1000} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBPrice(e.target.value)} />
           </div>
           
-          <div className="mb-3 flex justify-center">
-            <img src="/src/images/products/TIN_10_CD.jpg" alt="thumbnail" />
+          <div>
+            <img id="thumbnail-preview" src={bImage} alt="thumbnail" className="aspect-7/10" onClick={() => document.getElementById("file-upload").click()} />
           </div>
+          <input type="file" id="file-upload" onChange={handleThumbnailUpload} accept="image/*" className="h-0" />
 
           <div className="flex gap-x-4 justify-center">
             <button className="bg-green-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-green-600 duration-150" onClick={e => save(e)}>
               <FloppyDisk size={28} /> Lưu
             </button>
 
-            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={() => cancel()} >
+            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={e => cancel(e)} >
               <X size={28} /> Hủy
             </button>
           </div>
         </form>
 
         {/* Hiển thị danh sách */}
-        <table className="text-center">
-          <thead>
-            <tr className="bg-linear-to-r from-pink-700 to-pink-900">
-              <th className="w-[5%] text-pink-50 py-1">ID</th>
-              <th className="w-[15%] text-pink-50 py-1">Hình minh họa</th>
-              <th className="w-[55%] text-pink-50 py-1">Tên sách</th>
-              <th className="w-[25%] text-pink-50 py-1"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              bookList.map(b => 
-                <tr key={b.id} className="even:bg-pink-50">
-                  <td>{b.id}</td>
-                  <td className="flex justify-center">
-                    <img src={`/src/images/products/${b.image}`} alt={b.name} className="h-50 aspect-7/10" />
-                  </td>
-                  <td className="py-3 text-left">{b.name}</td>
-                  <td>
-                    {
-                      b.isActive ? (<div className="flex gap-x-3">
-                        <button className="bg-yellow-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer" onClick={() => loadUpdate(b)}>
-                          <Pencil size={28} /> Cập nhật
-                        </button>
-                        <button className="bg-red-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer" onClick={() => status(b.id, b.isActive)}>
-                          <LockKey size={28} /> Khóa
-                        </button>
-                      </div>) : (
-                        <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(b.id, b.isActive)}>
-                          <LockKeyOpen size={28} /> Mở khóa
-                        </button>
-                      )
-                    }
-                  </td>
-                </tr>
-              )
-            }
-          </tbody>
-        </table>
+        <div>
+          <Search onClick={search} />
+          <table className="text-center w-full">
+            <thead>
+              <tr className="bg-linear-to-r from-pink-700 to-pink-900">
+                <th className="w-[5%] text-pink-50 py-1">ID</th>
+                <th className="w-[15%] text-pink-50 py-1">Hình minh họa</th>
+                <th className="w-[55%] text-pink-50 py-1">Tên sách</th>
+                <th className="w-[25%] text-pink-50 py-1"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                bookList.map(b => 
+                  <tr key={b.id} className="even:bg-pink-50">
+                    <td>{b.id}</td>
+                    <td className="flex justify-center">
+                      <img src={b.image} alt={b.name} className="h-50 aspect-7/10" />
+                    </td>
+                    <td className="py-3 text-left">{b.name}</td>
+                    <td>
+                      {
+                        b.isActive ? (<div className="flex gap-x-3">
+                          <button className="bg-yellow-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer" onClick={() => loadUpdate(b)}>
+                            <Pencil size={28} /> Cập nhật
+                          </button>
+                          <button className="bg-red-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer" onClick={() => status(b.id, b.isActive)}>
+                            <LockKey size={28} /> Khóa
+                          </button>
+                        </div>) : (
+                          <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(b.id, b.isActive)}>
+                            <LockKeyOpen size={28} /> Mở khóa
+                          </button>
+                        )
+                      }
+                    </td>
+                  </tr>
+                )
+              }
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   )
@@ -160,20 +163,33 @@ const ABook = () => {
     setBPrice(book.price);
   }
 
+  function handleThumbnailUpload(e) {
+    setBImage(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.onload = e => document.getElementById('thumbnail-preview').src = e.target.result;
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
   function save(e) {
     e.preventDefault();
-    console.log(bId === "");
     (bId === "") ? insert() : update();
   }
 
-  function cancel() {
+  function cancel(e) {
+    e.preventDefault()
     setBID("");
     setBName("");
-    setBImage("");
+    setBImage(defaultThumbnail);
     setBGrade(10);
     setBPublisher(publisherList[0]);
     setBSubject(subjectList[0]);
     setBPrice(0);
+  }
+
+  function search(attr, prop) {
+    if (prop === "") axios.get("/admin/book/get-all").then(response => setBookList(response.data));
+    else axios.get(`/admin/book/get?${attr}=${prop}`).then(response => setBookList(response.data))
   }
 
   function insert() {

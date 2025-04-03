@@ -23,9 +23,10 @@ public class SubjectController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<Subject> GetById(int id)
+    public async Task<IEnumerable<Subject>> Search(int? id, string? name)
     {
-        return await _service.Subjects.GetById(id);
+        if (id == null) return await _service.Subjects.GetAll(s => s.Name.ToLower().Contains(name.ToLower()));
+        return new List<Subject>() { await _service.Subjects.GetById((int)id) };
     }
 
     [HttpPost("insert")]

@@ -1,6 +1,9 @@
-import { Heart, ShoppingCartSimple, User, MagnifyingGlass } from "@phosphor-icons/react"
+import { React, useState } from "react";
+import { Heart, ShoppingCartSimple, User, MagnifyingGlass } from "@phosphor-icons/react";
 
 const Header = () => {
+  const [search, setSearch] = useState("");
+
   return (
     <header className="mb-8">
       <div className="flex justify-between ms-12 me-15 items-center">
@@ -35,10 +38,16 @@ const Header = () => {
           <img src="/mt-vlogo.png" alt="Mini Textbook logo" />
         </a>
         <div className="flex w-full">
-          <input type="search" id="search" className="bg-pink-800/90 text-pink-50 flex-1 rounded-s-full py-2 px-5 text-lg outline-0 placeholder:italic" placeholder="Nhập tiêu đề sách bạn cần tìm..." spellCheck="false" />
-          <button className="rounded-e-full bg-pink-800/90 text-pink-50 py-1 px-2 cursor-pointer hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200">
-            <MagnifyingGlass size={28} className="cursor-pointer" />
-          </button>
+          <input
+            type="search" id="search-input" className="bg-pink-800/90 text-pink-50 flex-1 rounded-s-full py-2 px-5 text-lg outline-0 placeholder:italic"
+            placeholder="Nhập tiêu đề sách bạn cần tìm..." spellCheck="false" value={search} onChange={e => setSearch(e.target.value)}
+            onKeyDown={e => {if (e.nativeEvent.key === "Enter") document.getElementById("search-btn").click()}}
+          />
+          <a id="search-btn" href={`/san-pham?search=${search}`} className="rounded-e-full bg-pink-800/90 text-pink-50 cursor-pointer hover:bg-pink-300 hover:text-pink-900 duration-200">
+            <button className="p-2">
+              <MagnifyingGlass size={28} className="cursor-pointer" />
+            </button>
+          </a>
         </div>
       </div>
     </header>

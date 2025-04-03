@@ -23,9 +23,10 @@ public class PublisherController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<Publisher> GetById(int id)
+    public async Task<IEnumerable<Publisher>> Search(int? id, string? name)
     {
-        return await _service.Publishers.GetById(id);
+        if (id == null) return await _service.Publishers.GetAll(p => p.Name.ToLower().Contains(name.ToLower()));
+        return new List<Publisher>() { await _service.Publishers.GetById((int)id) };
     }
 
     [HttpPost("insert")]

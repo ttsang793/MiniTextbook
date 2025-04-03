@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/react";
 import axios from "axios";
+import Search from "/src/Admin/components/Search";
 
 const APublisher = () => {
   const [publisher, setPublisher] = useState([]);
@@ -43,41 +44,44 @@ const APublisher = () => {
         </form>
 
         {/* Hiển thị danh sách */}
-        <table className="text-center">
-          <thead>
-            <tr className="bg-linear-to-r from-pink-700 to-pink-900">
-              <th className="w-[5%] text-pink-50 py-1">ID</th>
-              <th className="w-[70%] text-pink-50">Tên nhà xuất bản</th>
-              <th className="w-[25%] text-pink-50"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              publisher.map(p => 
-                <tr key={p.id} className="even:bg-pink-50">
-                  <td>{p.id}</td>
-                  <td className="py-3 text-left">{p.name}</td>
-                  <td>
-                    {
-                      p.isActive ? (<div className="flex gap-x-3">
-                        <button className="bg-yellow-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer" onClick={() => loadUpdate(p)}>
-                          <Pencil size={28} /> Cập nhật
-                        </button>
-                        <button className="bg-red-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer" onClick={() => status(p.id, p.isActive)}>
-                          <LockKey size={28} /> Khóa
-                        </button>
-                      </div>) : (
-                        <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(p.id, p.isActive)}>
-                          <LockKeyOpen size={28} /> Mở khóa
-                        </button>
-                      )
-                    }
-                  </td>
-                </tr>
-              )
-            }
-          </tbody>
-        </table>
+        <div>
+          <Search onClick={search} />
+          <table className="text-center w-full">
+            <thead>
+              <tr className="bg-linear-to-r from-pink-700 to-pink-900">
+                <th className="w-[5%] text-pink-50 py-1">ID</th>
+                <th className="w-[70%] text-pink-50">Tên nhà xuất bản</th>
+                <th className="w-[25%] text-pink-50"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                publisher.map(p => 
+                  <tr key={p.id} className="even:bg-pink-50">
+                    <td>{p.id}</td>
+                    <td className="py-3 text-left">{p.name}</td>
+                    <td>
+                      {
+                        p.isActive ? (<div className="flex gap-x-3">
+                          <button className="bg-yellow-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer" onClick={() => loadUpdate(p)}>
+                            <Pencil size={28} /> Cập nhật
+                          </button>
+                          <button className="bg-red-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer" onClick={() => status(p.id, p.isActive)}>
+                            <LockKey size={28} /> Khóa
+                          </button>
+                        </div>) : (
+                          <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(p.id, p.isActive)}>
+                            <LockKeyOpen size={28} /> Mở khóa
+                          </button>
+                        )
+                      }
+                    </td>
+                  </tr>
+                )
+              }
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   )
@@ -96,6 +100,11 @@ const APublisher = () => {
   function cancel() {
     setID("");
     setName("");
+  }
+
+  function search(attr, prop) {
+    if (prop === "") axios.get("/admin/publisher/get-all").then(response => setPublisher(response.data));
+    else axios.get(`/admin/publisher/get?${attr}=${prop}`).then(response => setPublisher(response.data))
   }
 
   function insert() {

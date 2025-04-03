@@ -9,7 +9,17 @@ export default defineConfig({
 
   server: {
     proxy: {
-      '^/book/*': {
+      '^/product/*': {
+        target: 'https://localhost:7247',
+        secure: false
+      },
+
+      '^/cart/*': {
+        target: 'https://localhost:7247',
+        secure: false
+      },
+
+      '^/order/*': {
         target: 'https://localhost:7247',
         secure: false
       },

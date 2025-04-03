@@ -1,22 +1,44 @@
 import { React, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router';
 import ProductCell from '/src/components/Product/ProductCell';
 import axios from 'axios';
 
 const Product = () => {
   const { tieuChi } = useParams("tieuChi");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [book, setBook] = useState([]);
 
   useEffect(() => {
     switch (tieuChi) {
-      case "lop-10": document.title = "Sách lớp 10 - Nhà sách MiniTextbook"; break;
-      case "lop-11": document.title = "Sách lớp 11 - Nhà sách MiniTextbook"; break;
-      case "lop-12": document.title = "Sách lớp 12 - Nhà sách MiniTextbook"; break;
-      case undefined: document.title = "Sản phẩm - Nhà sách MiniTextbook"; break;
+      case "lop-10": {
+        document.title = "Sách lớp 10 - Nhà sách MiniTextbook";
+        axios.get('/product/search?grade=10').then(response => setBook(response.data));
+        break;
+      }
+      case "lop-11": {
+        document.title = "Sách lớp 11 - Nhà sách MiniTextbook";
+        axios.get('/product/search?grade=11').then(response => setBook(response.data));
+        break;
+      }
+      case "lop-12": {
+        document.title = "Sách lớp 12 - Nhà sách MiniTextbook";
+        axios.get('/product/search?grade=12').then(response => setBook(response.data));
+        break;
+      }
+      case undefined: {
+        const name = searchParams.get('search');
+        if (name !== null && name !== "") {
+          document.title = `Tìm sách ${name} - Nhà sách MiniTextbook`;
+          axios.get(`/product/search?name=${name}`).then(response => setBook(response.data));
+        }
+        else {
+          document.title = "Sản phẩm - Nhà sách MiniTextbook";
+          axios.get('/product/get-all').then(response => setBook(response.data));
+        }
+        break;
+      }
       default: location.href = "/404";
     }
-
-    axios.get('/book/get-all').then(response => setBook(response.data));
   }, []);
 
   return (

@@ -7,7 +7,7 @@ const ProductCell = ({ product }) => {
   return (
     <div className="flex flex-col items-center text-center rounded-2xl p-4 select-none cursor-pointer duration-300 text-pink-900 hover:shadow-[10px_10px_10px_rgb(134,16,67,0.25)] hover:bg-linear-to-tl hover:from-white hover:to-pink-200">
       <div className="relative">
-        <img src={`/src/images/products/${product.image}`} alt={product.name} className="h-70" />
+        <img src={product.image} alt={product.name} className="h-70" />
       </div>
 
       <p className="text-2xl font-bold py-2">{product.name}</p>
