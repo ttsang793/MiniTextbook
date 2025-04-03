@@ -1,7 +1,7 @@
 ﻿using Core.Entity;
 using Application.Interface;
-using Microsoft.AspNetCore.Mvc;
 using Application.DTO;
+using Microsoft.AspNetCore.Mvc;
 namespace Controller.Controllers;
 
 [ApiController]
@@ -29,14 +29,29 @@ public class ProductController : ControllerBase
         return await _service.Books.GetById(id);
     }
 
-    [HttpGet("search")]
-    public async Task<IEnumerable<Book>> Search(string? name, int? grade, int? subject, int? publisher)
+    [HttpPost("search")]
+    public async Task<IEnumerable<Book>> Search([Bind("Grades", "Publishers", "Subjects")]ProductFilterDTO productFilter, string? name)
     {
         return await _service.Books.GetAll(p =>
             (string.IsNullOrEmpty(name) || p.Name.ToLower().Contains(name.ToLower())) &&
-            (grade == null || p.Grade == grade) &&
-            (subject == null || p.Subject == subject) &&
-            (publisher == null || p.Publisher == publisher)
+            (productFilter.Grades == null || productFilter.Grades.Contains((int)p.Grade)) &&
+            (productFilter.Publishers == null || productFilter.Publishers.Contains((int)p.Publisher)) &&
+            (productFilter.Subjects == null || productFilter.Subjects.Contains((int)p.Subject))
+            //(grade == null || grade.Contains((int)p.Grade)) &&
+            //(subject == null || p.Subject == subject) &&
+            //(publisher == null || p.Publisher == publisher)
         );
+    }
+
+    [HttpGet("get-subject")]
+    public async Task<IEnumerable<Subject>> GetSubjects()
+    {
+        return await _service.Subjects.GetAll();
+    }
+
+    [HttpGet("get-publisher")]
+    public async Task<IEnumerable<Publisher>> GetPublishers()
+    {
+        return await _service.Publishers.GetAll();
     }
 }

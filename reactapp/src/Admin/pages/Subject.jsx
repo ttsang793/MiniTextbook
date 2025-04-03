@@ -1,16 +1,21 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/react";
 import axios from "axios";
 import Search from "/src/Admin/components/Search";
+import Pagination from "/src/Admin/components/Pagination";
 
 const ASubject = () => {
   const [subject, setSubject] = useState([]);
   const [id, setID] = useState("");
   const [name, setName] = useState("");
+  const numPerPage = 10;
+  const pageRef = useRef(0);
+  const totalRef = useRef(0);
+  const searchRef = useRef("");
 
   useEffect(() => {
     document.title = "Quản lý môn học";
-    axios.get("/admin/subject/get-all").then(response => setSubject(response.data))
+    loadData();
   }, []);
 
   return (
@@ -81,10 +86,32 @@ const ASubject = () => {
               }
             </tbody>
           </table>
+          <Pagination page={pageRef.current} total={totalRef.current} onClick={loadData} />
         </div>
       </section>
     </main>
   )
+
+  function loadData(newPage = 1) {
+    pageRef.current = newPage;
+    axios.get(searchRef.current === "" ? '/admin/subject/get-all' : `/admin/subject/get?name=${searchRef.current}`).then(response => {
+      totalRef.current = Math.ceil(response.data.length / numPerPage);
+      setSubject(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
+    });
+  }
+
+  function search(attr, prop) {
+    pageRef.current = 1;
+    searchRef.current = prop;
+    if (prop === "") axios.get("/admin/subject/get-all").then(response => {
+      totalRef.current = Math.ceil(response.data.length / numPerPage);
+      setSubject(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
+    });
+    else axios.get(`/admin/subject/get?${attr}=${prop}`).then(response => {
+      totalRef.current = Math.ceil(response.data.length / numPerPage);
+      setSubject(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
+    });
+  }
 
   function loadUpdate(subject) {
     setID(subject.id);
@@ -100,11 +127,6 @@ const ASubject = () => {
   function cancel() {
     setID("");
     setName("");
-  }
-
-  function search(attr, prop) {
-    if (prop === "") axios.get("/admin/subject/get-all").then(response => setSubject(response.data));
-    else axios.get(`/admin/subject/get?${attr}=${prop}`).then(response => setSubject(response.data))
   }
 
   function insert() {

@@ -12,10 +12,11 @@ import Footer from '/src/components/Footer'
 
 //admin
 import AHeader from '/src/Admin/components/Header';
+import ABook from '/src/Admin/pages/Book';
+import AOrder from '/src/Admin/pages/Order';
 import APublisher from '/src/Admin/pages/Publisher';
 import ASeries from '/src/Admin/pages/Series';
 import ASubject from '/src/Admin/pages/Subject';
-import ABook from '/src/Admin/pages/Book';
 
 //temp
 //import UserForm from '/src/components/UserForm';
@@ -29,9 +30,10 @@ function loadPage() {
       <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
         <Routes>
           <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
+          <Route path="/quan-tri/sach" element={<ABook />} />
           <Route path="/quan-tri/bo-sach" element={<ASeries />} />
           <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
-          <Route path="/quan-tri/sach" element={<ABook />} />
+          <Route path="/quan-tri/don-hang" element={<AOrder />} />
         </Routes>
       </Router>
     </StrictMode>

@@ -1,12 +1,17 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/react";
 import axios from "axios";
 import Search from "/src/Admin/components/Search";
+import Pagination from "/src/Admin/components/Pagination";
 
 const ABook = () => {
   // Hằng số mặc định
   const gradeList = [10, 11, 12];
   const defaultThumbnail = "/src/images/products/default.png";
+  const numPerPage = 5;
+  const pageRef = useRef(0);
+  const totalRef = useRef(0);
+  const searchRef = useRef("");
 
   // Danh sách các tập hợp sử dụng trong trang
   const [bookList, setBookList] = useState([]);
@@ -26,7 +31,7 @@ const ABook = () => {
   // useEffect để load danh sách
   useEffect(() => {
     document.title = "Quản lý sách";
-    axios.get("/admin/book/get-all").then(response => setBookList(response.data));
+    loadData();
     axios.get("/admin/publisher/get-all").then(response => setPublisherList(response.data));
     axios.get("/admin/series/get-all").then(response => setSeriesList(response.data));
     axios.get("/admin/subject/get-all").then(response => setSubjectList(response.data));
@@ -51,29 +56,28 @@ const ABook = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="grade" className="block font-bold italic">Khối: </label>
+            <label htmlFor="grade" className="block font-bold italic">Khối:</label>
             <select id="grade" value={bGrade} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBGrade(e.target.value)}>
             { gradeList.map(g => <option key={`grade-${g}`} value={g} className="hover:bg-pink-900 hover:text-pink-50">{g}</option>) }
             </select>
           </div>
 
           <div className="mb-3">
-            <label htmlFor="subject">Môn: </label>
+            <label htmlFor="subject" className="block font-bold italic">Môn:</label>
             <select id="subject" value={bSubject} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBSubject(e.target.value)}>
             { subjectList.map(s => <option key={`sub-${s.id}`} value={s.id}>{s.name}</option>) }
             </select>
           </div>
 
           <div className="mb-3">
-          <label htmlFor="publisher" className="block font-bold italic">NXB:</label>
+            <label htmlFor="publisher" className="block font-bold italic">Nhà xuất bản:</label>
             <select id="publisher" value={bPublisher} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBPublisher(e.target.value)}>
             { publisherList.map(p => <option key={`pub-${p.id}`} value={p.id}>{p.name}</option>) }
             </select>
           </div>
 
-          {/*
           <div className="mb-3">
-            Bộ sách:<br />
+            <label className="block font-bold italic text-xl">Bộ sách:</label>
             {
               seriesList.map(s =>
                 <div key={`series-${s.id}`}>
@@ -82,11 +86,10 @@ const ABook = () => {
                 </div>
               )
             }
-          </div>*/
-          }
+          </div>
           
           <div className="mb-6">
-            <label htmlFor="price" className="block font-bold italic">Giá: </label>
+            <label htmlFor="price" className="block font-bold italic text-xl">Giá: </label>
             <input type="number" id="price" value={bPrice} step={1000} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBPrice(e.target.value)} />
           </div>
           
@@ -129,15 +132,26 @@ const ABook = () => {
                     <td className="py-3 text-left">{b.name}</td>
                     <td>
                       {
-                        b.isActive ? (<div className="flex gap-x-3">
-                          <button className="bg-yellow-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer" onClick={() => loadUpdate(b)}>
-                            <Pencil size={28} /> Cập nhật
-                          </button>
-                          <button className="bg-red-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer" onClick={() => status(b.id, b.isActive)}>
-                            <LockKey size={28} /> Khóa
-                          </button>
-                        </div>) : (
-                          <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(b.id, b.isActive)}>
+                        b.isActive ? (
+                          <div className="flex gap-x-3">
+                            <button
+                              className="bg-yellow-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer"
+                              onClick={() => loadUpdate(b)}
+                            >
+                              <Pencil size={28} /> Cập nhật
+                            </button>
+                            <button
+                              className="bg-red-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer"
+                              onClick={() => status(b.id, b.isActive)}
+                            >
+                              <LockKey size={28} /> Khóa
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            className="bg-green-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer"
+                            onClick={() => status(b.id, b.isActive)}
+                          >
                             <LockKeyOpen size={28} /> Mở khóa
                           </button>
                         )
@@ -148,10 +162,32 @@ const ABook = () => {
               }
             </tbody>
           </table>
+          <Pagination page={pageRef.current} total={totalRef.current} onClick={loadData} />
         </div>
       </section>
     </main>
   )
+
+  function loadData(newPage = 1) {
+    pageRef.current = newPage;
+    axios.get(searchRef.current === "" ? '/admin/book/get-all' : `/admin/book/get?name=${searchRef.current}`).then(response => {
+      totalRef.current = Math.ceil(response.data.length / numPerPage);
+      setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
+    });
+  }
+
+  function search(attr, prop) {
+    pageRef.current = 1;
+    searchRef.current = prop;
+    if (prop === "") axios.get("/admin/book/get-all").then(response => {
+      totalRef.current = Math.ceil(response.data.length / numPerPage);
+      setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
+    });
+    else axios.get(`/admin/book/get?${attr}=${prop}`).then(response => {
+      totalRef.current = Math.ceil(response.data.length / numPerPage);
+      setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
+    });
+  }
 
   function loadUpdate(book) {
     setBID(book.id);
@@ -185,11 +221,6 @@ const ABook = () => {
     setBPublisher(publisherList[0]);
     setBSubject(subjectList[0]);
     setBPrice(0);
-  }
-
-  function search(attr, prop) {
-    if (prop === "") axios.get("/admin/book/get-all").then(response => setBookList(response.data));
-    else axios.get(`/admin/book/get?${attr}=${prop}`).then(response => setBookList(response.data))
   }
 
   function insert() {

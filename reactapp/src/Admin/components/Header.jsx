@@ -43,9 +43,9 @@ const AHeader = () => {
             <Atom size={36} />Môn học
           </button>
         </a>
-        <a href="/quan-tri/hoa-don">
+        <a href="/quan-tri/don-hang">
           <button className="admin-header-btn">
-            <CurrencyDollarSimple size={36} weight="fill" />Hóa đơn
+            <CurrencyDollarSimple size={36} weight="fill" />Đơn hàng
           </button>
         </a>
         <a href="/quan-tri/quan-tri-vien">

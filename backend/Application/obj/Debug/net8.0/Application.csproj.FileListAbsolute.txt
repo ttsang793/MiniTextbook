@@ -15,3 +15,4 @@ D:\SGU\DoAnCode\MiniTextbook\backend\Application\bin\Debug\net8.0\Core.pdb
 D:\SGU\DoAnCode\MiniTextbook\backend\Application\bin\Debug\net8.0\Infrastructure.pdb
 D:\SGU\DoAnCode\MiniTextbook\backend\Application\obj\Debug\net8.0\Application.csproj.AssemblyReference.cache
 D:\SGU\DoAnCode\MiniTextbook\backend\Application\obj\Debug\net8.0\Applicat.44B5EDA2.Up2Date
+D:\SGU\DoAnCode\MiniTextbook\backend\Application\obj\Debug\net8.0\Application.sourcelink.json
