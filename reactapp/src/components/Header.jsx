@@ -11,24 +11,28 @@ const Header = () => {
           <a href="/san-pham" title="Xem tất cả sản phẩm">
             <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-3">Sản phẩm</button>
           </a>
-          <a href="/san-pham/lop-10" title="Xem sách giáo khoa lớp 10">
+          <a href="/san-pham?lop=10" title="Xem sách giáo khoa lớp 10">
             <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-3">Lớp 10</button>
           </a>
-          <a href="/san-pham/lop-11" title="Xem sách giáo khoa lớp 11">
+          <a href="/san-pham?lop=11" title="Xem sách giáo khoa lớp 11">
             <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-3">Lớp 11</button>
           </a>
-          <a href="/san-pham/lop-12" title="Xem sách giáo khoa lớp 12">
+          <a href="/san-pham?lop=12" title="Xem sách giáo khoa lớp 12">
             <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-3">Lớp 12</button>
           </a>
         </div>
 
         <div className="flex items-center">
-          <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
-            <Heart size={32} className="cursor-pointer" />
-          </button>
-          <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
-            <ShoppingCartSimple size={32} className="cursor-pointer" />
-          </button>
+          <a href="/nguoi-dung/yeu-thich">
+            <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
+              <Heart size={32} className="cursor-pointer" />
+            </button>
+          </a>
+          <a href="/nguoi-dung/gio-hang">
+            <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
+              <ShoppingCartSimple size={32} className="cursor-pointer" />
+            </button>
+          </a>
           <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-2">Đăng nhập</button>
         </div>
       </div>

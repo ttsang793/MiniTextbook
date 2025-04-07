@@ -31,3 +31,8 @@ public interface IStatus
 {
     Task UpdateStatus(int id);
 }
+
+public interface IDelete<T> where T : BaseEntity
+{
+    Task Delete(int id);
+}

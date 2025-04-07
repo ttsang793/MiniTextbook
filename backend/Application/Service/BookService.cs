@@ -2,6 +2,7 @@
 using Core.Entity;
 using Core.Interface;
 using Application.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Service;
 
@@ -16,7 +17,19 @@ public class BookService : IBookService
 
     public async Task<IEnumerable<Book>> GetAll(Expression<Func<Book, bool>> expression = null)
     {
-        return await _unitOfWork.Books.GetAll(expression);
+        // Step 1: Fetch all books with the provided filter (if any)
+        var books = await _unitOfWork.Books.GetAll(expression); // This is the existing method call
+
+        // Step 2: For each book, manually load the related Series
+        foreach (var book in books)
+        {
+            // This assumes that the Series is lazy-loaded by EF (or another ORM),
+            // If lazy-loading is not enabled, you would need to explicitly load the Series using a separate query.
+            var series = (await _unitOfWork.Series.GetAll(s => s.Books.Contains(book))).ToList();
+            book.Series = series;  // Assign the loaded series to the book
+        }
+
+        return books;
     }
 
     public async Task<Book> GetById(int id)

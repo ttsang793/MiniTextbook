@@ -13,7 +13,6 @@ public class SeriesService : ISeriesService
     {
         _unitOfWork = unitOfWork;
     }
-
     public async Task<IEnumerable<Series>> GetAll(Expression<Func<Series, bool>> expression = null)
     {
         return await _unitOfWork.Series.GetAll(expression);

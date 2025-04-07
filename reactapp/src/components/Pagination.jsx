@@ -8,8 +8,9 @@ const Pagination = ({ page, total }) => {
       </button>
     )
 
-    searchParams.set("page", newPage);
-    const url = location.origin + location.pathname + '?' + searchParams.toString();
+    if (newPage > 1) searchParams.set("page", newPage);
+    else searchParams.delete("page");
+    const url = location.origin + location.pathname + ((searchParams.toString() !== "") ? '?' + searchParams.toString() : "");
 
     return (
       <a href={url} className="rounded-full my-1 mx-2 py-1 px-2 cursor-pointer hover:m-0 hover:py-2 hover:px-4 hover:bg-pink-800/40 duration-150">

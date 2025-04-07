@@ -38,6 +38,6 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
 
     public async Task<int> GetLastId()
     {
-        return await GetDbSet().CountAsync() + 1;
+        return (await GetDbSet().OrderBy(b => b.Id).LastAsync()).Id + 1;
     }
 }

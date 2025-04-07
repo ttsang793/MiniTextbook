@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router'
 import Header from '/src/components/Header'
 import Home from '/src/pages/Home'
 import Product from '/src/pages/Product'
+import Favorite from '/src/pages/Favorite'
+import Cart from '/src/pages/Cart'
 import HelloWorld from '/src/pages/HelloWorld'
 import FourOFour from '/src/pages/FourOFour'
 import Footer from '/src/components/Footer'
@@ -47,7 +49,10 @@ function loadPage() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/san-pham" element={<Product />} />
-          <Route path="/san-pham/:tieuChi" element={<Product />} />
+          <Route path="/nguoi-dung">
+            <Route path="yeu-thich" element={<Favorite />} />
+            <Route path="gio-hang" element={<Cart />} />
+          </Route>
           <Route path="/*" element={<Navigate to="/404" replace />} />
           <Route path="/404" element={<FourOFour />} />
           {/*<Route path="/dang-nhap" element={<UserForm />} />*/}

@@ -14,6 +14,11 @@ export default defineConfig({
         secure: false
       },
 
+      '^/favorite/*': {
+        target: 'https://localhost:7247',
+        secure: false
+      },
+
       '^/cart/*': {
         target: 'https://localhost:7247',
         secure: false

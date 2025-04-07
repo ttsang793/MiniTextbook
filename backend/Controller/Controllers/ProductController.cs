@@ -2,6 +2,7 @@
 using Application.Interface;
 using Application.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 namespace Controller.Controllers;
 
 [ApiController]
@@ -30,16 +31,14 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("search")]
-    public async Task<IEnumerable<Book>> Search([Bind("Grades", "Publishers", "Subjects")]ProductFilterDTO productFilter, string? name)
+    public async Task<IEnumerable<Book>> Search([Bind("Grades", "Publishers", "Subjects", "Series")]ProductFilterDTO productFilter, string? name)
     {
         return await _service.Books.GetAll(p =>
             (string.IsNullOrEmpty(name) || p.Name.ToLower().Contains(name.ToLower())) &&
             (productFilter.Grades == null || productFilter.Grades.Contains((int)p.Grade)) &&
             (productFilter.Publishers == null || productFilter.Publishers.Contains((int)p.Publisher)) &&
-            (productFilter.Subjects == null || productFilter.Subjects.Contains((int)p.Subject))
-            //(grade == null || grade.Contains((int)p.Grade)) &&
-            //(subject == null || p.Subject == subject) &&
-            //(publisher == null || p.Publisher == publisher)
+            (productFilter.Subjects == null || productFilter.Subjects.Contains((int)p.Subject)) &&
+            (productFilter.Series == null || p.Series.Any(s => productFilter.Series.Contains(s.Id)))
         );
     }
 
@@ -53,5 +52,11 @@ public class ProductController : ControllerBase
     public async Task<IEnumerable<Publisher>> GetPublishers()
     {
         return await _service.Publishers.GetAll();
+    }
+
+    [HttpGet("get-series")]
+    public async Task<IEnumerable<Series>> GetSeries()
+    {
+        return await _service.Series.GetAll();
     }
 }
