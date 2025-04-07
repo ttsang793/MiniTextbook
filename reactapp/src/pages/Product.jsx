@@ -9,7 +9,7 @@ const Product = () => {
   const numPerPage = 9;
   const page = useRef(1);
   const total = useRef(0);
-  const loadingRef = useRef(true);
+  const [loadingRef, setLoadingRef] = useState(true);
 
   // Các danh sách
   const [book, setBook] = useState([]);
@@ -22,29 +22,28 @@ const Product = () => {
   let [series, setSeries] = useState({});
 
   // Hàm xử lý khi thêm
-  const handleGrade = (newGrade) => {
-    grade[`${newGrade}`] = !grade[`${newGrade}`];
-    setGrade(grade);
+  const handleGrade = (id) => {
+    const updatedGrade = { ...grade }
+    updatedGrade[`${id}`] = !updatedGrade[`${id}`];
+    setGrade(updatedGrade);
   }
-  const handlePublisher = (id) => {
-    publisher[`${id}`] = !publisher[`${id}`];
-    setPublisher(publisher);
+
+  const handlePublisher = (id, e = null) => {
+    const updatedPublisher = { ...publisher };
+    updatedPublisher[`${id}`] = !updatedPublisher[`${id}`];
+    setPublisher(updatedPublisher);
   };
 
-  // Function to handle subject selection (mark it as selected in the subject dictionary)
-  const handleSubject = (subjectId) => {
-    setSubject(prevSubject => ({
-      ...prevSubject,
-      [subjectId]: true, // Mark the subject as selected
-    }));
+  const handleSubject = (id) => {
+    const updatedSubject = { ...subject };
+    updatedSubject[`${id}`] = !updatedSubject[`${id}`];
+    setSubject(updatedSubject);
   };
 
-  // Function to handle series selection (mark it as selected in the series dictionary)
-  const handleSeries = (seriesId) => {
-    setSeries(prevSeries => ({
-      ...prevSeries,
-      [seriesId]: true, // Mark the series as selected
-    }));
+  const handleSeries = (id) => {
+    const updatedSeries = { ...series };
+    updatedSeries[`${id}`] = !updatedSeries[`${id}`];
+    setSeries(updatedSeries);
   };
 
   const getPublisher = async () => {
@@ -86,61 +85,37 @@ const Product = () => {
   };
 
   useEffect(() => {
-    if (loadingRef.current) {
+    if (loadingRef) {
       try {
-        getPublisher();
-        getSubject();
-        getSeries();
-
         const name = searchParams.get('search');
         page.current = Number(searchParams.get('page')) || 1;
 
-        let gradeParam = searchParams.get('lop');
-        gradeParam = gradeParam ? convertToNumber(gradeParam.split("_")) : null;
-        if (gradeParam) gradeParam.forEach(g => handleGrade(`${g}`));
-
-        let publisherParam = searchParams.get('nxb');
-        publisherParam = publisherParam ? convertToNumber(publisherParam.split("_")) : null;
-        if (publisherParam) publisherParam.forEach(p => handlePublisher(`${p}`));
-
-        let seriesParam = searchParams.get('bo');
-        seriesParam = seriesParam ? convertToNumber(seriesParam.split("_")) : null;
-        if (seriesParam) seriesParam.forEach(s => handleSeries(`${s}`));
-
-        let subjectParam = searchParams.get('mon');
-        subjectParam = subjectParam ? convertToNumber(subjectParam.split("_")) : null;
-        if (subjectParam) subjectParam.forEach(s => handleSubject(`${s}`));
-
         if (name !== null && name !== "") {
           document.title = `Tìm sách ${name} - Nhà sách MiniTextbook`;
-          loadData(gradeParam, publisherParam, seriesParam, subjectParam, name);
+          loadData(page, name);
         }
         else {
           document.title = "Sản phẩm - Nhà sách MiniTextbook";
-          loadData(gradeParam, publisherParam, seriesParam, subjectParam);
+          loadData(page);
         }
       }
       catch (error) { console.error(error) }
-      loadingRef.current = false
+      finally { setLoadingRef(false); }
     }
   }, []);
 
-  return loadingRef.current ? <>Hello World</> : (
+  return loadingRef ? <>Hello World</> : (
     <main>
       <h1 className="text-center text-pink-900 font-bold text-4xl">SẢN PHẨM</h1>
-
-      {
-        console.log(subject)
-      }
 
       <div className="mt-4 grid grid-cols-[200px_1fr] gap-x-10 mx-15">
         <section className="bg-pink-100 px-4 py-2">
           <h2 className="text-pink-900 font-bold text-3xl pb-2">BỘ LỌC</h2>
           <div className="mb-4">
             <h3 className="text-pink-900 pb-2 font-bold text-2xl">Khối</h3>
-            <div className="text-pink-900 pb-2"><input type="checkbox" defaultChecked={grade["10"]} onChange={() => handleGrade("10")} /> Lớp 10</div>
-            <div className="text-pink-900 pb-2"><input type="checkbox" defaultChecked={grade["11"]} onChange={() => handleGrade("11")} /> Lớp 11</div>
-            <div className="text-pink-900 pb-2"><input type="checkbox" defaultChecked={grade["12"]} onChange={() => handleGrade("12")} /> Lớp 12</div>
+            <div className="text-pink-900 pb-2"><input type="checkbox" checked={grade["10"]} onChange={() => handleGrade("10")} /> Lớp 10</div>
+            <div className="text-pink-900 pb-2"><input type="checkbox" checked={grade["11"]} onChange={() => handleGrade("11")} /> Lớp 11</div>
+            <div className="text-pink-900 pb-2"><input type="checkbox" checked={grade["12"]} onChange={() => handleGrade("12")} /> Lớp 12</div>
           </div>
           
           <div className="mb-4">
@@ -156,7 +131,7 @@ const Product = () => {
             <h3 className="text-pink-900 pb-2 font-bold text-2xl">Nhà xuất bản</h3>
             {
               publisherList.map(p =>
-                <div className="text-pink-900 pb-2" key={p.name}><input type="checkbox" defaultChecked={publisher[`${p.id}`]} onChange={() => handlePublisher(p.id)} /> {p.name}</div>
+                <div className="text-pink-900 pb-2" key={p.name}><input type="checkbox" checked={publisher[`${p.id}`]} onChange={() => handlePublisher(p.id)} /> {p.name}</div>
               )
             }
           </div>
@@ -188,21 +163,58 @@ const Product = () => {
     </main>
   )
 
-  function loadData(grades, publishers, series, subjects, name = "") {
-    const productFilter = { grades, publishers, subjects, series };
-    const headers = { headers: { 'Content-Type': 'application/json' }};
+  async function loadData(page, name = "") {
+    if (loadingRef) {
+      let temp = {};
 
-    if (name === "" && productFilter.grades === null && productFilter.publishers === null && productFilter.subjects === null && productFilter.series === null) {
-      axios.get('/product/get-all').then(response => {        
-        total.current = Math.ceil(response.data.length / numPerPage);
-        setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
-      });
-    }
-    else {
-      axios.post(`/product/search${name !== "" ? `?name=${name}` : ""}`, productFilter, headers).then(response => {
-        total.current = Math.ceil(response.data.length / numPerPage);
-        setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
-      });
+      const publisherResponse = await axios.get("/product/get-publisher");
+      setPublisherList(publisherResponse.data);
+      publisherResponse.data.forEach(r => temp[`${r.id}`] = false);
+      setPublisher(publisher = temp);
+
+      temp = {};
+      const seriesResponse = await axios.get("/product/get-series");
+      setSeriesList(seriesResponse.data);
+      seriesResponse.data.forEach(r => temp[`${r.id}`] = false);
+      setSeries(series = temp);
+
+      temp = {};
+      const subjectResponse = await axios.get("/product/get-subject");
+      setSubjectList(subjectResponse.data);
+      subjectResponse.data.forEach(r => temp[`${r.id}`] = false);
+      setSubject(subject = temp);
+
+      let gradeParam = searchParams.get('lop');
+      gradeParam = gradeParam ? convertToNumber(gradeParam.split("_")) : null;
+      if (gradeParam) gradeParam.forEach(g => handleGrade(`${g}`));
+
+      let publisherParam = searchParams.get('nxb');
+      publisherParam = publisherParam ? convertToNumber(publisherParam.split("_")) : null;
+      if (publisherParam) publisherParam.forEach(p => handlePublisher(`${p}`));
+
+      let seriesParam = searchParams.get('bo');
+      seriesParam = seriesParam ? convertToNumber(seriesParam.split("_")) : null;
+      if (seriesParam) seriesParam.forEach(s => handleSeries(`${s}`));
+
+      let subjectParam = searchParams.get('mon');
+      subjectParam = subjectParam ? convertToNumber(subjectParam.split("_")) : null;
+      if (subjectParam) subjectParam.forEach(s => handleSubject(`${s}`));
+      
+      const productFilter = { grades: gradeParam, publishers: publisherParam, subjects: subjectParam, series: seriesParam };
+      const headers = { headers: { 'Content-Type': 'application/json' }};
+
+      if (name === "" && productFilter.grades === null && productFilter.publishers === null && productFilter.subjects === null && productFilter.series === null) {
+        axios.get('/product/get-all').then(response => {
+          total.current = Math.ceil(response.data.length / numPerPage);
+          setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
+        });
+      }
+      else {
+        axios.post(`/product/search${name !== "" ? `?name=${name}` : ""}`, productFilter, headers).then(response => {
+          total.current = Math.ceil(response.data.length / numPerPage);
+          setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
+        });
+      }
     }
   }
 

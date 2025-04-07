@@ -27,7 +27,7 @@ function loadPage() {
   if (location.pathname === "/hello-world") return <HelloWorld />
 
   else if (location.pathname.startsWith("/quan-tri")) return (
-    <StrictMode>
+    <>
       <AHeader />
       <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
         <Routes>
@@ -38,12 +38,12 @@ function loadPage() {
           <Route path="/quan-tri/don-hang" element={<AOrder />} />
         </Routes>
       </Router>
-    </StrictMode>
+    </>
   )
 
   
   else return (
-    <StrictMode>
+    <>
       <Header />
       <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
         <Routes>
@@ -59,7 +59,7 @@ function loadPage() {
         </Routes>
       </Router>
       <Footer />
-    </StrictMode>
+    </>
   )
 }
 

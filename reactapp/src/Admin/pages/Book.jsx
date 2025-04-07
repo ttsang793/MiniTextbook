@@ -9,8 +9,9 @@ const ABook = () => {
   const gradeList = [10, 11, 12];
   const defaultThumbnail = "/src/images/products/default.png";
   const numPerPage = 5;
-  const pageRef = useRef(0);
+  const pageRef = useRef(1);
   const totalRef = useRef(0);
+  const loadingRef = useRef(true);
   const searchRef = useRef("");
 
   // Danh sách các tập hợp sử dụng trong trang
@@ -24,20 +25,37 @@ const ABook = () => {
   const [bName, setBName] = useState("");
   const [bImage, setBImage] = useState(defaultThumbnail);
   const [bGrade, setBGrade] = useState(10);
-  const [bSubject, setBSubject] = useState("");
   const [bPublisher, setBPublisher] = useState("");
   const [bPrice, setBPrice] = useState(0);
+  let [bSeries, setBSeries] = useState({});
+  const [bSubject, setBSubject] = useState("");
+
+  // Xử lý bộ sách
+  const handleBSeries = (id, specific = null) => {
+    const updatedBSeries = {...bSeries};
+    updatedBSeries[`${id}`] = specific !== null ? specific : !updatedBSeries[`${id}`];
+    setBSeries(bSeries = updatedBSeries);
+  }
 
   // useEffect để load danh sách
   useEffect(() => {
-    document.title = "Quản lý sách";
-    loadData();
-    axios.get("/admin/publisher/get-all").then(response => setPublisherList(response.data));
-    axios.get("/admin/series/get-all").then(response => setSeriesList(response.data));
-    axios.get("/admin/subject/get-all").then(response => setSubjectList(response.data));
+    if (loadingRef.current) {
+      document.title = "Quản lý sách";
+      loadData();
+      axios.get("/admin/publisher/get-all").then(response => setPublisherList(response.data));
+      axios.get("/admin/subject/get-all").then(response => setSubjectList(response.data));
+
+      axios.get("/admin/series/get-all").then(response => {
+        let temp = {}
+        setSeriesList(response.data);
+        response.data.forEach(r => temp[`${r.id}`] = false);
+        setBSeries(bSeries = temp);
+      });
+      loadingRef.current = false;
+    }
   }, []);
 
-  return (
+  return loadingRef.current ? <>Hello World</> : (
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ SÁCH</h1>
       <hr className="mb-3 border-pink-900" />
@@ -81,7 +99,7 @@ const ABook = () => {
             {
               seriesList.map(s =>
                 <div key={`series-${s.id}`}>
-                  <input type="checkbox" id={`series-${s.id}`} value={s.name} />
+                  <input type="checkbox" id={`series-${s.id}`} checked={bSeries[`${s.id}`]} onChange={() => handleBSeries(s.id)} />
                   &nbsp;<label htmlFor={`series-${s.id}`}>{s.name}</label>
                 </div>
               )
@@ -197,6 +215,11 @@ const ABook = () => {
     setBPublisher(book.publisher);
     setBSubject(book.subject);
     setBPrice(book.price);
+
+    let tempBookId = [];
+    book.series.forEach(b => tempBookId.push(`${b.id}`));
+
+    for (const [key, value] of Object.entries(bSeries)) handleBSeries(key, tempBookId.includes(key));
   }
 
   function handleThumbnailUpload(e) {
@@ -221,10 +244,14 @@ const ABook = () => {
     setBPublisher(publisherList[0]);
     setBSubject(subjectList[0]);
     setBPrice(0);
+
+    for (const [key, value] of Object.entries(bSeries)) if (value) handleBSeries(key);
   }
 
   function insert() {
     if (confirm("Bạn có muốn thêm sách giáo khoa này?")) {
+      /*const series = [];
+      for (const [key, value] of Object.entries(bSeries)) if (value) series.push(Number(key));*/
       const book = { name: bName, image: bImage, grade: bGrade, subject: bSubject, publisher: bPublisher, price: bPrice, isActive: true };
       const headers = { headers: { 'Content-Type': 'application/json' }}
       axios.post("/admin/book/insert", book, headers).then(response => {
@@ -242,6 +269,10 @@ const ABook = () => {
 
   function update() {
     if (confirm("Bạn có muốn cập nhật thông tin cho sách giáo khoa này?")) {
+      /*
+      const series = [];
+      for (const [key, value] of Object.entries(bSeries)) if (value) series.push(Number(key));*/
+
       const book = { id: bId, name: bName, image: bImage, grade: bGrade, subject: bSubject, publisher: bPublisher, price: bPrice };
       const headers = { headers: { 'Content-Type': 'application/json' }}
       axios.put("/admin/book/update", book, headers).then(response => {
