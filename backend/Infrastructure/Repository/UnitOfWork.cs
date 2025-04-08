@@ -9,6 +9,8 @@ public class UnitOfWork : IUnitOfWork
     private IBookRepository? _bookRepository;
     private ICartRepository? _cartRepository;
     private IFavoriteRepository? _favoriteRepository;
+    private IOrderRepository? _orderRepository;
+    private IOrderDetailRepository? _orderDetailRepository;
     private IPublisherRepository? _publisherRepository;
     private ISeriesRepository? _seriesRepository;
     private ISubjectRepository? _subjectRepository;
@@ -22,6 +24,8 @@ public class UnitOfWork : IUnitOfWork
     public IBookRepository Books => _bookRepository ??= new BookRepository(_dbContext);
     public ICartRepository Carts => _cartRepository ??= new CartRepository(_dbContext);
     public IFavoriteRepository Favorites => _favoriteRepository ??= new FavoriteRepository(_dbContext);
+    public IOrderRepository Orders => _orderRepository ??= new OrderRepository(_dbContext);
+    public IOrderDetailRepository OrderDetails => _orderDetailRepository ??= new OrderDetailRepository(_dbContext);
     public IPublisherRepository Publishers => _publisherRepository ??= new PublisherRepository(_dbContext);
     public ISeriesRepository Series => _seriesRepository ??= new SeriesRepository(_dbContext);
     public ISubjectRepository Subjects => _subjectRepository ??= new SubjectRepository(_dbContext);

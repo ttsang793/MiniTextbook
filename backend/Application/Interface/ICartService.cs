@@ -12,4 +12,6 @@ public interface ICartService
     Task<bool> Update(Cart cart);
 
     Task<bool> Delete(int id);
+
+    Task<bool> DeleteAll(int userID);
 }

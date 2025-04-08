@@ -19,6 +19,8 @@ public partial class Book : BaseEntity
 
     public bool? IsActive { get; set; }
 
+    public virtual ICollection<BookSeries> BookSeries { get; set; } = new List<BookSeries>();
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
@@ -28,6 +30,4 @@ public partial class Book : BaseEntity
     public virtual Publisher? PublisherNavigation { get; set; }
 
     public virtual Subject? SubjectNavigation { get; set; }
-
-    public virtual ICollection<Series> Series { get; set; } = new List<Series>();
 }

@@ -9,6 +9,11 @@ export default defineConfig({
 
   server: {
     proxy: {
+      '^/series/*': {
+        target: 'https://localhost:7247',
+        secure: false
+      },
+
       '^/product/*': {
         target: 'https://localhost:7247',
         secure: false

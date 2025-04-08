@@ -1,5 +1,15 @@
 function displayPrice(price) {
-  return `${price.toLocaleString("vi-VN")} đ`
+  try {
+    return `${price.toLocaleString("vi-VN")} đ`
+  }
+  catch {return ""}
 }
 
-export { displayPrice }
+function displayDate(date) {
+  try {
+    return date.substring(0, date.indexOf("T"));
+  }
+  catch {return ""}  
+}
+
+export { displayPrice, displayDate }

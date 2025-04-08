@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Controller")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+afc842f8a33a0dcbc70a00e0c936147bccf14bdc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+69eb5933354338d5500de960eaa53ee53a08812a")]
 [assembly: System.Reflection.AssemblyProductAttribute("Controller")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Controller")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

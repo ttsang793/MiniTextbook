@@ -10,7 +10,6 @@ public class CartRepository : BaseRepository<Cart>, ICartRepository
 
     public async Task Insert(Cart cart)
     {
-        cart.Id = await GetLastId();
         GetDbSet().Add(cart);
     }
 
@@ -23,5 +22,11 @@ public class CartRepository : BaseRepository<Cart>, ICartRepository
     {
         var cart = await GetById(id);
         GetDbSet().Remove(cart);
+    }
+
+    public async Task DeleteAll(int userID)
+    {
+        var cartList = await GetAll(c => c.User == userID);
+        GetDbSet().RemoveRange(cartList);
     }
 }

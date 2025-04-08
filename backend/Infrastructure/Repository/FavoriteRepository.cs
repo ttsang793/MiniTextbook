@@ -10,7 +10,6 @@ public class FavoriteRepository : BaseRepository<Favorite>, IFavoriteRepository
 
     public async Task Insert(Favorite favorite)
     {
-        favorite.Id = await GetLastId();
         GetDbSet().Add(favorite);
     }
 

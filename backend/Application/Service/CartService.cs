@@ -61,4 +61,10 @@ public class CartService : ICartService
         await _unitOfWork.Carts.Delete(id);
         return await _unitOfWork.SaveChanges() > 0;
     }
+
+    public async Task<bool> DeleteAll(int userID)
+    {
+        await _unitOfWork.Carts.DeleteAll(userID);
+        return await _unitOfWork.SaveChanges() > 0;
+    }
 }

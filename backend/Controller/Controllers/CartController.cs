@@ -40,4 +40,10 @@ public class CartController : ControllerBase
     {
         return (await _service.Carts.Delete(id)) ? StatusCode(200) : StatusCode(404);
     }
+
+    [HttpDelete("delete-all")]
+    public async Task<IActionResult> DeleteAll(int userID)
+    {
+        return (await _service.Carts.DeleteAll(userID)) ? StatusCode(200) : StatusCode(404);
+    }
 }

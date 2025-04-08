@@ -20,6 +20,8 @@ public partial class MiniTextbookContext : DbContext
 
     public virtual DbSet<Book> Books { get; set; }
 
+    public virtual DbSet<BookSeries> BookSeries { get; set; }
+
     public virtual DbSet<Cart> Carts { get; set; }
 
     public virtual DbSet<Favorite> Favorites { get; set; }
@@ -56,8 +58,6 @@ public partial class MiniTextbookContext : DbContext
 
             entity.HasIndex(e => e.Email, "email").IsUnique();
 
-            entity.HasIndex(e => e.FirebaseUid, "firebase_uid").IsUnique();
-
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
@@ -65,17 +65,16 @@ public partial class MiniTextbookContext : DbContext
                 .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("email");
-            entity.Property(e => e.FirebaseUid)
+            entity.Property(e => e.Fullname)
                 .HasMaxLength(100)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnName("firebase_uid");
-            entity.Property(e => e.FullName)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("full_name");
+                .HasColumnName("fullname");
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
+            entity.Property(e => e.Password)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
@@ -108,13 +107,12 @@ public partial class MiniTextbookContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("grade");
+            entity.Property(e => e.Image)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("image");
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
-            entity.Property(e => e.Image)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("longtext")
-                .HasColumnName("image");
             entity.Property(e => e.Name)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
@@ -140,30 +138,39 @@ public partial class MiniTextbookContext : DbContext
                 .HasForeignKey(d => d.Subject)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Book_Subject");
+        });
 
-            entity.HasMany(d => d.Series).WithMany(p => p.Books)
-                .UsingEntity<Dictionary<string, object>>(
-                    "BookSeries",
-                    r => r.HasOne<Series>().WithMany()
-                        .HasForeignKey("Series")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_BookSeries_Series"),
-                    l => l.HasOne<Book>().WithMany()
-                        .HasForeignKey("Book")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_BookSeries_Book"),
-                    j =>
-                    {
-                        j.HasKey("Book", "Series").HasName("PRIMARY");
-                        j.ToTable("book_series");
-                        j.HasIndex(new[] { "Series" }, "FK_BookSeries_Series");
-                        j.IndexerProperty<int>("Book")
-                            .HasColumnType("int(11)")
-                            .HasColumnName("book");
-                        j.IndexerProperty<int>("Series")
-                            .HasColumnType("int(11)")
-                            .HasColumnName("series");
-                    });
+        modelBuilder.Entity<BookSeries>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("book_series");
+
+            entity.HasIndex(e => e.Book, "FK_BookSeries_Book");
+
+            entity.HasIndex(e => e.Series, "FK_BookSeries_Series");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Book)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("book");
+            entity.Property(e => e.Series)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("series");
+
+            entity.HasOne(d => d.BookNavigation).WithMany(p => p.BookSeries)
+                .HasForeignKey(d => d.Book)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_BookSeries_Book");
+
+            entity.HasOne(d => d.SeriesNavigation).WithMany(p => p.BookSeries)
+                .HasForeignKey(d => d.Series)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_BookSeries_Series");
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -242,6 +249,8 @@ public partial class MiniTextbookContext : DbContext
 
             entity.ToTable("order");
 
+            entity.HasIndex(e => e.VertifyAdmin, "FK_Order_Admin");
+
             entity.HasIndex(e => e.User, "FK_Order_User");
 
             entity.Property(e => e.Id)
@@ -250,6 +259,22 @@ public partial class MiniTextbookContext : DbContext
             entity.Property(e => e.Address)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("address");
+            entity.Property(e => e.DateCanceled)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("date")
+                .HasColumnName("date_canceled");
+            entity.Property(e => e.DatePurchased)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("date")
+                .HasColumnName("date_purchased");
+            entity.Property(e => e.DateReceived)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("date")
+                .HasColumnName("date_received");
+            entity.Property(e => e.DateVertified)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("date")
+                .HasColumnName("date_vertified");
             entity.Property(e => e.IsPaid)
                 .HasDefaultValueSql("'0'")
                 .HasColumnName("is_paid");
@@ -257,10 +282,18 @@ public partial class MiniTextbookContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("paid_method");
-            entity.Property(e => e.ShipCost)
-                .HasPrecision(10)
+            entity.Property(e => e.Phone)
+                .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnName("ship_cost");
+                .HasColumnName("phone");
+            entity.Property(e => e.Receiver)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("receiver");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("status");
             entity.Property(e => e.Total)
                 .HasPrecision(10)
                 .HasDefaultValueSql("'NULL'")
@@ -269,11 +302,20 @@ public partial class MiniTextbookContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("user");
+            entity.Property(e => e.VertifyAdmin)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("vertify_admin");
 
             entity.HasOne(d => d.UserNavigation).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.User)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Order_User");
+
+            entity.HasOne(d => d.VertifyAdminNavigation).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.VertifyAdmin)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Order_Admin");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
@@ -433,6 +475,9 @@ public partial class MiniTextbookContext : DbContext
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
+            entity.Property(e => e.Image)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("image");
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
@@ -440,6 +485,10 @@ public partial class MiniTextbookContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
+            entity.Property(e => e.Description)
+                .HasMaxLength(512)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("description");
         });
 
         modelBuilder.Entity<Subject>(entity =>
@@ -468,26 +517,25 @@ public partial class MiniTextbookContext : DbContext
 
             entity.HasIndex(e => e.Email, "email").IsUnique();
 
-            entity.HasIndex(e => e.UserName, "user_name").IsUnique();
+            entity.HasIndex(e => e.Username, "username").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
+            entity.Property(e => e.Address)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("address");
             entity.Property(e => e.Avatar)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("avatar");
-            entity.Property(e => e.Birthday)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("date")
-                .HasColumnName("birthday");
             entity.Property(e => e.Email)
                 .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("email");
-            entity.Property(e => e.FullName)
+            entity.Property(e => e.Fullname)
                 .HasMaxLength(100)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnName("full_name");
+                .HasColumnName("fullname");
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
@@ -498,10 +546,10 @@ public partial class MiniTextbookContext : DbContext
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("phone");
-            entity.Property(e => e.UserName)
+            entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnName("user_name");
+                .HasColumnName("username");
         });
 
         OnModelCreatingPartial(modelBuilder);

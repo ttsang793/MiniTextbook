@@ -8,6 +8,10 @@ public interface IUnitOfWork
 
     IFavoriteRepository Favorites { get; }
 
+    IOrderRepository Orders { get; }
+
+    IOrderDetailRepository OrderDetails { get; }
+
     IPublisherRepository Publishers { get; }
 
     ISeriesRepository Series { get; }

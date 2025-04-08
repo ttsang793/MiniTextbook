@@ -19,7 +19,7 @@ public class BookService : IBookService
     {
         // Step 1: Fetch all books with the provided filter (if any)
         var books = await _unitOfWork.Books.GetAll(expression); // This is the existing method call
-
+        /*
         // Step 2: For each book, manually load the related Series
         foreach (var book in books)
         {
@@ -27,7 +27,7 @@ public class BookService : IBookService
             // If lazy-loading is not enabled, you would need to explicitly load the Series using a separate query.
             var series = (await _unitOfWork.Series.GetAll(s => s.Books.Contains(book))).ToList();
             book.Series = series;  // Assign the loaded series to the book
-        }
+        }*/
 
         return books;
     }

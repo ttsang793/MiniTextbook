@@ -37,8 +37,8 @@ public class ProductController : ControllerBase
             (string.IsNullOrEmpty(name) || p.Name.ToLower().Contains(name.ToLower())) &&
             (productFilter.Grades == null || productFilter.Grades.Contains((int)p.Grade)) &&
             (productFilter.Publishers == null || productFilter.Publishers.Contains((int)p.Publisher)) &&
-            (productFilter.Subjects == null || productFilter.Subjects.Contains((int)p.Subject)) &&
-            (productFilter.Series == null || p.Series.Any(s => productFilter.Series.Contains(s.Id)))
+            (productFilter.Subjects == null || productFilter.Subjects.Contains((int)p.Subject))
+            //(productFilter.Series == null || p.Series.Any(s => productFilter.Series.Contains(s.Id)))
         );
     }
 

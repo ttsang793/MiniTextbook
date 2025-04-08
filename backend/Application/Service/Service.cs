@@ -9,6 +9,7 @@ public class Service : IService
     private IBookService? _bookService;
     private ICartService? _cartService;
     private IFavoriteService? _favoriteService;
+    private IOrderService? _orderService;
     private IPublisherService? _publisherService;
     private ISeriesService? _seriesService;
     private ISubjectService? _subjectService;
@@ -21,6 +22,7 @@ public class Service : IService
     public IBookService Books => _bookService ??= new BookService(_unitOfWork);
     public ICartService Carts => _cartService ??= new CartService(_unitOfWork);
     public IFavoriteService Favorites => _favoriteService ??= new FavoriteService(_unitOfWork);
+    public IOrderService Orders => _orderService ??= new OrderService(_unitOfWork);
     public IPublisherService Publishers => _publisherService ??= new PublisherService(_unitOfWork);
     public ISeriesService Series => _seriesService ??= new SeriesService(_unitOfWork);
     public ISubjectService Subjects => _subjectService ??= new SubjectService(_unitOfWork);

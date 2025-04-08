@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router'
 
@@ -11,6 +10,11 @@ import Cart from '/src/pages/Cart'
 import HelloWorld from '/src/pages/HelloWorld'
 import FourOFour from '/src/pages/FourOFour'
 import Footer from '/src/components/Footer'
+
+//order_user
+import OrderHistory from '/src/pages/OrderHistory'
+import OrderPlacement from '/src/pages/OrderPlacement'
+import OrderResult from '/src/pages/OrderResult'
 
 //admin
 import AHeader from '/src/Admin/components/Header';
@@ -36,6 +40,7 @@ function loadPage() {
           <Route path="/quan-tri/bo-sach" element={<ASeries />} />
           <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
           <Route path="/quan-tri/don-hang" element={<AOrder />} />
+          <Route path="/quan-tri/*" element={<FourOFour />} />
         </Routes>
       </Router>
     </>
@@ -52,6 +57,14 @@ function loadPage() {
           <Route path="/nguoi-dung">
             <Route path="yeu-thich" element={<Favorite />} />
             <Route path="gio-hang" element={<Cart />} />
+            <Route path="don-hang" element={<OrderHistory />} />
+            <Route path="thanh-toan">
+              <Route path="" element={<OrderPlacement />} />
+              <Route path="ket-qua" element={<OrderResult />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Route>
+            <Route path="" element={<Navigate to="/404" replace />} />
+            <Route path="*" element={<Navigate to="/404" replace />} />
           </Route>
           <Route path="/*" element={<Navigate to="/404" replace />} />
           <Route path="/404" element={<FourOFour />} />

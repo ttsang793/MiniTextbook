@@ -4,6 +4,7 @@ import axios from "axios";
 import { displayPrice } from "/script";
 
 const Cart = () => {
+  let [checkbox, setCheckbox] = useState([]);
   const [total, setTotal] = useState(0);
   const [cartList, setCartList] = useState([]);
   const loadingRef = useRef(true);
@@ -15,11 +16,31 @@ const Cart = () => {
 
       axios.get("/cart/get?userID=1").then(response => {
         setCartList(response.data);
-        calcTotal(response.data);
+        response.data.forEach(r => checkbox.push(false));
       });
       loadingRef.current = false;
     }
   })
+
+  const checkCheckAll = () => {
+    let flagAll = true;
+    for (let i=0; i<checkbox.length; i++)
+      if (!checkbox[i]) { flagAll = false; break; }
+    document.getElementById("all").checked = flagAll;
+  }
+
+  const handleCheckbox = (index, specific = null) => {
+    const updatedCheckbox = [...checkbox];
+    updatedCheckbox[index] = specific !== null ? specific : !updatedCheckbox[index];
+    setCheckbox(checkbox = updatedCheckbox);
+    calcTotal();
+    checkCheckAll();
+  }
+
+  const handleAll = e => {
+    const status = e.target.checked;
+    checkbox.forEach((c, i) => handleCheckbox(i, status));
+  }
 
   return loadingRef.current ? <>Hello World</> : (
     <main>
@@ -30,7 +51,7 @@ const Cart = () => {
           <thead>
             <tr className="bg-linear-to-r from-pink-700 to-pink-900">
               <th className="w-[5%] text-pink-50 py-1">
-                <input type="checkbox" id="all" />
+                <input type="checkbox" id="all" onChange={e => handleAll(e)} />
               </th>
               <th className="w-[10%] text-pink-50 py-1">Hình ảnh</th>
               <th className="w-[35%] text-pink-50 py-1">Tên sách</th>
@@ -44,7 +65,7 @@ const Cart = () => {
               cartList.map((cart, id) => 
                 <tr key={id} className="even:bg-pink-50">
                   <td>
-                    <input type="checkbox" />
+                    <input type="checkbox" checked={checkbox[id]} onChange={() => handleCheckbox(id)} />
                   </td>
                   <td className="flex justify-center">
                     <img src={cart.image} alt={cart.name} className="h-50 aspect-7/10" />
@@ -78,24 +99,25 @@ const Cart = () => {
       </section>
 
       <section className="flex justify-center gap-x-4 text-lg">
-        <a href="" className="bg-green-600 text-white px-4 py-1 rounded-[7px] hover:bg-green-600/70 duration-150 cursor-pointer">
+        <button className="bg-green-600 text-white px-4 py-1 rounded-[7px] hover:bg-green-600/70 duration-150 cursor-pointer" onClick={() => proceedToTransaction()}>
           Thanh toán
-        </a>
+        </button>
 
         <a href="/san-pham" className="bg-sky-700 text-white px-4 py-1 rounded-[7px] hover:bg-sky-700/70 duration-150 cursor-pointer">
           Xem thêm sản phẩm khác
         </a>
 
-        <a onClick={() => {}} className="bg-red-600 text-white px-4 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer">
+        <a onClick={() => removeAll()} className="bg-red-600 text-white px-4 py-1 rounded-[7px] hover:bg-red-600/70 duration-150 cursor-pointer">
           Xóa giỏ hàng
         </a>
       </section>
     </main>
   )
 
-  function calcTotal(list = cartList) {
+  function calcTotal() {
     let tempTotal = 0;
-    list.forEach(cart => tempTotal = tempTotal + cart.price * cart.quantity);
+    for (let i=0; i<cartList.length; i++)
+      if (checkbox[i]) tempTotal += cartList[i].price * cartList[i].quantity;
     setTotal(tempTotal);
   }
 
@@ -118,15 +140,45 @@ const Cart = () => {
     if (confirm("Bạn có muốn xóa sản phẩm này?")) {
       axios.delete(`/cart/delete?id=${id}`).then(response => {
         if (response.status === 200) {
-          alert("Xóa thành công");
+          alert("Xóa sản phẩm ra khỏi giỏ hàng thành công!");
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, vui lòng thử lại");
+          alert("Đã có lỗi xảy ra, vui lòng thử lại.");
           console.error(response);
         }
       })
     }
+  }
+
+  function removeAll() {
+    if (confirm("Bạn có muốn xóa toàn bộ sản phẩm trong giỏ hảng?")) {
+      axios.delete(`/cart/delete?userID=1`).then(response => {
+        if (response.status === 200) {
+          alert("Xóa giỏ hàng thành công!");
+          location.reload();
+        }
+        else {
+          alert("Đã có lỗi xảy ra, vui lòng thử lại.");
+          console.error(response);
+        }
+      })
+    }
+  }
+
+  function proceedToTransaction() {
+    let flagError = true;
+    const product = [];
+    for (let i=0; i<checkbox.length; i++) {
+      if (checkbox[i]) { 
+        flagError = false;
+        product.push(cartList[i].id);
+      }
+    }
+    if (flagError) { alert("Vui lòng chọn ít nhất 1 sản phẩm để thanh toán"); return; }
+
+    document.cookie = `item=${btoa(btoa(btoa(product.join("_"))))}; max-age=3`;
+    location.href = "/nguoi-dung/thanh-toan";
   }
 }
 

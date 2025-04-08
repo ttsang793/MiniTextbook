@@ -15,7 +15,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public async Task<bool> Login(string username, string password)
     {
-        bool result = (await GetAll(u => u.UserName == username && u.Password == password)).ToList().Count() > 0;
+        bool result = (await GetAll(u => u.Username == username && u.Password == password)).ToList().Count() > 0;
         return result;
     }
 
