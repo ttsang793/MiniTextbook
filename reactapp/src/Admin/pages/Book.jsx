@@ -25,10 +25,10 @@ const ABook = () => {
   const [bName, setBName] = useState("");
   const [bImage, setBImage] = useState(defaultThumbnail);
   const [bGrade, setBGrade] = useState(10);
-  const [bPublisher, setBPublisher] = useState("");
+  const [bPublisher, setBPublisher] = useState(0);
   const [bPrice, setBPrice] = useState(0);
   let [bSeries, setBSeries] = useState({});
-  const [bSubject, setBSubject] = useState("");
+  const [bSubject, setBSubject] = useState(0);
 
   // Xử lý bộ sách
   const handleBSeries = (id, specific = null) => {
@@ -42,8 +42,14 @@ const ABook = () => {
     if (loadingRef.current) {
       document.title = "Quản lý sách";
       loadData();
-      axios.get("/admin/publisher/get-all").then(response => setPublisherList(response.data));
-      axios.get("/admin/subject/get-all").then(response => setSubjectList(response.data));
+      axios.get("/admin/publisher/get-all").then(response => {
+        setPublisherList(response.data);
+        setBPublisher(response.data[0].id);
+      });
+      axios.get("/admin/subject/get-all").then(response => {
+        setSubjectList(response.data);
+        setBSubject(response.data[0].id);
+      });
 
       axios.get("/admin/series/get-all").then(response => {
         let temp = {}
@@ -145,7 +151,7 @@ const ABook = () => {
                   <tr key={b.id} className="even:bg-pink-50">
                     <td>{b.id}</td>
                     <td className="flex justify-center">
-                      <img src={b.image} alt={b.name} className="h-50 aspect-7/10" />
+                      <img src={b.image} alt={b.name} className="h-50 aspect-7/10" onClick={() => loadUpdate(b)} />
                     </td>
                     <td className="py-3 text-left">{b.name}</td>
                     <td>
@@ -250,11 +256,18 @@ const ABook = () => {
 
   function insert() {
     if (confirm("Bạn có muốn thêm sách giáo khoa này?")) {
-      /*const series = [];
-      for (const [key, value] of Object.entries(bSeries)) if (value) series.push(Number(key));*/
-      const book = { name: bName, image: bImage, grade: bGrade, subject: bSubject, publisher: bPublisher, price: bPrice, isActive: true };
-      const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/book/insert", book, headers).then(response => {
+      const formData = new FormData();
+      formData.append("name", bName);
+      formData.append("image", bImage);
+      formData.append("grade", bGrade);
+      formData.append("subject", bSubject);
+      formData.append("publisher", bPublisher);
+      formData.append("price", bPrice);
+      formData.append("isActive", true);
+      formData.append("file", bImage);
+      
+      const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
+      axios.post("/admin/book/insert", formData, headers).then(response => {
         if (response.status === 200) {
           alert("Thêm thành công");
           location.reload();
@@ -264,27 +277,42 @@ const ABook = () => {
           console.error(response)
         }
       }).catch(err => console.error(err));
-    };
+    }
   }
 
   function update() {
     if (confirm("Bạn có muốn cập nhật thông tin cho sách giáo khoa này?")) {
-      /*
-      const series = [];
-      for (const [key, value] of Object.entries(bSeries)) if (value) series.push(Number(key));*/
+      const formData = new FormData();
+      formData.append("id", bId);
+      formData.append("name", bName);
+      formData.append("grade", bGrade);
+      formData.append("subject", bSubject);
+      formData.append("publisher", bPublisher);
+      formData.append("price", bPrice);
 
-      const book = { id: bId, name: bName, image: bImage, grade: bGrade, subject: bSubject, publisher: bPublisher, price: bPrice };
-      const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/book/update", book, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật thành công");
-          location.reload();
-        }
-        else {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
-          console.error(response)
-        }
-      }).catch(err => console.error(err));
+      if (bImage && bImage instanceof File) {
+        formData.append("image", bImage.name);
+        formData.append("file", bImage);        
+      }
+      else {
+        formData.append("image", bImage);
+        const emptyFile = new File([], "empty.jpg");
+        formData.append("file", emptyFile)
+      }
+
+      const headers = { headers: { 'Content-Type': 'multipart/form-data' }};
+
+      axios.post("/admin/book/update", formData, headers).then(response => {
+          if (response.status === 200) {
+            alert("Cập nhật thành công");
+            //location.reload();
+          }
+          else if (typeof bImage === "string") {
+            alert("Đã có lỗi xảy ra, cập nhật thất bại");
+            console.error(response);
+          }
+        })
+        .catch(err => console.error(err.response.data));
     };
   }
 

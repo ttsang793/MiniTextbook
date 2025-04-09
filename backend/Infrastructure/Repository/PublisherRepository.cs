@@ -22,7 +22,7 @@ public class PublisherRepository : BaseRepository<Publisher>, IPublisherReposito
     public async Task UpdateStatus(int id)
     {
         var publisher = await GetById(id);
-        var oldIsActive = publisher.IsActive;
+        var oldIsActive = publisher.IsActive == null ? false : publisher.IsActive;
         publisher.IsActive = !oldIsActive;
     }
 }

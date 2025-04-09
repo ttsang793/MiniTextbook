@@ -22,7 +22,7 @@ public class SubjectRepository : BaseRepository<Subject>, ISubjectRepository
     public async Task UpdateStatus(int id)
     {
         var subject = await GetById(id);
-        var oldIsActive = subject.IsActive;
+        var oldIsActive = subject.IsActive == null ? false : subject.IsActive;
         subject.IsActive = !oldIsActive;
     }
 }

@@ -37,16 +37,16 @@ public class BookService : IBookService
         return await _unitOfWork.Books.GetById(id);
     }
 
-    public async Task<bool> Insert(Book book)
+    public async Task<int> Insert(Book book)
     {
         await _unitOfWork.Books.Insert(book);
-        return await _unitOfWork.SaveChanges() > 0;
+        return (await _unitOfWork.SaveChanges() > 0) ? await _unitOfWork.Books.GetLastId() - 1 : -1;
     }
 
-    public async Task<bool> Update(Book book)
+    public async Task<int> Update(Book book)
     {
         await _unitOfWork.Books.Update(book);
-        return await _unitOfWork.SaveChanges() > 0;
+        return await _unitOfWork.SaveChanges() > 0 ? book.Id : -1;
     }
 
     public async Task<bool> UpdateStatus(int id)

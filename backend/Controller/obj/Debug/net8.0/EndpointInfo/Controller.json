@@ -105,19 +105,165 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Book"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Book"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Book"
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string"
+                  },
+                  "Grade": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Subject": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Publisher": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Price": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "IsActive": {
+                    "type": "boolean"
+                  },
+                  "BookSeries": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/BookSeries"
+                    }
+                  },
+                  "Carts": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Cart"
+                    }
+                  },
+                  "Favorites": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Favorite"
+                    }
+                  },
+                  "OrderDetails": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/OrderDetail"
+                    }
+                  },
+                  "PublisherNavigation.Name": {
+                    "type": "string"
+                  },
+                  "PublisherNavigation.IsActive": {
+                    "type": "boolean"
+                  },
+                  "PublisherNavigation.Books": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  },
+                  "PublisherNavigation.Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "SubjectNavigation.Name": {
+                    "type": "string"
+                  },
+                  "SubjectNavigation.IsActive": {
+                    "type": "boolean"
+                  },
+                  "SubjectNavigation.Books": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  },
+                  "SubjectNavigation.Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                },
+                "Grade": {
+                  "style": "form"
+                },
+                "Subject": {
+                  "style": "form"
+                },
+                "Publisher": {
+                  "style": "form"
+                },
+                "Price": {
+                  "style": "form"
+                },
+                "IsActive": {
+                  "style": "form"
+                },
+                "BookSeries": {
+                  "style": "form"
+                },
+                "Carts": {
+                  "style": "form"
+                },
+                "Favorites": {
+                  "style": "form"
+                },
+                "OrderDetails": {
+                  "style": "form"
+                },
+                "PublisherNavigation.Name": {
+                  "style": "form"
+                },
+                "PublisherNavigation.IsActive": {
+                  "style": "form"
+                },
+                "PublisherNavigation.Books": {
+                  "style": "form"
+                },
+                "PublisherNavigation.Id": {
+                  "style": "form"
+                },
+                "SubjectNavigation.Name": {
+                  "style": "form"
+                },
+                "SubjectNavigation.IsActive": {
+                  "style": "form"
+                },
+                "SubjectNavigation.Books": {
+                  "style": "form"
+                },
+                "SubjectNavigation.Id": {
+                  "style": "form"
+                },
+                "Id": {
+                  "style": "form"
+                },
+                "file": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -130,25 +276,171 @@
       }
     },
     "/admin/book/update": {
-      "put": {
+      "post": {
         "tags": [
           "Book"
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Book"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Book"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Book"
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string"
+                  },
+                  "Grade": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Subject": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Publisher": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Price": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "IsActive": {
+                    "type": "boolean"
+                  },
+                  "BookSeries": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/BookSeries"
+                    }
+                  },
+                  "Carts": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Cart"
+                    }
+                  },
+                  "Favorites": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Favorite"
+                    }
+                  },
+                  "OrderDetails": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/OrderDetail"
+                    }
+                  },
+                  "PublisherNavigation.Name": {
+                    "type": "string"
+                  },
+                  "PublisherNavigation.IsActive": {
+                    "type": "boolean"
+                  },
+                  "PublisherNavigation.Books": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  },
+                  "PublisherNavigation.Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "SubjectNavigation.Name": {
+                    "type": "string"
+                  },
+                  "SubjectNavigation.IsActive": {
+                    "type": "boolean"
+                  },
+                  "SubjectNavigation.Books": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  },
+                  "SubjectNavigation.Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                },
+                "Grade": {
+                  "style": "form"
+                },
+                "Subject": {
+                  "style": "form"
+                },
+                "Publisher": {
+                  "style": "form"
+                },
+                "Price": {
+                  "style": "form"
+                },
+                "IsActive": {
+                  "style": "form"
+                },
+                "BookSeries": {
+                  "style": "form"
+                },
+                "Carts": {
+                  "style": "form"
+                },
+                "Favorites": {
+                  "style": "form"
+                },
+                "OrderDetails": {
+                  "style": "form"
+                },
+                "PublisherNavigation.Name": {
+                  "style": "form"
+                },
+                "PublisherNavigation.IsActive": {
+                  "style": "form"
+                },
+                "PublisherNavigation.Books": {
+                  "style": "form"
+                },
+                "PublisherNavigation.Id": {
+                  "style": "form"
+                },
+                "SubjectNavigation.Name": {
+                  "style": "form"
+                },
+                "SubjectNavigation.IsActive": {
+                  "style": "form"
+                },
+                "SubjectNavigation.Books": {
+                  "style": "form"
+                },
+                "SubjectNavigation.Id": {
+                  "style": "form"
+                },
+                "Id": {
+                  "style": "form"
+                },
+                "file": {
+                  "style": "form"
+                }
               }
             }
           }

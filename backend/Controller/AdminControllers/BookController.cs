@@ -1,6 +1,7 @@
 ﻿using Core.Entity;
 using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Controller.AdminControllers;
 [ApiController]
@@ -30,15 +31,21 @@ public class BookController : ControllerBase
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert([Bind("Name", "Image", "Grade", "Subject", "Publisher", "Price")]Book book)
+    public async Task<IActionResult> Insert([FromForm] [Bind("Name", "Image", "Grade", "Subject", "Publisher", "Price")] Book book, IFormFile file)
     {
-        return (await _service.Books.Insert(book)) ? StatusCode(200) : StatusCode(404);
+        int id = await _service.Books.Insert(book);
+        if (id == -1) return StatusCode(404);
+        return (await _service.Images.UploadImage(file, id, "product")) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPut("update")]
-    public async Task<IActionResult> Update([Bind("Id", "Name", "Image", "Grade", "Subject", "Publisher", "Price")] Book book)
+    [HttpPost("update")]
+    public async Task<IActionResult> Update([FromForm] [Bind("Id", "Name", "Image", "Grade", "Subject", "Publisher", "Price")] Book book, IFormFile file)
     {
-        return (await _service.Books.Update(book)) ? StatusCode(200) : StatusCode(404);
+        int id = await _service.Books.Update(book);
+        if (file == null || file.Length == 0) return (id > -1) ? StatusCode(200) : StatusCode(404);
+        
+        if (id == -1) return StatusCode(404);
+        return (await _service.Images.UploadImage(file, id, "product")) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpDelete("update-status")]

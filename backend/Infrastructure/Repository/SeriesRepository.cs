@@ -22,7 +22,7 @@ public class SeriesRepository : BaseRepository<Series>, ISeriesRepository
     public async Task UpdateStatus(int id)
     {
         var series = await GetById(id);
-        var oldIsActive = series.IsActive;
+        var oldIsActive = series.IsActive == null ? false : series.IsActive;
         series.IsActive = !oldIsActive;
     }
 }

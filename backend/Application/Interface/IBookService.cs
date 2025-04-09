@@ -14,9 +14,9 @@ public interface IBookService
 
     Task<Book> GetById(int id);
 
-    Task<bool> Insert(Book book);
+    Task<int> Insert(Book book);
 
-    Task<bool> Update(Book book);
+    Task<int> Update(Book book);
 
     Task<bool> UpdateStatus(int id);
 }
