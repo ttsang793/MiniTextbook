@@ -7,7 +7,7 @@ import Pagination from "/src/Admin/components/Pagination";
 const ABook = () => {
   // Hằng số mặc định
   const gradeList = [10, 11, 12];
-  const defaultThumbnail = "/src/images/products/default.png";
+  const defaultThumbnail = "/src/images/product/default.png";
   const numPerPage = 5;
   const pageRef = useRef(1);
   const totalRef = useRef(0);
@@ -192,8 +192,16 @@ const ABook = () => {
     </main>
   )
 
-  function loadData(newPage = 1) {
+  async function loadData(newPage = 1) {
     pageRef.current = newPage;
+
+    let temp = {};
+    const seriesResponse = await axios.get("/product/get-series");
+    setSeriesList(seriesResponse.data);
+    seriesResponse.data.forEach(r => temp[`${r.id}`] = false);
+    setBSeries(bSeries = temp);
+    console.log(bSeries);
+
     axios.get(searchRef.current === "" ? '/admin/book/get-all' : `/admin/book/get?name=${searchRef.current}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
@@ -221,9 +229,10 @@ const ABook = () => {
     setBPublisher(book.publisher);
     setBSubject(book.subject);
     setBPrice(book.price);
+    document.getElementById("name").focus();
 
     let tempBookId = [];
-    book.series.forEach(b => tempBookId.push(`${b.id}`));
+    book.bookSeries.forEach(b => tempBookId.push(`${b.series}`));
 
     for (const [key, value] of Object.entries(bSeries)) handleBSeries(key, tempBookId.includes(key));
   }
@@ -258,19 +267,22 @@ const ABook = () => {
     if (confirm("Bạn có muốn thêm sách giáo khoa này?")) {
       const formData = new FormData();
       formData.append("name", bName);
-      formData.append("image", bImage);
+      formData.append("image", bImage.name);
       formData.append("grade", bGrade);
       formData.append("subject", bSubject);
       formData.append("publisher", bPublisher);
       formData.append("price", bPrice);
-      formData.append("isActive", true);
+
+      for (const [key, value] of Object.entries(bSeries))
+        if (value) formData.append("series[]", key);
+
       formData.append("file", bImage);
       
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
       axios.post("/admin/book/insert", formData, headers).then(response => {
         if (response.status === 200) {
           alert("Thêm thành công");
-          location.reload();
+          //location.reload();
         }
         else {
           alert("Đã có lỗi xảy ra, thêm thất bại");
@@ -288,6 +300,7 @@ const ABook = () => {
       formData.append("grade", bGrade);
       formData.append("subject", bSubject);
       formData.append("publisher", bPublisher);
+      formData.append("series", bSeries);
       formData.append("price", bPrice);
 
       if (bImage && bImage instanceof File) {
@@ -303,16 +316,15 @@ const ABook = () => {
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }};
 
       axios.post("/admin/book/update", formData, headers).then(response => {
-          if (response.status === 200) {
-            alert("Cập nhật thành công");
-            //location.reload();
-          }
-          else if (typeof bImage === "string") {
-            alert("Đã có lỗi xảy ra, cập nhật thất bại");
-            console.error(response);
-          }
-        })
-        .catch(err => console.error(err.response.data));
+        if (response.status === 200) {
+          alert("Cập nhật thành công");
+          location.reload();
+        }
+        else if (typeof bImage === "string") {
+          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          console.error(response);
+        }
+      }).catch(err => console.error(err));
     };
   }
 

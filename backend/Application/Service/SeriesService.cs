@@ -23,10 +23,10 @@ public class SeriesService : ISeriesService
         return await _unitOfWork.Series.GetById(id);
     }
 
-    public async Task<bool> Insert(Series series)
+    public async Task<int> Insert(Series series)
     {
         await _unitOfWork.Series.Insert(series);
-        return await _unitOfWork.SaveChanges() > 0;
+        return (await _unitOfWork.SaveChanges() > 0) ? await _unitOfWork.Series.GetLastId() - 1 : -1;
     }
 
     public async Task<bool> Update(Series series)

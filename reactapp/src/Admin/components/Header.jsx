@@ -61,7 +61,7 @@ const AHeader = () => {
           <a href="" className="block text-lg font-bold hover:underline!">250101 - Trần Tuấn Sang</a>
           <a href="/" className="block hover:underline!">Đăng xuất</a>
         </div>
-        <img src="/src/images/avatar/250101.avif" alt="250101" className="h-13 rounded-full" />
+        <img src="/src/images/avatar/default.jpg" alt="avatar" className="h-13 rounded-full" />
       </div>
     </header>
   )

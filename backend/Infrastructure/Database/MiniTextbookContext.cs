@@ -485,10 +485,6 @@ public partial class MiniTextbookContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
-            entity.Property(e => e.Description)
-                .HasMaxLength(512)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("description");
         });
 
         modelBuilder.Entity<Subject>(entity =>

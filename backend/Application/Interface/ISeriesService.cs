@@ -14,7 +14,7 @@ public interface ISeriesService
 
     Task<Series> GetById(int id);
 
-    Task<bool> Insert(Series series);
+    Task<int> Insert(Series series);
 
     Task<bool> Update(Series series);
 

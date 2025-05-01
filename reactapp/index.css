@@ -5,6 +5,10 @@
   outline: none;
 }
 
+main {
+  min-height: calc(100dvh - 404px);
+}
+
 a {
   text-decoration: none!important;
 }

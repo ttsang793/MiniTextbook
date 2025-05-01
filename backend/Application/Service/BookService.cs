@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using Core.Entity;
 using Core.Interface;
+using Application.DTO;
 using Application.Interface;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Service;
 
@@ -15,19 +15,18 @@ public class BookService : IBookService
         _unitOfWork = unitOfWork;
     }
 
+    public async Task<IEnumerable<Book>> GetAllForUser(Expression<Func<Book, bool>> expression = null)
+    {
+        return (await _unitOfWork.Books.GetAll(expression)).OrderBy(b => b.Id);
+    }
+
     public async Task<IEnumerable<Book>> GetAll(Expression<Func<Book, bool>> expression = null)
     {
-        // Step 1: Fetch all books with the provided filter (if any)
-        var books = await _unitOfWork.Books.GetAll(expression); // This is the existing method call
-        /*
-        // Step 2: For each book, manually load the related Series
-        foreach (var book in books)
-        {
-            // This assumes that the Series is lazy-loaded by EF (or another ORM),
-            // If lazy-loading is not enabled, you would need to explicitly load the Series using a separate query.
-            var series = (await _unitOfWork.Series.GetAll(s => s.Books.Contains(book))).ToList();
-            book.Series = series;  // Assign the loaded series to the book
-        }*/
+        var books = await _unitOfWork.Books.GetAll(expression);
+
+        foreach (var book in books) {
+            book.BookSeries = (await _unitOfWork.BookSeries.GetAll(bs => bs.Book == book.Id)).ToList();
+        }
 
         return books;
     }
@@ -37,16 +36,50 @@ public class BookService : IBookService
         return await _unitOfWork.Books.GetById(id);
     }
 
-    public async Task<int> Insert(Book book)
+    public async Task<int> Insert(BookDTO bookDTO)
     {
+        Book book = new Book
+        {
+            Name = bookDTO.Name,
+            Image = bookDTO.Image,
+            Grade = bookDTO.Grade,
+            Subject = bookDTO.Subject,
+            Publisher = bookDTO.Publisher,
+            Price = bookDTO.Price
+        };
         await _unitOfWork.Books.Insert(book);
+
+        int newID = await _unitOfWork.Books.GetLastId();
+
+        foreach (var series in bookDTO.Series)
+        {
+            await _unitOfWork.BookSeries.Insert(new BookSeries { Book = newID, Series = series });
+        }
+
         return (await _unitOfWork.SaveChanges() > 0) ? await _unitOfWork.Books.GetLastId() - 1 : -1;
     }
 
-    public async Task<int> Update(Book book)
+    public async Task<bool> Update(BookDTO bookDTO)
     {
+        Book book = new Book
+        {
+            Id = bookDTO.Id,
+            Name = bookDTO.Name,
+            Image = bookDTO.Image,
+            Grade = bookDTO.Grade,
+            Subject = bookDTO.Subject,
+            Publisher = bookDTO.Publisher,
+            Price = bookDTO.Price
+        };
         await _unitOfWork.Books.Update(book);
-        return await _unitOfWork.SaveChanges() > 0 ? book.Id : -1;
+        await _unitOfWork.BookSeries.Delete(bookDTO.Id);
+
+        foreach (var series in bookDTO.Series)
+        {
+            await _unitOfWork.BookSeries.Insert(new BookSeries { Book = bookDTO.Id, Series = series });
+        }
+
+        return await _unitOfWork.SaveChanges() > 0;
     }
 
     public async Task<bool> UpdateStatus(int id)

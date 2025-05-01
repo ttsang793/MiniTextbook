@@ -2,6 +2,7 @@ import { React, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ProductCell from '/src/components/Product/ProductCell';
 import Pagination from '/src/components/Pagination';
+import { arrayNumber } from "/script";
 
 const Product = () => {
   // Hằng số mặc định
@@ -28,7 +29,7 @@ const Product = () => {
     setGrade(updatedGrade);
   }
 
-  const handlePublisher = (id, e = null) => {
+  const handlePublisher = (id) => {
     const updatedPublisher = { ...publisher };
     updatedPublisher[`${id}`] = !updatedPublisher[`${id}`];
     setPublisher(updatedPublisher);
@@ -44,44 +45,6 @@ const Product = () => {
     const updatedSeries = { ...series };
     updatedSeries[`${id}`] = !updatedSeries[`${id}`];
     setSeries(updatedSeries);
-  };
-
-  const getPublisher = async () => {
-    try {
-      const response = await axios.get("/product/get-publisher");
-      let tempPublisher = {};
-      setPublisherList(response.data);
-      response.data.forEach(r => tempPublisher[`${r.id}`] = false);
-      setPublisher(publisher = tempPublisher);
-    } catch (error) {
-      console.error("Error fetching publishers:", error);
-    }
-  };
-
-  // Function to fetch subject data
-  const getSubject = async () => {
-    try {
-      const response = await axios.get("/product/get-subject");
-      let tempSubject = {};
-      setSubjectList(response.data);
-      response.data.forEach(r => tempSubject[`${r.id}`] = false);
-      setSubject(subject = tempSubject);
-    } catch (error) {
-      console.error("Error fetching subjects:", error);
-    }
-  };
-
-  // Function to fetch series data
-  const getSeries = async () => {
-    try {
-      const response = await axios.get("/product/get-series");
-      let tempSeries = {};
-      setSeriesList(response.data);
-      response.data.forEach(r => tempSeries[`${r.id}`] = false);
-      setSeries(series = tempSeries);
-    } catch (error) {
-      console.error("Error fetching series:", error);
-    }
   };
 
   useEffect(() => {
@@ -119,28 +82,46 @@ const Product = () => {
           </div>
           
           <div className="mb-4">
-            <h3 className="text-pink-900 pb-2 font-bold text-2xl">Bộ môn</h3>
             {
-              subjectList.map(s =>
-                <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" checked={subject[`${s.id}`]} onChange={() => handleSubject(s.id)} /> {s.name}</div>
+              (subjectList.length === 0) ? "" : (
+                <>
+                <h3 className="text-pink-900 pb-2 font-bold text-2xl">Bộ môn</h3>
+                {
+                  subjectList.map(s =>
+                    <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" checked={subject[`${s.id}`]} onChange={() => handleSubject(s.id)} /> {s.name}</div>
+                  )
+                }
+                </>
               )
             }
           </div>
           
           <div>
-            <h3 className="text-pink-900 pb-2 font-bold text-2xl">Nhà xuất bản</h3>
             {
-              publisherList.map(p =>
-                <div className="text-pink-900 pb-2" key={p.name}><input type="checkbox" checked={publisher[`${p.id}`]} onChange={() => handlePublisher(p.id)} /> {p.name}</div>
+              (publisherList.length === 0) ? "" : (
+                <>
+                <h3 className="text-pink-900 pb-2 font-bold text-2xl">Nhà xuất bản</h3>
+                {
+                  publisherList.map(p =>
+                    <div className="text-pink-900 pb-2" key={p.name}><input type="checkbox" checked={publisher[`${p.id}`]} onChange={() => handlePublisher(p.id)} /> {p.name}</div>
+                  )
+                }
+                </>
               )
             }
           </div>
           
           <div>
-            <h3 className="text-pink-900 pb-2 font-bold text-2xl">Bộ sách</h3>
             {
-              seriesList.map(s =>
-                <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" defaultChecked={series[`${s.id}`]} onChange={() => handleSeries(s.id)} /> {s.name}</div>
+              (seriesList.length == 0) ? "" : (
+                <>
+                <h3 className="text-pink-900 pb-2 font-bold text-2xl">Bộ sách</h3>
+                {
+                  seriesList.map(s =>
+                    <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" checked={series[`${s.id}`]} onChange={() => handleSeries(s.id)} /> {s.name}</div>
+                  )
+                }
+                </>
               )
             }
           </div>
@@ -151,11 +132,20 @@ const Product = () => {
         </section>
 
         <section>
-          <div className="grid grid-cols-3 gap-8 content-start justify-around">
           {
-            book.map(b => <ProductCell product={b} key={b.id} favorite={false} />)
+            (book.length === 0) ? (
+              <div className="text-center text-xl italic mb-10">
+                <img src="sad-book.png" alt="Không có sách" className="h-50 mx-auto" />
+                <p>{location.search === "" ? "Hiện tại đang chưa có sản phẩm. Vui lòng thử lại sau!" : "Không tồn tại sản phẩm cần tìm!"}</p>
+              </div>
+            ) : (
+            <div className="grid grid-cols-3 gap-8 content-start justify-around">
+            {
+              book.map(b => <ProductCell product={b} key={b.id} favorite={false} />)
+            }
+            </div>
+            )
           }
-          </div>
 
           <Pagination page={page.current} total={total.current} />
         </section>
@@ -185,41 +175,51 @@ const Product = () => {
       setSubject(subject = temp);
 
       let gradeParam = searchParams.get('lop');
-      gradeParam = gradeParam ? convertToNumber(gradeParam.split("_")) : null;
-      if (gradeParam) gradeParam.forEach(g => handleGrade(`${g}`));
+      gradeParam = gradeParam ? arrayNumber(gradeParam.split("_")) : null;
+      if (gradeParam) {
+        gradeParam.forEach(g => grade[g] = true);
+        setGrade(grade);
+      }
 
       let publisherParam = searchParams.get('nxb');
-      publisherParam = publisherParam ? convertToNumber(publisherParam.split("_")) : null;
-      if (publisherParam) publisherParam.forEach(p => handlePublisher(`${p}`));
+      publisherParam = publisherParam ? arrayNumber(publisherParam.split("_")) : null;
+      if (publisherParam) {
+        publisherParam.forEach(p => publisher[p] = true);
+        setPublisher(publisher);
+      }
 
       let seriesParam = searchParams.get('bo');
-      seriesParam = seriesParam ? convertToNumber(seriesParam.split("_")) : null;
-      if (seriesParam) seriesParam.forEach(s => handleSeries(`${s}`));
+      seriesParam = seriesParam ? arrayNumber(seriesParam.split("_")) : null;
+      if (seriesParam) {
+        seriesParam.forEach(s => series[s] = true);
+        console.log(series);
+        setSeries(series);
+      }
 
       let subjectParam = searchParams.get('mon');
-      subjectParam = subjectParam ? convertToNumber(subjectParam.split("_")) : null;
-      if (subjectParam) subjectParam.forEach(s => handleSubject(`${s}`));
+      subjectParam = subjectParam ? arrayNumber(subjectParam.split("_")) : null;
+      if (subjectParam) {
+        subjectParam.forEach(s => subject[s] = true);
+        console.log(subject);
+        setSubject(subject);
+      }
       
       const productFilter = { grades: gradeParam, publishers: publisherParam, subjects: subjectParam, series: seriesParam };
       const headers = { headers: { 'Content-Type': 'application/json' }};
 
-      if (name === "" && productFilter.grades === null && productFilter.publishers === null && productFilter.subjects === null && productFilter.series === null) {
-        axios.get('/product/get-all').then(response => {
-          total.current = Math.ceil(response.data.length / numPerPage);
-          setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
-        });
-      }
-      else {
-        axios.post(`/product/search${name !== "" ? `?name=${name}` : ""}`, productFilter, headers).then(response => {
-          total.current = Math.ceil(response.data.length / numPerPage);
-          setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
-        });
-      }
+      axios.post(`/product/get-all${name !== "" ? `?name=${name}` : ""}`, productFilter, headers).then(response => {
+        total.current = Math.ceil(response.data.length / numPerPage);
+        setBook(response.data.slice((page.current - 1) * numPerPage, page.current * numPerPage));
+      });
     }
   }
 
   function filter() {
     searchParams.delete("page");
+    searchParams.delete("lop");
+    searchParams.delete("nxb");
+    searchParams.delete("bo");
+    searchParams.delete("mon");
     const gradeParam = [];
     const publisherParam = [];
     const seriesParam = [];
@@ -243,11 +243,6 @@ const Product = () => {
     if (subjectParam.length > 0) searchParams.set("mon", subjectParam.join("_"));
 
     location.href = location.origin + location.pathname + ((searchParams.toString() !== "") ? '?' + searchParams.toString() : "");
-  }
-
-  function convertToNumber(arr) {
-    for (let i=0; i<arr.length; i++) arr[i] = Number(arr[i]);
-    return arr;
   }
 }
 

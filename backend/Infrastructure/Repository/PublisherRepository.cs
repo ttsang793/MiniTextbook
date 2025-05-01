@@ -16,6 +16,7 @@ public class PublisherRepository : BaseRepository<Publisher>, IPublisherReposito
 
     public async Task Update(Publisher publisher)
     {
+        publisher.IsActive = true;
         GetDbSet().Update(publisher);
     }
 

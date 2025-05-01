@@ -11,11 +11,14 @@ public class SeriesRepository : BaseRepository<Series>, ISeriesRepository
     public async Task Insert(Series series)
     {
         series.Id = await GetLastId();
+        series.Image = "/src/images/series/series_" + series.Id + Path.GetExtension(series.Image);
         GetDbSet().Add(series);
     }
 
     public async Task Update(Series series)
     {
+        series.IsActive = true;
+        series.Image = "/src/images/series/series_" + series.Id + Path.GetExtension(series.Image);
         GetDbSet().Update(series);
     }
 

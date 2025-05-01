@@ -5,9 +5,12 @@ import Search from "/src/Admin/components/Search";
 import Pagination from "/src/Admin/components/Pagination";
 
 const ASeries = () => {
+  const defaultThumbnail = "/src/images/series/default.png";
   const [series, setSeries] = useState([]);
   const [id, setID] = useState("");
   const [name, setName] = useState("");
+  const [image, setImage] = useState(defaultThumbnail);
+  const [description, setDescription] = useState("");
   const numPerPage = 10;
   const pageRef = useRef(0);
   const totalRef = useRef(0);
@@ -25,7 +28,7 @@ const ASeries = () => {
 
       <section className="grid grid-cols-[300px_1fr] gap-x-4 text-lg text-pink-900 items-start">
         {/* Điền thông tin */}
-        <form className="border-r-2 border-r-pink-900 p-2 pe-4" style={{ height: "calc(100dvh - 160px)" }}>
+        <form className="border-r-2 border-r-pink-900 p-2 pe-4 mb-4">
           <div className="mb-3">
             <label htmlFor="id" className="block font-bold italic">ID:</label>
             <input type="text" readOnly={true} id="id" value={id} className="bg-pink-50 border-1 border-pink-50 rounded-full text-pink-900/50 py-1 px-4 w-full cursor-not-allowed" />
@@ -36,6 +39,19 @@ const ASeries = () => {
             <input type="text" id="name" required value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
               onChange={e => setName(e.target.value)} />
           </div>
+
+          <div className="mb-3">
+            <label htmlFor="description" className="block font-bold italic">Mô tả:</label>
+            <textarea id="description" required value={description} className="bg-pink-50 border-1 border-pink-50 rounded-[7px] py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150 h-50"
+              onChange={e => setDescription(e.target.value)}>
+
+            </textarea>
+          </div>
+
+          <div>
+            <img id="thumbnail-preview" src={image} alt="thumbnail" className="h-40" onClick={() => document.getElementById("file-upload").click()} />
+          </div>
+          <input type="file" id="file-upload" onChange={handleThumbnailUpload} accept="image/*" className="h-0" />
 
           <div className="flex gap-x-4 justify-center">
             <button className="bg-green-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-green-600 duration-150" onClick={e => save(e)}>
@@ -55,7 +71,8 @@ const ASeries = () => {
             <thead>
               <tr className="bg-linear-to-r from-pink-700 to-pink-900">
                 <th className="w-[5%] text-pink-50 py-1">ID</th>
-                <th className="w-[70%] text-pink-50">Tên bộ sách</th>
+                <th className="w-[15%] text-pink-50">Hình minh họa</th>
+                <th className="w-[55%] text-pink-50">Tên bộ sách</th>
                 <th className="w-[25%] text-pink-50"></th>
               </tr>
             </thead>
@@ -64,6 +81,9 @@ const ASeries = () => {
                 series.map(s => 
                   <tr key={s.id} className="even:bg-pink-50">
                     <td>{s.id}</td>
+                    <td className="flex justify-center">
+                      <img src={s.image} alt={s.name} className="h-25" onClick={() => loadUpdate(s)} />
+                    </td>
                     <td className="py-3 text-left">{s.name}</td>
                     <td>
                       {
@@ -75,7 +95,7 @@ const ASeries = () => {
                             <LockKey size={28} /> Khóa
                           </button>
                         </div>) : (
-                          <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
+                          <button className="bg-green-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
                             <LockKeyOpen size={28} /> Mở khóa
                           </button>
                         )
@@ -116,7 +136,17 @@ const ASeries = () => {
   function loadUpdate(series) {
     setID(series.id);
     setName(series.name);
+    setImage(series.image);
+    setDescription(series.description);
     document.getElementById("name").focus();
+  }
+
+  function handleThumbnailUpload(e) {
+    setImage(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.onload = e => document.getElementById('thumbnail-preview').src = e.target.result;
+    reader.readAsDataURL(e.target.files[0]);
   }
 
   function save(e) {
@@ -124,16 +154,24 @@ const ASeries = () => {
     (id === "") ? insert() : update();
   }
 
-  function cancel() {
+  function cancel(e) {
+    e.preventDefault();
     setID("");
     setName("");
+    setImage(defaultThumbnail);
+    setDescription("");
   }
 
   function insert() {
     if (confirm("Bạn có muốn thêm bộ sách này?")) {
-      const book = { name };
-      const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/series/insert", book, headers).then(response => {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("image", image.name);
+      formData.append("description", description);
+      formData.append("file", image);
+
+      const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
+      axios.post("/admin/series/insert", formData, headers).then(response => {
         if (response.status === 200) {
           alert("Thêm thành công");
           location.reload();
@@ -148,12 +186,27 @@ const ASeries = () => {
 
   function update() {
     if (confirm("Bạn có muốn cập nhật bộ sách này?")) {
-      const book = { id, name, isActive: true };
-      const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/series/update", book, headers).then(response => {
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("name", name);
+      formData.append("description", description);
+
+      if (image && image instanceof File) {
+        formData.append("image", image.name);
+        formData.append("file", image);
+      }
+      else {
+        formData.append("image", image);
+        const emptyFile = new File([], "empty.jpg");
+        formData.append("file", emptyFile);
+      }
+
+      const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
+
+      axios.post("/admin/series/update", formData, headers).then(response => {
         if (response.status === 200) {
           alert("Cập nhật thành công");
-          location.reload();
+          //location.reload();
         }
         else {
           alert("Đã có lỗi xảy ra, cập nhật thất bại");

@@ -7,6 +7,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly MiniTextbookContext _dbContext;
     private IBookRepository? _bookRepository;
+    private IBookSeriesRepository? _bookSeriesRepository;
     private ICartRepository? _cartRepository;
     private IFavoriteRepository? _favoriteRepository;
     private IOrderRepository? _orderRepository;
@@ -22,6 +23,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public IBookRepository Books => _bookRepository ??= new BookRepository(_dbContext);
+    public IBookSeriesRepository BookSeries => _bookSeriesRepository ??= new BookSeriesRepository(_dbContext);
     public ICartRepository Carts => _cartRepository ??= new CartRepository(_dbContext);
     public IFavoriteRepository Favorites => _favoriteRepository ??= new FavoriteRepository(_dbContext);
     public IOrderRepository Orders => _orderRepository ??= new OrderRepository(_dbContext);

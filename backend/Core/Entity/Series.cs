@@ -9,8 +9,6 @@ public partial class Series : BaseEntity
 
     public string? Image { get; set; }
 
-    public string? Description { get; set; }
-
     public bool? IsActive { get; set; }
 
     public virtual ICollection<BookSeries> BookSeries { get; set; } = new List<BookSeries>();

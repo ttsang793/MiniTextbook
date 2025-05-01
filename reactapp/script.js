@@ -12,4 +12,9 @@ function displayDate(date) {
   catch {return ""}  
 }
 
-export { displayPrice, displayDate }
+function arrayNumber(arr) {
+  for (let i = 0; i < arr.length; i++) arr[i] = Number(arr[i]);
+  return arr;
+}
+
+export { displayPrice, displayDate, arrayNumber }

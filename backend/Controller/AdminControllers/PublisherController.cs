@@ -30,13 +30,13 @@ public class PublisherController : ControllerBase
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert([Bind("name")] Publisher publisher)
+    public async Task<IActionResult> Insert([Bind("Name")] Publisher publisher)
     {
         return (await _service.Publishers.Insert(publisher)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> Update([Bind("id", "name", "isActive")] Publisher publisher)
+    public async Task<IActionResult> Update([Bind("Id", "Name")] Publisher publisher)
     {
         return (await _service.Publishers.Update(publisher)) ? StatusCode(200) : StatusCode(404);
     }

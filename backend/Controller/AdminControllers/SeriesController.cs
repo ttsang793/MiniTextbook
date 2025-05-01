@@ -30,15 +30,21 @@ public class SeriesController : ControllerBase
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert([Bind("name")] Series series)
+    public async Task<IActionResult> Insert([FromForm] [Bind("Name", "Image", "Description")] Series series, IFormFile file)
     {
-        return (await _service.Series.Insert(series)) ? StatusCode(200) : StatusCode(404);
+        int id = await _service.Series.Insert(series);
+        if (id == -1) return StatusCode(404);
+        
+        return (await _service.Images.UploadImage(file, id, "series")) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPut("update")]
-    public async Task<IActionResult> Update([Bind("id", "name", "isActive")] Series series)
+    [HttpPost("update")]
+    public async Task<IActionResult> Update([FromForm] [Bind("Id", "Name", "Image", "Description")] Series series, IFormFile file)
     {
-        return (await _service.Series.Update(series)) ? StatusCode(200) : StatusCode(404);
+        if (!await _service.Series.Update(series)) return StatusCode(404);
+        if (file == null || file.Length == 0) return StatusCode(200);
+
+        return (await _service.Images.UploadImage(file, series.Id, "series")) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpDelete("update-status")]

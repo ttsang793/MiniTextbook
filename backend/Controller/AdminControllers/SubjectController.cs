@@ -36,7 +36,7 @@ public class SubjectController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> Update([Bind("Id", "Name", "IsActive")]Subject subject)
+    public async Task<IActionResult> Update([Bind("Id", "Name")]Subject subject)
     {
         return (await _service.Subjects.Update(subject)) ? StatusCode(200) : StatusCode(404);
     }

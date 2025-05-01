@@ -8,7 +8,7 @@ const Footer = () => {
           <img src="/mt-vlogo.png" alt="Mini Textbook logo" className="h-8 mb-4" />
           <p className="m-0 font-bold bold italic text-xl">Hệ thống nhà sách MiniTextbook</p>        
           <p className="m-0">
-            <House size={24} className="inline" /> : 348 Dương Bá Trạc, phường Rạch Ông, quận 8, TP.HCM
+            <House size={24} className="inline" /> : 348 Dương Bá Trạc, P. Chánh Hưng, TP. Hồ Chí Minh
           </p>
           <p className="m-0">
             <Phone size={24} weight="fill" className="inline" /> : (028) 1234 5678 -

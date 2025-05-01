@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Core.Entity;
+using Application.DTO;
 
 namespace Application.Interface;
 
 public interface IBookService
 {
+    Task<IEnumerable<Book>> GetAllForUser(Expression<Func<Book, bool>> expression = null);
+
     Task<IEnumerable<Book>> GetAll(Expression<Func<Book, bool>> expression = null);
 
     Task<Book> GetById(int id);
 
-    Task<int> Insert(Book book);
+    Task<int> Insert(BookDTO bookDTO);
 
-    Task<int> Update(Book book);
+    Task<bool> Update(BookDTO bookDTO);
 
     Task<bool> UpdateStatus(int id);
 }

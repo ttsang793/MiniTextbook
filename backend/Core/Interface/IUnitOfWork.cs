@@ -4,6 +4,8 @@ public interface IUnitOfWork
 {
     IBookRepository Books { get; }
 
+    IBookSeriesRepository BookSeries { get; }
+
     ICartRepository Carts { get; }
 
     IFavoriteRepository Favorites { get; }

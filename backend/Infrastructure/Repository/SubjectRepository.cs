@@ -16,6 +16,7 @@ public class SubjectRepository : BaseRepository<Subject>, ISubjectRepository
 
     public async Task Update(Subject subject)
     {
+        subject.IsActive = true;
         GetDbSet().Update(subject);
     }
 

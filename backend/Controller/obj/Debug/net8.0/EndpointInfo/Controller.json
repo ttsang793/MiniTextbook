@@ -109,6 +109,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
                   "Name": {
                     "type": "string"
                   },
@@ -131,68 +135,12 @@
                     "type": "number",
                     "format": "double"
                   },
-                  "IsActive": {
-                    "type": "boolean"
-                  },
-                  "BookSeries": {
+                  "Series": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/BookSeries"
+                      "type": "integer",
+                      "format": "int32"
                     }
-                  },
-                  "Carts": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Cart"
-                    }
-                  },
-                  "Favorites": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Favorite"
-                    }
-                  },
-                  "OrderDetails": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/OrderDetail"
-                    }
-                  },
-                  "PublisherNavigation.Name": {
-                    "type": "string"
-                  },
-                  "PublisherNavigation.IsActive": {
-                    "type": "boolean"
-                  },
-                  "PublisherNavigation.Books": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Book"
-                    }
-                  },
-                  "PublisherNavigation.Id": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "SubjectNavigation.Name": {
-                    "type": "string"
-                  },
-                  "SubjectNavigation.IsActive": {
-                    "type": "boolean"
-                  },
-                  "SubjectNavigation.Books": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Book"
-                    }
-                  },
-                  "SubjectNavigation.Id": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "Id": {
-                    "type": "integer",
-                    "format": "int32"
                   },
                   "file": {
                     "type": "string",
@@ -201,6 +149,9 @@
                 }
               },
               "encoding": {
+                "Id": {
+                  "style": "form"
+                },
                 "Name": {
                   "style": "form"
                 },
@@ -219,46 +170,7 @@
                 "Price": {
                   "style": "form"
                 },
-                "IsActive": {
-                  "style": "form"
-                },
-                "BookSeries": {
-                  "style": "form"
-                },
-                "Carts": {
-                  "style": "form"
-                },
-                "Favorites": {
-                  "style": "form"
-                },
-                "OrderDetails": {
-                  "style": "form"
-                },
-                "PublisherNavigation.Name": {
-                  "style": "form"
-                },
-                "PublisherNavigation.IsActive": {
-                  "style": "form"
-                },
-                "PublisherNavigation.Books": {
-                  "style": "form"
-                },
-                "PublisherNavigation.Id": {
-                  "style": "form"
-                },
-                "SubjectNavigation.Name": {
-                  "style": "form"
-                },
-                "SubjectNavigation.IsActive": {
-                  "style": "form"
-                },
-                "SubjectNavigation.Books": {
-                  "style": "form"
-                },
-                "SubjectNavigation.Id": {
-                  "style": "form"
-                },
-                "Id": {
+                "Series": {
                   "style": "form"
                 },
                 "file": {
@@ -286,6 +198,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
                   "Name": {
                     "type": "string"
                   },
@@ -308,68 +224,12 @@
                     "type": "number",
                     "format": "double"
                   },
-                  "IsActive": {
-                    "type": "boolean"
-                  },
-                  "BookSeries": {
+                  "Series": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/BookSeries"
+                      "type": "integer",
+                      "format": "int32"
                     }
-                  },
-                  "Carts": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Cart"
-                    }
-                  },
-                  "Favorites": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Favorite"
-                    }
-                  },
-                  "OrderDetails": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/OrderDetail"
-                    }
-                  },
-                  "PublisherNavigation.Name": {
-                    "type": "string"
-                  },
-                  "PublisherNavigation.IsActive": {
-                    "type": "boolean"
-                  },
-                  "PublisherNavigation.Books": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Book"
-                    }
-                  },
-                  "PublisherNavigation.Id": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "SubjectNavigation.Name": {
-                    "type": "string"
-                  },
-                  "SubjectNavigation.IsActive": {
-                    "type": "boolean"
-                  },
-                  "SubjectNavigation.Books": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Book"
-                    }
-                  },
-                  "SubjectNavigation.Id": {
-                    "type": "integer",
-                    "format": "int32"
-                  },
-                  "Id": {
-                    "type": "integer",
-                    "format": "int32"
                   },
                   "file": {
                     "type": "string",
@@ -378,6 +238,9 @@
                 }
               },
               "encoding": {
+                "Id": {
+                  "style": "form"
+                },
                 "Name": {
                   "style": "form"
                 },
@@ -396,46 +259,7 @@
                 "Price": {
                   "style": "form"
                 },
-                "IsActive": {
-                  "style": "form"
-                },
-                "BookSeries": {
-                  "style": "form"
-                },
-                "Carts": {
-                  "style": "form"
-                },
-                "Favorites": {
-                  "style": "form"
-                },
-                "OrderDetails": {
-                  "style": "form"
-                },
-                "PublisherNavigation.Name": {
-                  "style": "form"
-                },
-                "PublisherNavigation.IsActive": {
-                  "style": "form"
-                },
-                "PublisherNavigation.Books": {
-                  "style": "form"
-                },
-                "PublisherNavigation.Id": {
-                  "style": "form"
-                },
-                "SubjectNavigation.Name": {
-                  "style": "form"
-                },
-                "SubjectNavigation.IsActive": {
-                  "style": "form"
-                },
-                "SubjectNavigation.Books": {
-                  "style": "form"
-                },
-                "SubjectNavigation.Id": {
-                  "style": "form"
-                },
-                "Id": {
+                "Series": {
                   "style": "form"
                 },
                 "file": {
@@ -1006,44 +830,6 @@
         }
       }
     },
-    "/product/get-all": {
-      "get": {
-        "tags": [
-          "Product"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/product/get": {
       "get": {
         "tags": [
@@ -1083,7 +869,45 @@
         }
       }
     },
-    "/product/search": {
+    "/product/get-newest": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/get-all": {
       "post": {
         "tags": [
           "Product"
@@ -1578,19 +1402,54 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Series"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Series"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Series"
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string"
+                  },
+                  "IsActive": {
+                    "type": "boolean"
+                  },
+                  "BookSeries": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/BookSeries"
+                    }
+                  },
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                },
+                "IsActive": {
+                  "style": "form"
+                },
+                "BookSeries": {
+                  "style": "form"
+                },
+                "Id": {
+                  "style": "form"
+                },
+                "file": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -1603,25 +1462,60 @@
       }
     },
     "/admin/series/update": {
-      "put": {
+      "post": {
         "tags": [
           "Series"
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Series"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Series"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Series"
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string"
+                  },
+                  "IsActive": {
+                    "type": "boolean"
+                  },
+                  "BookSeries": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/BookSeries"
+                    }
+                  },
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                },
+                "IsActive": {
+                  "style": "form"
+                },
+                "BookSeries": {
+                  "style": "form"
+                },
+                "Id": {
+                  "style": "form"
+                },
+                "file": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -2476,10 +2370,6 @@
             "nullable": true
           },
           "image": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
             "type": "string",
             "nullable": true
           },
