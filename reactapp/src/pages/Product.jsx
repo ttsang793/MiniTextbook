@@ -139,7 +139,7 @@ const Product = () => {
                 <p>{location.search === "" ? "Hiện tại đang chưa có sản phẩm. Vui lòng thử lại sau!" : "Không tồn tại sản phẩm cần tìm!"}</p>
               </div>
             ) : (
-            <div className="grid grid-cols-3 gap-8 content-start justify-around">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 content-start justify-around">
             {
               book.map(b => <ProductCell product={b} key={b.id} favorite={false} />)
             }

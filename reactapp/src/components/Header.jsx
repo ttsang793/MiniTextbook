@@ -1,8 +1,28 @@
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Heart, ShoppingCartSimple, User, MagnifyingGlass } from "@phosphor-icons/react";
+import axios from "axios";
+import LoginForm from "./Login/LoginForm";
 
 const Header = () => {
   const [search, setSearch] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [avatar, setAvater] = useState("");
+
+  const openModal = () => {
+    document.getElementById("login-modal").classList.add("visible");
+    document.body.style.overflow = "hidden";
+  }
+  const closeModal = () => {
+    document.getElementById("login-modal").classList.remove("visible");
+    document.body.style.overflow = "";
+  }
+
+  useEffect(() => {
+    axios.get("/user/get-session").then(response => {
+      setFullname(response.data.fullname || "");
+      setAvater(response.data.avatar || "");
+    });
+  }, []);
 
   return (
     <header className="mb-8">
@@ -23,17 +43,40 @@ const Header = () => {
         </div>
 
         <div className="flex items-center">
-          <a href="/nguoi-dung/yeu-thich">
-            <button className="align-middle text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
-              <Heart size={28} className="cursor-pointer" />
-            </button>
-          </a>
-          <a href="/nguoi-dung/gio-hang">
-            <button className="align-middle text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
-              <ShoppingCartSimple size={28} className="cursor-pointer" />
-            </button>
-          </a>
-          <button className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-2">Đăng nhập</button>
+          {
+            (fullname !== "") ? (
+              //Temporary
+              <>              
+                <a href="/nguoi-dung/yeu-thich">
+                  <button className="align-middle text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
+                    <Heart size={28} className="cursor-pointer" />
+                  </button>
+                </a>
+                <a href="/nguoi-dung/gio-hang">
+                  <button className="align-middle text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
+                    <ShoppingCartSimple size={28} className="cursor-pointer" />
+                  </button>
+                </a>
+                <button
+                  className="text-pink-700 cursor-pointer h-[32px] flex gap-x-2 items-center hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 ps-2"
+                  onClick={logOut}
+                >
+                  {`${fullname}`}
+                  <img src={`${avatar}`} alt={`${fullname}`} className="size-[32px]" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-2"
+                  onClick={openModal}
+                >
+                  Đăng nhập
+                </button>
+                <LoginForm onClose={closeModal} />
+              </>
+            )
+          }
         </div>
       </div>
 
@@ -57,6 +100,10 @@ const Header = () => {
       </div>
     </header>
   )
+
+  function logOut() {
+    axios.post("/user/logout").then(response => location.href = "/");
+  }
 }
 
 export default Header;

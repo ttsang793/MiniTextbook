@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Interface;
+﻿namespace Application.Interface;
 
 public interface IService
 {
@@ -16,4 +10,5 @@ public interface IService
     IPublisherService Publishers { get; }
     ISeriesService Series { get; }
     ISubjectService Subjects { get; }
+    IUserService Users { get; }
 }

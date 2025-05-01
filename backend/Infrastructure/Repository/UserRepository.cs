@@ -13,15 +13,20 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 {
     public UserRepository(MiniTextbookContext _dbContext) : base(_dbContext) { }
 
-    public async Task<bool> Login(string username, string password)
+    public async Task<User?> Login(User user)
     {
-        bool result = (await GetAll(u => u.Username == username && u.Password == password)).ToList().Count() > 0;
-        return result;
+        var result = (await GetAll(u => u.Username == user.Username && u.Password == user.Password)).FirstOrDefault();
+
+        if (result != null) return new User { Id = result.Id, Avatar = result.Avatar, Fullname = result.Fullname };
+        else return null;
     }
 
-    public async Task Insert(User user)
+    public async Task<User?> Insert(User user)
     {
-        user.Id = await GetLastId() + 1; 
+        user.Id = await GetLastId();
+        user.Avatar = "/src/images/avatar/default.jpg";
         await GetDbSet().AddAsync(user);
+
+        return new User { Id = user.Id, Avatar = user.Avatar, Fullname = user.Fullname };
     }
 }

@@ -34,6 +34,7 @@ public class ProductController : ControllerBase
     public async Task<IEnumerable<Book>> GetAll([Bind("Grades", "Publishers", "Subjects", "Series")] ProductFilterDTO productFilter, string? name)
     {
         return await _service.Books.GetAllForUser(p =>
+            p.IsActive == true &&
             (string.IsNullOrEmpty(name) || p.Name.ToLower().Contains(name.ToLower())) &&
             (productFilter.Grades == null || productFilter.Grades.Contains((int)p.Grade)) &&
 

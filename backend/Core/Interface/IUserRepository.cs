@@ -7,7 +7,9 @@ using Core.Entity;
 
 namespace Core.Interface;
 
-public interface IUserRepository : IRepository<User>, IInsert<User>
+public interface IUserRepository : IRepository<User>
 {
-    Task<bool> Login(string username, string password);
+    Task<User?> Login(User user);
+
+    Task<User?> Insert(User user);
 }

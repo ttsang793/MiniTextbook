@@ -51,7 +51,7 @@ const Home = () => {
             <p>Hiện tại chưa có sách giáo khoa nào!</p>
           </div>
           ) : (
-          <section className="mx-15 flex justify-center gap-x-10">
+          <section className="mx-15 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center gap-x-10">
             {
               newestBook.map(b => <ProductCell product={b} key={b.id} favorite={false} />)
             }

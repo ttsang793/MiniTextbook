@@ -14,6 +14,7 @@ public class Service : IService
     private IPublisherService? _publisherService;
     private ISeriesService? _seriesService;
     private ISubjectService? _subjectService;
+    private IUserService? _userService;
 
     public Service(IUnitOfWork unitOfWork)
     {
@@ -28,4 +29,5 @@ public class Service : IService
     public IPublisherService Publishers => _publisherService ??= new PublisherService(_unitOfWork);
     public ISeriesService Series => _seriesService ??= new SeriesService(_unitOfWork);
     public ISubjectService Subjects => _subjectService ??= new SubjectService(_unitOfWork);
+    public IUserService Users => _userService ??= new UserService(_unitOfWork);
 }

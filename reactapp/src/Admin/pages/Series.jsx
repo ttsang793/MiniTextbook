@@ -10,7 +10,6 @@ const ASeries = () => {
   const [id, setID] = useState("");
   const [name, setName] = useState("");
   const [image, setImage] = useState(defaultThumbnail);
-  const [description, setDescription] = useState("");
   const numPerPage = 10;
   const pageRef = useRef(0);
   const totalRef = useRef(0);
@@ -38,14 +37,6 @@ const ASeries = () => {
             <label htmlFor="name" className="block font-bold italic">Tên bộ sách:</label>
             <input type="text" id="name" required value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
               onChange={e => setName(e.target.value)} />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="description" className="block font-bold italic">Mô tả:</label>
-            <textarea id="description" required value={description} className="bg-pink-50 border-1 border-pink-50 rounded-[7px] py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150 h-50"
-              onChange={e => setDescription(e.target.value)}>
-
-            </textarea>
           </div>
 
           <div>
@@ -137,7 +128,6 @@ const ASeries = () => {
     setID(series.id);
     setName(series.name);
     setImage(series.image);
-    setDescription(series.description);
     document.getElementById("name").focus();
   }
 
@@ -167,7 +157,6 @@ const ASeries = () => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("image", image.name);
-      formData.append("description", description);
       formData.append("file", image);
 
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
@@ -189,7 +178,6 @@ const ASeries = () => {
       const formData = new FormData();
       formData.append("id", id);
       formData.append("name", name);
-      formData.append("description", description);
 
       if (image && image instanceof File) {
         formData.append("image", image.name);

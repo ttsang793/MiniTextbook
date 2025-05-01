@@ -978,6 +978,42 @@
   },
   {
     "ContainingType": "Controller.Controllers.UserController",
+    "Method": "GetByUserId",
+    "RelativePath": "user/get",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Core.Entity.User",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
+    "Method": "GetSessionData",
+    "RelativePath": "user/get-session",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
     "Method": "Login",
     "RelativePath": "user/login",
     "HttpMethod": "POST",
@@ -985,16 +1021,21 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "user",
+        "Type": "Core.Entity.User",
+        "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
+    "Method": "LogOut",
+    "RelativePath": "user/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

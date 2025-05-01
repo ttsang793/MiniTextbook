@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Book, Books, PaperPlaneTilt, Atom, CurrencyDollarSimple, UserCircle } from "@phosphor-icons/react";
 import "./Header.css";
 

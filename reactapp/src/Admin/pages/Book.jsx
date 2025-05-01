@@ -282,7 +282,7 @@ const ABook = () => {
       axios.post("/admin/book/insert", formData, headers).then(response => {
         if (response.status === 200) {
           alert("Thêm thành công");
-          //location.reload();
+          location.reload();
         }
         else {
           alert("Đã có lỗi xảy ra, thêm thất bại");
@@ -300,8 +300,10 @@ const ABook = () => {
       formData.append("grade", bGrade);
       formData.append("subject", bSubject);
       formData.append("publisher", bPublisher);
-      formData.append("series", bSeries);
       formData.append("price", bPrice);
+
+      for (const [key, value] of Object.entries(bSeries))
+        if (value) formData.append("series[]", key);
 
       if (bImage && bImage instanceof File) {
         formData.append("image", bImage.name);
