@@ -5,7 +5,7 @@ import { CartPlusFill, CartCheckFill } from "react-bootstrap-icons";
 import { displayPrice } from '/script';
 import "./ProductCell.css"
 
-const ProductCell = ({ product, favorite = null }) => {
+const ProductCell = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const incQuantity = () => setQuantity(quantity + 1);
   const decQuantity = () => (quantity > 1) && setQuantity(quantity - 1);
@@ -29,7 +29,9 @@ const ProductCell = ({ product, favorite = null }) => {
         </div>
 
         <div>
-          <button className="bg-pink-100 border-1 border-pink-900 text-pink-900 p-1 cursor-pointer text-xl hover:bg-pink-800/90 hover:text-pink-50 duration-200" onClick={() => handleFavorite(product.id, favorite)}>
+          <button className={
+            `border-1 border-pink-900 p-1 cursor-pointer text-xl ${product.isFavorite ? "bg-pink-800/90 text-pink-50" : "bg-pink-100 text-pink-900 hover:bg-pink-800/90 hover:text-pink-50 duration-200"}`
+          } onClick={() => handleFavorite(product.id, product.isFavorite)}>
             <Heart weight="fill" size={20} />
           </button>
           <button className="bg-pink-100 border-1 border-pink-900 text-pink-900 p-1 cursor-pointer text-xl hover:bg-pink-800/90 hover:text-pink-50 duration-200" onClick={() => addToCart(product.id, quantity)}>
@@ -43,17 +45,16 @@ const ProductCell = ({ product, favorite = null }) => {
     </div>
   )
 
-  function handleFavorite(id, favorite) {
-    if (favorite === null) {
-      //Se hien thi form dang nhap
-      alert("Vui lòng đăng nhập")
-    }
-    else if (favorite === true) {
+  function handleFavorite(id, favorite) {      
+    if (favorite === true) {
       if (confirm("Bạn có muốn bỏ sản phẩm này ra khỏi yêu thích?")) {
-        const favoriteObj = { book: Number(id), user: Number(1) }
+        const favoriteObj = { book: Number(id) }
         const headers = { headers: { "Content-Type": "application/json" } }
         axios.delete("/favorite/delete", { data: favoriteObj, headers }).then(response => {
-          if (response.status === 200) alert("Đã xóa sản phẩm ra khỏi yêu thích");
+          if (response.status === 200) {
+            alert("Đã xóa sản phẩm ra khỏi yêu thích");
+            location.reload();
+          }
           else {
             alert("Đã có lỗi xảy ra, vui lòng thử lại");
             console.error(response);
@@ -61,25 +62,30 @@ const ProductCell = ({ product, favorite = null }) => {
         })
       }
     }
+
     else {
-      const favoriteObj = { book: Number(id), user: Number(1) }
+      const favoriteObj = { book: Number(id) }
       const headers = { headers: { "Content-Type": "application/json" } }
-      axios.post("/favorite/insert", favoriteObj, headers).then(response => {
-        if (response.status === 200) alert("Đã thêm vào yêu thích");
-        else {
-          alert("Đã có lỗi xảy ra, vui lòng thử lại");
-          console.error(response);
-        }
+      axios.post("/favorite/insert", favoriteObj, headers).then(() => {
+        alert("Đã thêm vào yêu thích!");
+        location.reload();
       })
+      .catch(response => {
+          if (response.status === 403) document.getElementById("login-btn").click();
+          else {          
+            alert("Đã có lỗi xảy ra, vui lòng thử lại");
+            console.error(response);
+          }
+        }
+      )
     }
   }
 
   function addToCart(book, quantity) {
-    const cart = { book, user: 1, quantity };
     const headers = { headers: {"Content-Type": "application/json"} };
 
-    axios.post("/cart/insert", cart, headers).then(response => {
-      if (response.status === 200) alert("Thêm vào giỏ hàng thành công");
+    axios.post("/cart/insert", { book, quantity }, headers).then(() => alert("Thêm vào giỏ hàng thành công")).catch(response => {
+      if (response.status === 403) document.getElementById("login-btn").click();
       else {
         alert("Đã có lỗi xảy ra, vui lòng thử lại");
         console.error(response);

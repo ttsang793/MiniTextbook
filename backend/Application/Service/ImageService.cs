@@ -5,7 +5,7 @@ namespace Application.Service;
 
 public class ImageService : IImageService
 {
-    public bool DeleteImage(int id, string service)
+    public bool DeleteImage(string id, string service)
     {
         try
         {
@@ -27,7 +27,7 @@ public class ImageService : IImageService
         }
     }
 
-    public async Task<bool> UploadImage(IFormFile image, int id, string service)
+    public async Task<bool> UploadImage(IFormFile image, string id, string service)
     {
         try
         {

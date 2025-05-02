@@ -15,23 +15,11 @@ public class FavoriteService : IFavoriteService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<FavoriteDTO>> GetByUserId(int userId)
+    public async Task<List<int>> GetByUserId(int userId)
     {
         var favorites = await _unitOfWork.Favorites.GetAll(f => f.User == userId);
-
-        var result = new List<FavoriteDTO>();
-
-        foreach (var favorite in favorites)
-        {
-            var book = await _unitOfWork.Books.GetById((int)favorite.Book);
-
-            result.Add(new FavoriteDTO
-            {
-                Id = favorite.Id,
-                Book = book
-            });
-        }
-
+        var result = new List<int>();
+        foreach (var favorite in favorites) result.Add((int)favorite.Book!);
         return result;
     }
 

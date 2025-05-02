@@ -11,7 +11,7 @@ const OrderHistory = () => {
   useEffect(() => {
     document.title = "Lịch sử đơn hàng - Nhà sách MiniTextbook";
 
-    axios.get(`/order/get-history?userid=1`).then(response => {
+    axios.get(`/order/get-history`).then(response => {
       setOrderList(response.data.filter(s => s.status === 0 || s.status === 1));
       setDeliverList(response.data.filter(s => s.status === 2 || s.status === 3));
       setDoneList(response.data.filter(s => s.status === -1 || s.status === 4));

@@ -4,6 +4,6 @@ namespace Application.Interface;
 
 public interface IImageService
 {
-    bool DeleteImage(int id, string service);
-    Task<bool> UploadImage(IFormFile image, int id, string service);
+    bool DeleteImage(string id, string service);
+    Task<bool> UploadImage(IFormFile image, string id, string service);
 }

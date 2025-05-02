@@ -5,7 +5,7 @@ namespace Application.Interface;
 
 public interface IFavoriteService
 {
-    Task<IEnumerable<FavoriteDTO>> GetByUserId(int userID);
+    Task<List<int>> GetByUserId(int userID);
 
     Task<bool> Insert(Favorite favorite);
 

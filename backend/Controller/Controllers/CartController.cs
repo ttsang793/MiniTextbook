@@ -2,6 +2,7 @@
 using Application.Interface;
 using Application.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 namespace Controller.Controllers;
 
 [ApiController]
@@ -18,32 +19,51 @@ public class CartController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IEnumerable<CartDTO>> GetByUserId(int userID)
+    public async Task<IActionResult> GetByUserId()
     {
-        return await _service.Carts.GetByUserId(userID);
+        if (HttpContext.Session.GetInt32("id") != null)
+            return Ok(await _service.Carts.GetByUserId((int)HttpContext.Session.GetInt32("id")!));
+        return StatusCode(404);
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert([Bind("Book", "Quantity", "User")]Cart cart)
+    public async Task<IActionResult> Insert([Bind("Book", "Quantity")]Cart cart)
     {
-        return (await _service.Carts.Insert(cart)) ? StatusCode(200) : StatusCode(404);
+        if (HttpContext.Session.GetInt32("id") != null)
+        {
+            cart.User = (int)HttpContext.Session.GetInt32("id")!;
+            return (await _service.Carts.Insert(cart)) ? StatusCode(200) : StatusCode(404);
+        }
+        return StatusCode(403);
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> Update([Bind("Id", "Book", "Quantity", "User")] Cart cart)
+    public async Task<IActionResult> Update([Bind("Id", "Book", "Quantity")] Cart cart)
     {
-        return (await _service.Carts.Update(cart)) ? StatusCode(200) : StatusCode(404);
+        if (HttpContext.Session.GetInt32("id") != null)
+        {
+            cart.User = (int)HttpContext.Session.GetInt32("id")!;
+            return (await _service.Carts.Update(cart)) ? StatusCode(200) : StatusCode(404);
+        }
+        return StatusCode(403);
     }
 
     [HttpDelete("delete")]
     public async Task<IActionResult> Delete(int id)
     {
-        return (await _service.Carts.Delete(id)) ? StatusCode(200) : StatusCode(404);
+        if (HttpContext.Session.GetInt32("id") != null)
+            return (await _service.Carts.Delete(id)) ? StatusCode(200) : StatusCode(404);
+        return StatusCode(403);
     }
 
     [HttpDelete("delete-all")]
-    public async Task<IActionResult> DeleteAll(int userID)
+    public async Task<IActionResult> DeleteAll()
     {
-        return (await _service.Carts.DeleteAll(userID)) ? StatusCode(200) : StatusCode(404);
+        if (HttpContext.Session.GetInt32("id") != null)
+        {
+            int userID = (int)HttpContext.Session.GetInt32("id")!;
+            return (await _service.Carts.DeleteAll(userID)) ? StatusCode(200) : StatusCode(404);
+        }
+        return StatusCode(403);
     }
 }

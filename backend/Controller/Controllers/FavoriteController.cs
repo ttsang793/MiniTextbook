@@ -18,20 +18,50 @@ public class FavoriteController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IEnumerable<FavoriteDTO>> GetByUserId(int userID)
+    public async Task<IActionResult> GetByUserId()
     {
-        return await _service.Favorites.GetByUserId(userID);
+        if (HttpContext.Session.GetInt32("id") != null)
+        {
+            var favoriteList = await _service.Favorites.GetByUserId((int)HttpContext.Session.GetInt32("id")!);
+            var bookList = await _service.Books.GetAllForUser(b => favoriteList.Contains(b.Id));
+            var productList = new List<ProductDTO>();
+
+            foreach (var book in bookList)
+            {
+                productList.Add(new ProductDTO
+                {
+                    Id = book.Id,
+                    Name = book.Name,
+                    Image = book.Image,
+                    Price = book.Price,
+                    IsFavorite = true
+                });
+            }
+
+            return Ok(productList);
+        }
+        return StatusCode(404);
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert([Bind("Book", "User")] Favorite favorite)
+    public async Task<IActionResult> Insert([Bind("Book")] Favorite favorite)
     {
-        return (await _service.Favorites.Insert(favorite)) ? StatusCode(200) : StatusCode(404);
+        if (HttpContext.Session.GetInt32("id") != null)
+        {
+            favorite.User = (int)HttpContext.Session.GetInt32("id")!;
+            return (await _service.Favorites.Insert(favorite)) ? StatusCode(200) : StatusCode(404);
+        }
+        return StatusCode(403);
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> Delete([Bind("Book", "User")] Favorite favorite)
+    public async Task<IActionResult> Delete([Bind("Book")] Favorite favorite)
     {
-        return (await _service.Favorites.Delete(favorite)) ? StatusCode(200) : StatusCode(404);
+        if (HttpContext.Session.GetInt32("id") != null)
+        {
+            favorite.User = (int)HttpContext.Session.GetInt32("id")!;
+            return (await _service.Favorites.Delete(favorite)) ? StatusCode(200) : StatusCode(404);
+        }
+        return StatusCode(403);
     }
 }

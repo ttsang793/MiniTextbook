@@ -35,7 +35,7 @@ public class BookController : ControllerBase
     {
         int id = await _service.Books.Insert(bookDTO);
         if (id == -1) return StatusCode(404);
-        return (await _service.Images.UploadImage(file, id, "product")) ? StatusCode(200) : StatusCode(404);
+        return (await _service.Images.UploadImage(file, id + "", "product")) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPost("update")]
@@ -43,7 +43,7 @@ public class BookController : ControllerBase
     {
         if (!await _service.Books.Update(bookDTO)) return StatusCode(404);
         if (file == null || file.Length == 0) return StatusCode(200);
-        return (await _service.Images.UploadImage(file, bookDTO.Id, "product")) ? StatusCode(200) : StatusCode(404);
+        return (await _service.Images.UploadImage(file, bookDTO.Id + "", "product")) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpDelete("update-status")]

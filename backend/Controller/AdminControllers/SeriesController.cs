@@ -35,7 +35,7 @@ public class SeriesController : ControllerBase
         int id = await _service.Series.Insert(series);
         if (id == -1) return StatusCode(404);
         
-        return (await _service.Images.UploadImage(file, id, "series")) ? StatusCode(200) : StatusCode(404);
+        return (await _service.Images.UploadImage(file, id + "", "series")) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPost("update")]
@@ -44,7 +44,7 @@ public class SeriesController : ControllerBase
         if (!await _service.Series.Update(series)) return StatusCode(404);
         if (file == null || file.Length == 0) return StatusCode(200);
 
-        return (await _service.Images.UploadImage(file, series.Id, "series")) ? StatusCode(200) : StatusCode(404);
+        return (await _service.Images.UploadImage(file, series.Id + "", "series")) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpDelete("update-status")]

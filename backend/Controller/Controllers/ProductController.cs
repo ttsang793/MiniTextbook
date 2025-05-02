@@ -25,15 +25,30 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("get-newest")]
-    public async Task<IEnumerable<Book>> GetNewest()
+    public async Task<IEnumerable<ProductDTO>> GetNewest()
     {
-        return (await _service.Books.GetAll()).OrderByDescending(b => b.Id).Take(4);
+        var bookList = (await _service.Books.GetAll()).OrderByDescending(b => b.Id).Take(4);
+        var favoriteList = HttpContext.Session.GetInt32("id") != null ? await _service.Favorites.GetByUserId((int)HttpContext.Session.GetInt32("id")) : [];
+        var productList = new List<ProductDTO>();
+        foreach (var book in bookList)
+        {
+            productList.Add(new ProductDTO
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Image = book.Image,
+                Price = book.Price,
+                IsFavorite = favoriteList.Contains(book.Id),
+            });
+        }
+
+        return productList;
     }
 
     [HttpPost("get-all")]
-    public async Task<IEnumerable<Book>> GetAll([Bind("Grades", "Publishers", "Subjects", "Series")] ProductFilterDTO productFilter, string? name)
+    public async Task<IEnumerable<ProductDTO>> GetAll([Bind("Grades", "Publishers", "Subjects", "Series")] ProductFilterDTO productFilter, string? name)
     {
-        return await _service.Books.GetAllForUser(p =>
+        var bookList = await _service.Books.GetAllForUser(p =>
             p.IsActive == true &&
             (string.IsNullOrEmpty(name) || p.Name.ToLower().Contains(name.ToLower())) &&
             (productFilter.Grades == null || productFilter.Grades.Contains((int)p.Grade)) &&
@@ -48,6 +63,22 @@ public class ProductController : ControllerBase
             (productFilter.Subjects == null || productFilter.Subjects.Contains((int)p.Subject)) &&
             (productFilter.Series == null || p.BookSeries.Any(bs => productFilter.Series.Contains(bs.Series.GetValueOrDefault()))
         ));
+
+        var favoriteList = HttpContext.Session.GetInt32("id") != null ? await _service.Favorites.GetByUserId((int)HttpContext.Session.GetInt32("id")) : [];
+        var productList = new List<ProductDTO>();
+        foreach(var book in bookList)
+        {
+            productList.Add(new ProductDTO
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Image = book.Image,
+                Price = book.Price,
+                IsFavorite = favoriteList.Contains(book.Id),
+            });
+        }
+
+        return productList;
     }
 
     [HttpGet("get-subject")]

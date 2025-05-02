@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Heart, ShoppingCartSimple, User, MagnifyingGlass } from "@phosphor-icons/react";
-import axios from "axios";
+import React, { useState } from "react";
+import { Heart, ShoppingCartSimple, User, MagnifyingGlass, ClockCounterClockwise, Gear, SignOut } from "@phosphor-icons/react";
 import LoginForm from "./Login/LoginForm";
+import axios from "axios";
 
-const Header = () => {
+const Header = ({fullname, avatar}) => {
   const [search, setSearch] = useState("");
-  const [fullname, setFullname] = useState("");
-  const [avatar, setAvater] = useState("");
 
   const openModal = () => {
     document.getElementById("login-modal").classList.add("visible");
@@ -17,15 +15,8 @@ const Header = () => {
     document.body.style.overflow = "";
   }
 
-  useEffect(() => {
-    axios.get("/user/get-session").then(response => {
-      setFullname(response.data.fullname || "");
-      setAvater(response.data.avatar || "");
-    });
-  }, []);
-
   return (
-    <header className="mb-8">
+    <header>
       <div className="flex justify-between ms-12 me-15 items-center">
         <div>
           <a href="/san-pham" title="Xem tất cả sản phẩm">
@@ -42,10 +33,9 @@ const Header = () => {
           </a>
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center relative">
           {
-            (fullname !== "") ? (
-              //Temporary
+            (fullname !== "" && fullname !== null) ? (
               <>              
                 <a href="/nguoi-dung/yeu-thich">
                   <button className="align-middle text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-1">
@@ -59,19 +49,32 @@ const Header = () => {
                 </a>
                 <button
                   className="text-pink-700 cursor-pointer h-[32px] flex gap-x-2 items-center hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 ps-2"
-                  onClick={logOut}
+                  onClick={toggleLoginOption}
                 >
                   {`${fullname}`}
                   <img src={`${avatar}`} alt={`${fullname}`} className="size-[32px]" />
                 </button>
+
+                <div className="absolute top-8 right-0 hidden flex-col text-right" id="login-opt">
+                  <a href="/nguoi-dung/don-hang" className="flex items-center gap-x-1 justify-end text-pink-700 bg-white cursor-pointer hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 p-2 ps-4">
+                    <ClockCounterClockwise size={20} /> Lịch sử đơn hàng
+                  </a>
+                  <a href="/nguoi-dung" className="flex items-center gap-x-1 justify-end text-pink-700 bg-white cursor-pointer hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 p-2 ps-4">
+                    <Gear size={20} /> Cài đặt
+                  </a>
+                  <button onClick={logOut} className="flex gap-x-1 justify-end items-center text-right text-pink-700 bg-white cursor-pointer hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 p-2 ps-4">
+                    <SignOut size={20} /> Đăng xuất
+                  </button>
+                </div>
               </>
             ) : (
               <>
                 <button
-                  className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-2"
+                  id="login-btn"
+                  className="text-pink-700 cursor-pointer h-[32px] hover:text-white hover:bg-linear-to-br hover:from-pink-700 hover:to-pink-900 duration-200 px-2 flex gap-x-1 items-center"
                   onClick={openModal}
                 >
-                  Đăng nhập
+                  <User size={28} /> Đăng nhập
                 </button>
                 <LoginForm onClose={closeModal} />
               </>
@@ -102,7 +105,12 @@ const Header = () => {
   )
 
   function logOut() {
-    axios.post("/user/logout").then(response => location.href = "/");
+    axios.post("/user/logout").then(() => location.href = "/");
+  }
+
+  function toggleLoginOption() {
+    document.getElementById("login-opt").classList.toggle("flex");
+    document.getElementById("login-opt").classList.toggle("hidden");
   }
 }
 

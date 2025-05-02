@@ -6,7 +6,8 @@
 }
 
 main {
-  min-height: calc(100dvh - 404px);
+  min-height: calc(100dvh - 340px);
+  @apply py-8;
 }
 
 a {
@@ -19,4 +20,8 @@ a {
 
 .box-shadow {
   box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
+}
+
+.focus-error {
+  @apply bg-red-100 border-1 border-red-700
 }

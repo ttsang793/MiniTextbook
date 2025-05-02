@@ -238,11 +238,16 @@ const ABook = () => {
   }
 
   function handleThumbnailUpload(e) {
-    setBImage(e.target.files[0]);
+    try {
+      setBImage(e.target.files[0]);
 
-    const reader = new FileReader();
-    reader.onload = e => document.getElementById('thumbnail-preview').src = e.target.result;
-    reader.readAsDataURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = e => document.getElementById('thumbnail-preview').src = e.target.result;
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    catch {
+      setBImage(defaultThumbnail);
+    }
   }
 
   function save(e) {

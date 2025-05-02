@@ -132,11 +132,16 @@ const ASeries = () => {
   }
 
   function handleThumbnailUpload(e) {
-    setImage(e.target.files[0]);
+    try {
+      setImage(e.target.files[0]);
 
-    const reader = new FileReader();
-    reader.onload = e => document.getElementById('thumbnail-preview').src = e.target.result;
-    reader.readAsDataURL(e.target.files[0]);
+      const reader = new FileReader();
+      reader.onload = e => document.getElementById('thumbnail-preview').src = e.target.result;
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    catch {
+      setImage(defaultThumbnail);
+    }
   }
 
   function save(e) {

@@ -2,7 +2,7 @@ import { House, Phone, Envelope } from "@phosphor-icons/react";
 
 const Footer = () => {
   return (
-    <footer className="mt-8">
+    <footer>
       <div className="flex justify-between bg-pink-200 text-pink-900 px-15 pt-4 pb-2">
         <div>
           <img src="/mt-vlogo.png" alt="Mini Textbook logo" className="h-8 mb-4" />

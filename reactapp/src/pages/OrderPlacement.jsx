@@ -104,7 +104,7 @@ const OrderPlacement = () => {
 
   function addOrder(e) {
     e.preventDefault();
-    const order = { user: 1, receiver, address, phone, total, carts: orderList }
+    const order = { receiver, address, phone, total, carts: orderList }
     const header = { headers: {"Content-Type": "application/json"} };
 
     axios.post("/order/insert", order, header).then(response => {

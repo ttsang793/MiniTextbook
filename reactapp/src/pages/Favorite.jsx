@@ -13,7 +13,7 @@ const Favorite = () => {
   useEffect(() => {
     document.title = "Sản phẩm yêu thích - Nhà sách MiniTextbook";
     if (loadingRef.current) {
-      axios.get(`/favorite/get?userID=1`).then(response => {
+      axios.get(`/favorite/get`).then(response => {
         totalRef.current = Math.ceil(response.data.length / numPerPage);
         setFavoriteList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
       });
@@ -26,9 +26,9 @@ const Favorite = () => {
       <h1 className="text-center text-pink-900 font-bold text-4xl">SẢN PHẨM YÊU THÍCH</h1>
       
       <section className="mx-15 mt-4">
-        <div className="grid grid-cols-3 gap-8 content-start justify-around">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 content-start justify-around">
           {
-            favoriteList.map(fb => <ProductCell key={fb.id} product={fb.book} favorite={true} />)
+            favoriteList.map(fb => <ProductCell key={fb.id} product={fb} />)
           }
         </div>
 

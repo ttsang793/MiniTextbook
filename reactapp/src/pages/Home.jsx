@@ -53,7 +53,7 @@ const Home = () => {
           ) : (
           <section className="mx-15 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center gap-x-10">
             {
-              newestBook.map(b => <ProductCell product={b} key={b.id} favorite={false} />)
+              newestBook.map(b => <ProductCell product={b} key={b.id} />)
             }
           </section>
         )

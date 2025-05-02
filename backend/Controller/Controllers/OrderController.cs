@@ -18,9 +18,13 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("get-history")]
-    public async Task<IEnumerable<Order>> GetByUserId(int userID)
+    public async Task<IActionResult> GetByUserId()
     {
-        return await _service.Orders.GetByUserId(userID);
+        int? userID = HttpContext.Session.GetInt32("id");
+
+        if (userID != null)
+            return Ok(await _service.Orders.GetByUserId((int)userID));
+        return StatusCode(403);
     }
 
     [HttpPost("get-item")]
@@ -34,7 +38,7 @@ public class OrderController : ControllerBase
     {
         var order = new Order
         {
-            User = orderDTO.User,
+            User = (int)HttpContext.Session.GetInt32("id")!,
             Receiver = orderDTO.Receiver,
             Address = orderDTO.Address,
             Phone = orderDTO.Phone,

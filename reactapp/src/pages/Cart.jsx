@@ -14,10 +14,10 @@ const Cart = () => {
 
     if (loadingRef.current) {
 
-      axios.get("/cart/get?userID=1").then(response => {
+      axios.get("/cart/get").then(response => {
         setCartList(response.data);
         response.data.forEach(r => checkbox.push(false));
-      });
+      }).catch(() => location.href = "/401");
       loadingRef.current = false;
     }
   })
@@ -131,15 +131,15 @@ const Cart = () => {
 
   function calcTotal() {
     let tempTotal = 0;
-    for (let i=0; i<cartList.length; i++)
+    for (let i = 0; i < cartList.length; i++)
       if (checkbox[i]) tempTotal += cartList[i].price * cartList[i].quantity;
     setTotal(tempTotal);
   }
 
   function updateCart(e, cart, quantity) {
     if (cart.quantity + quantity > 0) {
-      const updateCart = { id: cart.id, book: cart.bookId, user: 1, quantity: cart.quantity + quantity };
-      const headers = { headers: {"Content-Type": "application/json"} };
+      const updateCart = { id: cart.id, book: cart.bookId, quantity: cart.quantity + quantity };
+      const headers = { headers: { "Content-Type": "application/json" } };
       axios.put("/cart/update", updateCart, headers).then(response => {
         if (response.status === 200) {
           cart.quantity += quantity;
@@ -168,7 +168,7 @@ const Cart = () => {
 
   function removeAll() {
     if (confirm("Bạn có muốn xóa toàn bộ sản phẩm trong giỏ hảng?")) {
-      axios.delete(`/cart/delete?userID=1`).then(response => {
+      axios.delete(`/cart/delete-all`).then(response => {
         if (response.status === 200) {
           alert("Xóa giỏ hàng thành công!");
           location.reload();
@@ -184,7 +184,7 @@ const Cart = () => {
   function proceedToTransaction() {
     let flagError = true;
     const product = [];
-    for (let i=0; i<checkbox.length; i++) {
+    for (let i=0; i < checkbox.length; i++) {
       if (checkbox[i]) { 
         flagError = false;
         product.push(cartList[i].id);

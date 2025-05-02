@@ -74,3 +74,9 @@ D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Application.dll
 D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Application.pdb
 D:\SGU\DoAnCode\MiniTextbook\backend\Controller\obj\Debug\net8.0\Controller.sourcelink.json
 D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\Microsoft.Extensions.WebEncoders.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\System.Security.Cryptography.Xml.dll
+D:\SGU\DoAnCode\MiniTextbook\backend\Controller\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
