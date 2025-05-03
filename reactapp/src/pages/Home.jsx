@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductCell from '/src/components/Product/ProductCell';
 
-const Home = () => {
+const Home = ({fullname}) => {
   const [series, setSeries] = useState([]);
   const [newestBook, setNewestBook] = useState([]);
 
@@ -53,7 +53,7 @@ const Home = () => {
           ) : (
           <section className="mx-15 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 justify-center gap-x-10">
             {
-              newestBook.map(b => <ProductCell product={b} key={b.id} />)
+              newestBook.map(b => <ProductCell product={b} key={b.id} fullname={fullname} />)
             }
           </section>
         )

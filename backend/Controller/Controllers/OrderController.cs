@@ -34,7 +34,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert(OrderDTO orderDTO)
+    public async Task<IActionResult> Insert(OrderDTO orderDTO, bool isInstant)
     {
         var order = new Order
         {
@@ -48,7 +48,7 @@ public class OrderController : ControllerBase
             PaidMethod = "cash"
         };
 
-        return await _service.Orders.Insert(order, orderDTO.Carts) ? StatusCode(200) : StatusCode(404);
+        return await _service.Orders.Insert(order, orderDTO.Carts, isInstant) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("cancel")]

@@ -5,7 +5,7 @@ import { CartPlusFill, CartCheckFill } from "react-bootstrap-icons";
 import { displayPrice } from '/script';
 import "./ProductCell.css"
 
-const ProductCell = ({ product }) => {
+const ProductCell = ({ product, fullname }) => {
   const [quantity, setQuantity] = useState(1);
   const incQuantity = () => setQuantity(quantity + 1);
   const decQuantity = () => (quantity > 1) && setQuantity(quantity - 1);
@@ -37,7 +37,7 @@ const ProductCell = ({ product }) => {
           <button className="bg-pink-100 border-1 border-pink-900 text-pink-900 p-1 cursor-pointer text-xl hover:bg-pink-800/90 hover:text-pink-50 duration-200" onClick={() => addToCart(product.id, quantity)}>
             <CartPlusFill size={20} />
           </button>
-          <button className="bg-pink-100 border-1 border-pink-900 text-pink-900 p-1 cursor-pointer text-xl hover:bg-pink-800/90 hover:text-pink-50 duration-200">
+          <button className="bg-pink-100 border-1 border-pink-900 text-pink-900 p-1 cursor-pointer text-xl hover:bg-pink-800/90 hover:text-pink-50 duration-200" onClick={() => handleCheckout(product.id, quantity, fullname)}>
             <CartCheckFill size={20} />
           </button>
         </div>
@@ -91,6 +91,16 @@ const ProductCell = ({ product }) => {
         console.error(response);
       }
     })
+  }
+
+  function handleCheckout(book, quantity, fullname) {
+    if (fullname == "") {
+      document.getElementById("login-btn").click();
+      return;
+    }
+
+    document.cookie = `item=${btoa(btoa(btoa(book + "_" + quantity)))}; max-age=3`;
+    location.href = "/nguoi-dung/thanh-toan?location=instant";
   }
 }
 

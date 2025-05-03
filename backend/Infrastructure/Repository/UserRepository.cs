@@ -18,7 +18,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public async Task<User?> Login(User user)
     {
-        var result = (await GetAll(u => u.Username == user.Username)).FirstOrDefault();
+        var result = (await GetAll(u => u.Username == user.Username && u.IsActive == true)).FirstOrDefault();
         if (result != null)
         {
             var verfityResult = passwordHasher.VerifyHashedPassword(result, result.Password, user.Password);
@@ -44,30 +44,44 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public async Task<User?> Update(User user)
     {
-        var result = (await GetAll(u => u.Username == user.Username && u.Id != user.Id)).FirstOrDefault();
-        if (result != null) return new User { Fullname = "Username đã tồn tại" };
+        var updateUser = await GetById(user.Id);
+        if (updateUser.Username != user.Username)
+        {
+            var result = (await GetAll(u => u.Username == user.Username && u.Id != user.Id)).FirstOrDefault();
+            if (result != null) return new User { Fullname = "Username đã tồn tại" };
+            else updateUser.Username = user.Username;
+        }
 
         if (user.Avatar != "/src/images/avatar/default.jpg")
-            user.Avatar = "/src/images/avatar/" + user.Username + Path.GetExtension(user.Avatar);
-        GetDbSet().Update(user);
+            updateUser.Avatar = "/src/images/avatar/avatar_" + user.Username + Path.GetExtension(user.Avatar);
+        
+        updateUser.Address = user.Address;
+        updateUser.Phone = user.Phone;
+        updateUser.Email = user.Email;
+        GetDbSet().Update(updateUser);
 
-        return new User { Id = user.Id, Avatar = user.Avatar, Fullname = user.Fullname };
+        return new User { Id = updateUser.Id, Avatar = updateUser.Avatar, Fullname = updateUser.Fullname };
     }
 
     public async Task<bool> UpdatePassword(User user, string oldPassword)
     {
-        var result = passwordHasher.VerifyHashedPassword(user, (await GetById(user.Id)).Password, oldPassword);
+        var updateUser = await GetById(user.Id);
+        var result = passwordHasher.VerifyHashedPassword(updateUser, updateUser.Password, oldPassword);
         if (result == PasswordVerificationResult.Failed) return false;
 
-        user.Password = passwordHasher.HashPassword(user, user.Password);
-        GetDbSet().Update(user);
+        updateUser.Password = passwordHasher.HashPassword(updateUser, user.Password);
+        GetDbSet().Update(updateUser);
 
         return true;
     }
 
-    public async Task UpdateStatus(int id)
+    public async Task<bool> DeactivateAccount(int id, string oldPassword)
     {
-        var user = await GetById(id);
-        user.IsActive = false;
+        var deleteUser = await GetById(id);
+        var result = passwordHasher.VerifyHashedPassword(deleteUser, deleteUser.Password, oldPassword);
+        if (result == PasswordVerificationResult.Failed) return false;
+
+        deleteUser.IsActive = false;
+        return true;
     }
 }

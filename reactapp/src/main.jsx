@@ -22,6 +22,7 @@ import OrderResult from '/src/pages/OrderResult'
 
 //admin
 import AHeader from '/src/Admin/components/Header';
+import ALogin from '/src/Admin/pages/Login'
 import ABook from '/src/Admin/pages/Book';
 import AOrder from '/src/Admin/pages/Order';
 import APublisher from '/src/Admin/pages/Publisher';
@@ -42,21 +43,27 @@ function App() {
   const loadPage = () => {
     if (location.pathname === "/hello-world") return <HelloWorld />
 
-    else if (location.pathname.startsWith("/quan-tri")) return (
-      <>
-        <AHeader />
-        <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
-          <Routes>
-            <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
-            <Route path="/quan-tri/sach" element={<ABook />} />
-            <Route path="/quan-tri/bo-sach" element={<ASeries />} />
-            <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
-            <Route path="/quan-tri/don-hang" element={<AOrder />} />
-            <Route path="/quan-tri/*" element={<FourOFour />} />
-          </Routes>
-        </Router>
-      </>
-    )
+    else if (location.pathname.startsWith("/quan-tri")) {
+      //temp code
+      return <ALogin />
+
+      // return (
+      //   <>
+      //     <AHeader />
+      //     <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
+      //       <Routes>
+      //         <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
+      //         <Route path="/quan-tri/sach" element={<ABook />} />
+      //         <Route path="/quan-tri/bo-sach" element={<ASeries />} />
+      //         <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
+      //         <Route path="/quan-tri/don-hang" element={<AOrder />} />
+      //         <Route path="/quan-tri/dang-nhap" element={<ALogin />} />
+      //         <Route path="/quan-tri/*" element={<FourOFour />} />
+      //       </Routes>
+      //     </Router>
+      //   </>
+      // )
+    }
     
     else {
       return (
@@ -64,13 +71,13 @@ function App() {
           <Header fullname={fullname} avatar={avatar} />
           <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/san-pham" element={<Product />} />
+              <Route path="/" element={<Home fullname={fullname} />} />
+              <Route path="/san-pham" element={<Product fullname={fullname} />} />
               <Route path="/nguoi-dung">
                 {
                   (fullname === "") ? <Route path="*" element={<Navigate to="/401" replace />} /> : (
                   <>
-                    <Route path="yeu-thich" element={<Favorite />} />
+                    <Route path="yeu-thich" element={<Favorite fullname={fullname} />} />
                     <Route path="gio-hang" element={<Cart />} />
                     <Route path="don-hang" element={<OrderHistory />} />
                     <Route path="thanh-toan">

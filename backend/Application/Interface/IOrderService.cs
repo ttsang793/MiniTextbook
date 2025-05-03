@@ -11,7 +11,7 @@ public interface IOrderService
 
     Task<IEnumerable<CartDTO>> GetTransactionItems(int[] cartID);
 
-    Task<bool> Insert(Order order, List<CartDTO> cartDTO);
+    Task<bool> Insert(Order order, List<CartDTO> cartDTO, bool isInstant);
 
     Task<bool> UpdateStatus(int id, int status, int? vertify = null);
 }

@@ -7,7 +7,7 @@ using Core.Entity;
 
 namespace Core.Interface;
 
-public interface IUserRepository : IRepository<User>, IStatus
+public interface IUserRepository : IRepository<User>
 {
     Task<User?> Login(User user);
 
@@ -16,4 +16,6 @@ public interface IUserRepository : IRepository<User>, IStatus
     Task<User?> Update(User user);
 
     Task<bool> UpdatePassword(User user, string oldPassword);
+
+    Task<bool> DeactivateAccount(int id, string oldPassword);
 }

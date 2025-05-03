@@ -46,9 +46,9 @@ public class UserService : IUserService
         return (!result) ? result : await _unitOfWork.SaveChanges() > 0;
     }
 
-    public async Task<bool> UpdateStatus(int id)
+    public async Task<bool> DeactivateAccount(int id, string oldPassword)
     {
-        await _unitOfWork.Users.UpdateStatus(id);
+        await _unitOfWork.Users.DeactivateAccount(id, oldPassword);
         return await _unitOfWork.SaveChanges() > 0;
     }
 }

@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from "axios";
 
 const UserDetail = () => {
+  const defaultThumbnail = "/src/images/avatar/default.jpg";
   const [username, setUsername] = useState("");
   const [fullname, setFullname] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [deletePass, setDeletePass] = useState("");
   
   const [defaultUsername, setDefaultUsername] = useState("");
   const [defaultFullname, setDefaultFullname] = useState("");
@@ -26,21 +28,20 @@ const UserDetail = () => {
     if (!loadingRef.current) {
       document.title = "Cài đặt - Nhà sách MiniTextbook";
       axios.get("/user/get").then(response => {
-        console.log(response.data);
         const user = response.data;
         setUsername(user.username);
         setFullname(user.fullname);
         setAddress(user.address || "");
         setPhone(user.phone || "");
         setEmail(user.email || "");
-        setAvatar(user.avatar || "");
+        setAvatar(user.avatar);
         
         setDefaultUsername(user.username);
         setDefaultFullname(user.fullname);
         setDefaultAddress(user.address || "");
         setDefaultPhone(user.phone || "");
         setDefaultEmail(user.email || "");
-        setDefaultAvatar(user.avatar || "");
+        setDefaultAvatar(user.avatar);
       });
       loadingRef.current = true;
     }
@@ -61,42 +62,51 @@ const UserDetail = () => {
 
           <div>
             <div className="mb-6">
-              <label htmlFor="username" className="block italic">Username: </label>
+              <label htmlFor="username" className="block italic medium">Username: </label>
               <input type="text" id="username" value={username} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Username' onChange={e => setUsername(e.target.value)} onInput={() => clearUsernameValidation()} />
               <p id="error-username" className="text-red-700 italic"></p>
             </div>
 
             <div className="mb-6">
-              <label htmlFor="fullname" className="block italic">Họ và tên: </label>
+              <label htmlFor="fullname" className="block italic medium">Họ và tên: </label>
               <input type="text" id="fullname" value={fullname} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Họ và tên' onChange={e => setFullname(e.target.value)} onInput={() => clearFullnameValidation()} />
               <p id="error-fullname" className="text-red-700 italic"></p>
             </div>
 
             <div className="mb-6">
-              <label htmlFor="address" className="block italic">Địa chỉ: </label>
+              <label htmlFor="address" className="block italic medium">Địa chỉ: </label>
               <input type="text" id="address" value={address} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Địa chỉ' onChange={e => setAddress(e.target.value)} onInput={() => clearAddressValidation()} />
               <p id="error-address" className="text-red-700 italic"></p>
             </div>
             
             <div className="mb-6">
-              <label htmlFor="phone" className="block italic">Số điện thoại: </label>
+              <label htmlFor="phone" className="block italic medium">Số điện thoại: </label>
               <input type="tel" id="phone" value={phone} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Số điện thoại' onChange={e => setPhone(e.target.value)} onInput={() => clearPhoneValidation()} />
               <p id="error-phone" className="text-red-700 italic"></p>
             </div>
             
             <div className="mb-6">
-              <label htmlFor="email" className="block italic">Email: </label>
+              <label htmlFor="email" className="block italic medium">Email: </label>
               <input type="email" id="email" value={email} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Email' onChange={e => setEmail(e.target.value)} onInput={() => clearEmailValidation()} />
               <p id="error-email" className="text-red-700 italic"></p>
             </div>
+            
+            <div className="mb-6 hidden" id="delete-pass-input">
+              <label htmlFor="deletepass" className="block italic medium">Nhập mật khẩu: </label>
+              <input type="password" id="deletepass" value={deletePass} className="rounded-full py-1 px-4 w-full focus-error" onChange={e => setDeletePass(e.target.value)} onInput={() => restoreDeleteValidation()} />
+              <p id="error-deletepass" className="text-red-700 italic">Vui lòng nhập mật khẩu để hoàn thành xóa tài khoản!</p>
+            </div>
           </div>          
 
-          <div className="text-center order-3 lg:col-span-2">
-            <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-lg mb-4 me-2" onClick={updateInfo}>
+          <div className="text-center order-3 lg:col-span-2 text-lg mb-4">
+            <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 me-2" onClick={updateInfo}>
               Lưu
             </button>
-            <button className="bg-pink-100 text-pink-700 px-4 py-1 cursor-pointer hover:bg-radial hover:from-pink-600 hover:to-pink-800 hover:text-pink-50 text-lg mb-4 duration-150" onClick={resetDefault}>
+            <button className="bg-pink-100 text-pink-700 px-4 py-1 cursor-pointer hover:bg-radial hover:from-pink-600 hover:to-pink-800 hover:text-pink-50 duration-150 me-2" onClick={resetDefault}>
               Hủy bỏ
+            </button>
+            <button className="bg-red-800 text-white px-4 py-1 cursor-pointer hover:bg-red-700 duration-150" onClick={deleteAccount}>
+              Xóa tài khoản
             </button>
           </div>
         </div>
@@ -107,25 +117,25 @@ const UserDetail = () => {
         <h1 className='font-bold text-center mb-4 text-3xl text-pink-800'>MẬT KHẨU</h1>
 
         <div className="mb-6">
-          <label htmlFor="oldpass" className="block italic">Mật khẩu cũ: </label>
+          <label htmlFor="oldpass" className="block italic medium">Mật khẩu cũ: </label>
           <input type="password" id="oldpass" value={oldPass} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Mật khẩu cũ' onChange={e => setOldPass(e.target.value)} onInput={() => clearOldPassValidation()} />
           <p id="error-oldpass" className="text-red-700 italic"></p>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="newpass" className="block italic">Mật khẩu mới: </label>
+          <label htmlFor="newpass" className="block italic medium">Mật khẩu mới: </label>
           <input type="password" id="newpass" value={newPass} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Mật khẩu mới' onChange={e => setNewPass(e.target.value)} onInput={() => clearNewPassValidation()} />
           <p id="error-newpass" className="text-red-700 italic"></p>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="confirm" className="block italic">Xác nhận mật khẩu: </label>
-          <input type="password" id="confirm" value={confirmPass} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Nhập lại mật khẩu' onChange={e => setConfirm(e.target.value)} onInput={() => clearConfirmValidation()} />
+          <label htmlFor="confirm" className="block italic medium">Xác nhận mật khẩu: </label>
+          <input type="password" id="confirm" value={confirmPass} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Nhập lại mật khẩu' onChange={e => setConfirmPass(e.target.value)} onInput={() => clearConfirmValidation()} />
           <p id="error-confirm" className="text-red-700 italic"></p>
         </div>
 
         <div className="text-center">
-          <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-lg mb-4">
+          <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-lg mb-4" onClick={updatePassword}>
             Đổi mật khẩu
           </button>
         </div>
@@ -164,6 +174,8 @@ const UserDetail = () => {
   function clearPhoneValidation() {
     document.getElementById("error-phone").innerHTML = "";
     document.getElementById("phone").classList.remove("focus-error");
+
+    if (email === "") document.getElementById("error-email").innerHTML = "";
   }
 
   function clearEmailValidation() {
@@ -220,7 +232,7 @@ const UserDetail = () => {
     if (!errorFlag) {
       if (confirm("Bạn có muốn cập nhật thông tin?")) {
         const formData = new FormData();
-        if (username != defaultUsername) formData.append("username", username);
+        formData.append("username", username);
         formData.append("fullname", fullname);
         formData.append("address", address);
         formData.append("phone", phone);
@@ -263,16 +275,108 @@ const UserDetail = () => {
     setPhone(defaultPhone);
     setEmail(defaultEmail);
     setAvatar(defaultAvatar);
+    document.getElementById("delete-pass-input").classList.add("hidden");
   }
 
-  function clearPasswordValidation() {
-    document.getElementById("error-password").innerHTML = "";
-    document.getElementById("password").classList.remove("focus-error");
+  function clearOldPassValidation() {
+    document.getElementById("error-oldpass").innerHTML = "";
+    document.getElementById("oldpass").classList.remove("focus-error");
+  }
+
+  function clearNewPassValidation() {
+    document.getElementById("error-newpass").innerHTML = "";
+    document.getElementById("newpass").classList.remove("focus-error");
   }
 
   function clearConfirmValidation() {
     document.getElementById("error-confirm").innerHTML = "";
     document.getElementById("confirm").classList.remove("focus-error");
+  }
+
+  function updatePassword() {
+    clearOldPassValidation();
+    clearNewPassValidation();
+    clearConfirmValidation();
+    let errorFlag = false;
+
+    if (oldPass === "") {
+      document.getElementById("error-oldpass").innerHTML = "Vui lòng nhập mật khẩu cũ.";
+      document.getElementById("oldpass").classList.add("focus-error");
+      if (!errorFlag) document.getElementById("oldpass").focus();
+      errorFlag = true;
+    }
+
+    if (newPass === "") {
+      document.getElementById("error-newpass").innerHTML = "Vui lòng nhập mật khẩu mới.";
+      document.getElementById("newpass").classList.add("focus-error");
+      if (!errorFlag) document.getElementById("newpass").focus();
+      errorFlag = true;
+    }
+    else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(newPass)) {
+      document.getElementById("error-newpass").innerHTML = "Mật khẩu cần có 1 chữ hoa, 1 chữ thường, 1 chữ số, và có tối thiểu 6 ký tự";
+      document.getElementById("newpass").classList.add("focus-error");
+      if (!errorFlag) document.getElementById("newpass").focus();
+      errorFlag = true;
+    }
+
+    if (confirmPass !== newPass) {
+      document.getElementById("error-confirm").innerHTML = "Cần nhập lại mật khẩu trùng với mật khẩu mới ở trên.";
+      document.getElementById("confirm").classList.add("focus-error");
+      if (!errorFlag) document.getElementById("confirm").focus();
+      errorFlag = true;
+    }
+
+    if (!errorFlag) {
+      if(confirm("Bạn có muốn cập nhật mật khẩu không?")) {
+        const pass = { oldPassword: oldPass, newPassword: newPass };
+
+        axios.put("/user/update-key", pass, { 'Content-Type': 'multipart/form-data' })
+        .then(() => {
+          alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại!")
+          location.href = "/";
+        })
+        .catch(response => {
+          if (response.status === 404) {
+            document.getElementById("error-oldpass").innerHTML = "Mật khẩu cũ không chính xác!";
+            document.getElementById("oldpass").classList.add("focus-error");
+            document.getElementById("oldpass").focus();
+          }
+          else {
+            alert("Đã có lỗi xảy ra, vui lòng thử lại!");
+            console.error(response);
+          }
+        })
+      }
+    }
+  }
+
+  function restoreDeleteValidation() {
+    document.getElementById("error-deletepass").innerHTML = "Vui lòng nhập mật khẩu để hoàn thành xóa tài khoản!";
+  }
+
+  function deleteAccount() {
+    document.getElementById("delete-pass-input").classList.remove("hidden");
+    if (deletePass !== "") {
+      if (confirm("Bạn có muốn xóa tài khoản của bạn?")) {          
+        axios.delete("/user/delete", { data: { oldPassword: deletePass }, headers: { 'Content-Type': 'application/json' } } )
+        .then(() => {
+          alert("Cảm ơn bạn đã quan tâm đến MiniTextbook. Mong sớm ngày gặp lại bạn!")
+          location.href = "/";
+        })
+        .catch(response => {
+          if (response.status === 404) {
+            document.getElementById("error-deletepass").innerHTML = "Mật khẩu không chính xác!";
+            document.getElementById("deletepass").classList.add("focus-error");
+            document.getElementById("deletepass").focus();
+          }
+          else {
+            alert("Đã có lỗi xảy ra, vui lòng thử lại!");
+            console.error(response);
+          }
+        })
+      }
+    }
+    else document.getElementById("deletepass").focus();
   }
 }
 

@@ -78,10 +78,9 @@ public class OrderService : IOrderService
     }
     
 
-    public async Task<bool> Insert(Order order, List<CartDTO> cartDTO)
+    public async Task<bool> Insert(Order order, List<CartDTO> cartDTO, bool isInstant)
     {
         await _unitOfWork.Orders.Insert(order);
-
         int newID = await _unitOfWork.Orders.GetLastId();
         foreach (var cart in cartDTO)
         {
@@ -93,7 +92,7 @@ public class OrderService : IOrderService
                 Quantity = cart.Quantity
             });
 
-            await _unitOfWork.Carts.Delete(cart.Id);
+            if (!isInstant) await _unitOfWork.Carts.Delete(cart.Id);
         }
 
         return await _unitOfWork.SaveChanges() > 0;

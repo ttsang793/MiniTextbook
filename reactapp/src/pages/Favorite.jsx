@@ -3,7 +3,7 @@ import axios from 'axios';
 import ProductCell from '/src/components/Product/ProductCell';
 import Pagination from '/src/components/Pagination';
 
-const Favorite = () => {
+const Favorite = ({fullname}) => {
   let [favoriteList, setFavoriteList] = useState([]);
   const numPerPage = 9;
   const pageRef = useRef(1);
@@ -28,7 +28,7 @@ const Favorite = () => {
       <section className="mx-15 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 content-start justify-around">
           {
-            favoriteList.map(fb => <ProductCell key={fb.id} product={fb} />)
+            favoriteList.map(fb => <ProductCell key={fb.id} product={fb} fullname={fullname} />)
           }
         </div>
 

@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { displayPrice } from "/script";
 
@@ -8,23 +8,51 @@ const OrderPlacement = () => {
   const [phone, setPhone] = useState("");
   const [total, setTotal] = useState(0);
   const [orderList, setOrderList] = useState([]);
+  const locationParam = new URLSearchParams(location.search).get("location");
+  const loadingRef = useRef(false);
 
   useEffect(() => {
-    const cartStr = atob(atob(atob(document.cookie.substring(5)))).split("_");
-    const cart = [];
-    cartStr.forEach(c => cart.push(Number(c)));
     document.title = "Đặt hàng - Nhà sách MiniTextbook";
 
-    axios.post(`/order/get-item`, cart, {headers: {"Content-Type": "application/json"}}).then(response => {
-      console.log(response);
-      setOrderList(response.data);
-      let tempTotal = 0;
-      response.data.forEach(order => tempTotal = tempTotal + order.price * order.quantity);
-      setTotal(tempTotal);
-    });
+    if (!loadingRef.current) {
+      axios.get("/user/get").then(response => {
+        const user = response.data;
+        console.log(user);
+
+        setReceiver(user.fullname);
+        setAddress(user.address);
+        setPhone(user.phone);
+      })
+      
+      if (locationParam == "cart") {
+        const cartStr = atob(atob(atob(document.cookie.substring(5)))).split("_");
+        const cart = [];
+        cartStr.forEach(c => cart.push(Number(c)));
+
+        axios.post(`/order/get-item`, cart, {headers: {"Content-Type": "application/json"}}).then(response => {
+          setOrderList(response.data);
+          let tempTotal = 0;
+          response.data.forEach(order => tempTotal = tempTotal + order.price * order.quantity);
+          setTotal(tempTotal);
+        });
+      }
+      else {
+        const productStr = atob(atob(atob(document.cookie.substring(5)))).split("_");
+
+        axios.get(`/product/get?id=${Number(productStr[0])}`).then(response => {
+          const product = response.data;
+          product.bookId = Number(productStr[0]);
+          product.quantity = Number(productStr[1]);
+
+          setOrderList([product]);
+          setTotal(product.price * product.quantity);
+        })
+      }
+      loadingRef.current = true;
+    }    
   }, []);
   
-  return (
+  return (!loadingRef.current) ? <>Hello World</> : (
     <main>
       <h1 className="text-center text-pink-900 font-bold text-4xl">THANH TOÁN</h1>
       
@@ -39,13 +67,13 @@ const OrderPlacement = () => {
 
           <div className="mb-3">
             <label htmlFor="address" className="block font-bold italic">Địa chỉ: </label>
-            <input type="text" id="address" required className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+            <input type="text" id="address" value={address} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
               onChange={e => setAddress(e.target.value)} />
           </div>
 
           <div className="mb-3">
             <label htmlFor="phone" className="block font-bold italic">Số điện thoại: </label>
-            <input type="text" id="phone" required className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+            <input type="text" id="phone" value={phone} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
               onChange={e => setPhone(e.target.value)} />
           </div>
 
@@ -107,7 +135,7 @@ const OrderPlacement = () => {
     const order = { receiver, address, phone, total, carts: orderList }
     const header = { headers: {"Content-Type": "application/json"} };
 
-    axios.post("/order/insert", order, header).then(response => {
+    axios.post(`/order/insert?isInstant=${(locationParam == "instant")}`, order, header).then(response => {
       if (response.status === 200) {
         alert("Đặt hàng thành công");
         location.href = "/nguoi-dung/thanh-toan/ket-qua";

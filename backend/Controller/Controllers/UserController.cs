@@ -2,9 +2,7 @@
 using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Core.Entity;
-using Microsoft.AspNetCore.Session;
 using Application.DTO;
-using Microsoft.AspNetCore.Http;
 
 namespace Controller.Controllers;
 
@@ -28,7 +26,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("get-session")]
-    public async Task<IActionResult> GetSessionData()
+    public IActionResult GetSessionData()
     {
         return Ok(new { Fullname = HttpContext.Session.GetString("fullname"), Avatar = HttpContext.Session.GetString("avatar") });
     }
@@ -71,9 +69,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> Update([FromForm] [Bind("Username", "Fullname", "Address", "Phone", "Email")] User user, IFormFile file)
+    public async Task<IActionResult> Update([FromForm] [Bind("Username", "Fullname", "Address", "Phone", "Email", "Avatar")] User user, IFormFile file)
     {
         user.Id = (int)HttpContext.Session.GetInt32("id")!;
+
         var updateUser = await _service.Users.Update(user);
         if (updateUser != null)
         {
@@ -82,7 +81,7 @@ public class UserController : ControllerBase
             HttpContext.Session.SetString("avatar", updateUser.Avatar!);
 
             if (file == null || file.Length == 0) return StatusCode(200);
-            return (await _service.Images.UploadImage(file, user.Username, "")) ? StatusCode(200) : StatusCode(400);
+            return (await _service.Images.UploadImage(file, user.Username!, "avatar")) ? StatusCode(200) : StatusCode(400);
         }
         return StatusCode(404);
     }
@@ -96,6 +95,13 @@ public class UserController : ControllerBase
             Password = pass.NewPassword
         };
 
-        return (await _service.Users.UpdatePassword(user, pass.OldPassword)) ? LogOut() : StatusCode(404);
+        return (await _service.Users.UpdatePassword(user, pass.OldPassword!)) ? LogOut() : StatusCode(404);
+    }
+
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeactivateAccount([Bind("OldPassword")] PassDTO pass)
+    {
+        int id = (int)HttpContext.Session.GetInt32("id")!;
+        return (await _service.Users.DeactivateAccount(id, pass.OldPassword!)) ? LogOut() : StatusCode(404);
     }
 }

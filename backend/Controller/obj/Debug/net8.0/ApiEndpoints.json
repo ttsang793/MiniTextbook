@@ -745,6 +745,11 @@
         "Name": "orderDTO",
         "Type": "Application.DTO.OrderDTO",
         "IsRequired": true
+      },
+      {
+        "Name": "isInstant",
+        "Type": "System.Boolean",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -921,6 +926,22 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
+    "Method": "DeactivateAccount",
+    "RelativePath": "user/delete",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pass",
+        "Type": "Application.DTO.PassDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "Controller.Controllers.UserController",

@@ -15,5 +15,5 @@ public interface IUserService
 
     Task<bool> UpdatePassword(User user, string oldPassword);
 
-    Task<bool> UpdateStatus(int id);
+    Task<bool> DeactivateAccount(int id, string oldPassword);
 }
