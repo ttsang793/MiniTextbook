@@ -2,13 +2,13 @@
 using Application.Interface;
 using Application.DTO;
 using Microsoft.AspNetCore.Mvc;
-namespace Controller.AdminControllers;
 
+namespace Controller.AdminControllers;
 [ApiController]
 [Route("/admin/order")]
 public class OrderController : ControllerBase
 {
-    private ILogger<OrderController> _logger;
+    private readonly ILogger<OrderController> _logger;
     private readonly IService _service;
 
     public OrderController(ILogger<OrderController> logger, IService service)
@@ -21,6 +21,18 @@ public class OrderController : ControllerBase
     public async Task<IEnumerable<Order>> GetOrders()
     {
         return await _service.Orders.GetAll();
+    }
+
+    [HttpGet("get/receiver")]
+    public async Task<List<string>> GetAllReceiver()
+    {
+        return await _service.Orders.GetAllReceiver();
+    }
+
+    [HttpGet("get/address")]
+    public async Task<List<string>> GetAllAddress()
+    {
+        return await _service.Orders.GetAllAddress();
     }
 
     [HttpPut("update-status")]

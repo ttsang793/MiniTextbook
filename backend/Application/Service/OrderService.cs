@@ -7,6 +7,7 @@ using Core.Entity;
 using Core.Interface;
 using Application.DTO;
 using Application.Interface;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -19,9 +20,9 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<Order>> GetAll()
+    public async Task<IEnumerable<Order>> GetAll(Expression<Func<Order, bool>> expression = null)
     {
-        var orders = (await _unitOfWork.Orders.GetAll()).OrderByDescending(o => o.Id);
+        var orders = (await _unitOfWork.Orders.GetAll(expression)).OrderByDescending(o => o.Id);
 
         foreach (Order order in orders)
         {
@@ -51,6 +52,20 @@ public class OrderService : IOrderService
         }
 
         return orders;
+    }
+
+    public async Task<List<string>> GetAllReceiver()
+    {
+        var orders = await _unitOfWork.Orders.GetAll();
+        var receivers = from o in orders group o by o.Receiver into g select g.Key;
+        return receivers.ToList();
+    }
+
+    public async Task<List<string>> GetAllAddress()
+    {
+        var orders = await _unitOfWork.Orders.GetAll();
+        var addresses = from o in orders group o by o.Address into g select g.Key;
+        return addresses.ToList();
     }
 
     public async Task<IEnumerable<CartDTO>> GetTransactionItems(int[] cartID)

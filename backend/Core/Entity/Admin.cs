@@ -9,9 +9,9 @@ public partial class Admin : BaseEntity
 
     public string? Fullname { get; set; }
 
-    public string? Phone { get; set; }
+    public TimeSpan? TimeBegin { get; set; }
 
-    public string? Email { get; set; }
+    public TimeSpan? TimeEnd { get; set; }
 
     public int? Role { get; set; }
 

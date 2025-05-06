@@ -9,7 +9,7 @@ const ALogin = () => {
   useEffect(() => { document.title = "Đăng nhập quản trị viên" }, []);
 
   return (
-    <main>
+    <main className='login-main-container'>
       <div className='fixed top-0 right-0 bottom-0 left-0 bg-black/70 flex justify-center items-center'>
         <div className="bg-white rounded-xl box-shadow p-10 max-w-[450px] w-full">
           <h1 className='font-bold text-3xl mb-2 text-center'>ĐĂNG NHẬP QUẢN TRỊ</h1>
@@ -69,11 +69,10 @@ const ALogin = () => {
     }
 
     if (!errorFlag) {
-      /*
-      axios.post("/user/login", { username, password }, { 'Content-Type': 'application/json' })
+      axios.post("/admin/admin/login", { id: username, password }, { 'Content-Type': 'application/json' })
       .then(() => {
         alert("Đăng nhập thành công!");
-        location.reload();
+        location.href = "/quan-tri/thong-ke";
       })
       .catch(response => {
         if (response.status === 404) {
@@ -88,7 +87,6 @@ const ALogin = () => {
           console.error(response);
         }
       })
-      */
     }
   }
 }

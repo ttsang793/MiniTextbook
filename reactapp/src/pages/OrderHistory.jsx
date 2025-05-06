@@ -19,7 +19,7 @@ const OrderHistory = () => {
   }, []);
   
   return (
-    <main>
+    <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">LỊCH SỬ ĐƠN HÀNG</h1>
       
       <section className="mx-15 mt-4 grid grid-cols-[1fr_1fr] gap-4 text-pink-900">

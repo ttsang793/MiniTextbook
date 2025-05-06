@@ -6,6 +6,7 @@ namespace Infrastructure.Repository;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly MiniTextbookContext _dbContext;
+    private IAdminRepository? _adminRepository;
     private IBookRepository? _bookRepository;
     private IBookSeriesRepository? _bookSeriesRepository;
     private ICartRepository? _cartRepository;
@@ -22,6 +23,7 @@ public class UnitOfWork : IUnitOfWork
         _dbContext = dbContext;
     }
 
+    public IAdminRepository Admins => _adminRepository ??= new AdminRepository(_dbContext);
     public IBookRepository Books => _bookRepository ??= new BookRepository(_dbContext);
     public IBookSeriesRepository BookSeries => _bookSeriesRepository ??= new BookSeriesRepository(_dbContext);
     public ICartRepository Carts => _cartRepository ??= new CartRepository(_dbContext);

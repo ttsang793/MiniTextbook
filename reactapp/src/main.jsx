@@ -27,42 +27,48 @@ import ABook from '/src/Admin/pages/Book';
 import AOrder from '/src/Admin/pages/Order';
 import APublisher from '/src/Admin/pages/Publisher';
 import ASeries from '/src/Admin/pages/Series';
+import AStatistic from '/src/Admin/pages/Statistic';
 import ASubject from '/src/Admin/pages/Subject';
 
 function App() {
   const [fullname, setFullname] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const [aid, setAId] = useState(null);
+  const [afullname, setAFullname] = useState(null);
 
   useEffect(() => {
     axios.get("/user/get-session").then(response => {
       setFullname(response.data.fullname || "");
       setAvatar(response.data.avatar || "");
     });
+    axios.get("/admin/admin/get-session").then(response => {
+      setAId(response.data.aid);
+      setAFullname(response.data.afullname);
+    })
   }, []);
 
   const loadPage = () => {
     if (location.pathname === "/hello-world") return <HelloWorld />
 
     else if (location.pathname.startsWith("/quan-tri")) {
-      //temp code
-      return <ALogin />
+      if (afullname == null) return <ALogin />
 
-      // return (
-      //   <>
-      //     <AHeader />
-      //     <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
-      //       <Routes>
-      //         <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
-      //         <Route path="/quan-tri/sach" element={<ABook />} />
-      //         <Route path="/quan-tri/bo-sach" element={<ASeries />} />
-      //         <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
-      //         <Route path="/quan-tri/don-hang" element={<AOrder />} />
-      //         <Route path="/quan-tri/dang-nhap" element={<ALogin />} />
-      //         <Route path="/quan-tri/*" element={<FourOFour />} />
-      //       </Routes>
-      //     </Router>
-      //   </>
-      // )
+      return (
+        <>
+          <AHeader aid={aid} afullname={afullname} />
+          <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
+            <Routes>
+              <Route path="/quan-tri/thong-ke" element={<AStatistic />} />
+              <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
+              <Route path="/quan-tri/sach" element={<ABook />} />
+              <Route path="/quan-tri/bo-sach" element={<ASeries />} />
+              <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
+              <Route path="/quan-tri/don-hang" element={<AOrder />} />
+              <Route path="/quan-tri/*" element={<FourOFour />} />
+            </Routes>
+          </Router>
+        </>
+      )
     }
     
     else {

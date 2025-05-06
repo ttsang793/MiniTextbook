@@ -7,7 +7,6 @@
 
 main {
   min-height: calc(100dvh - 340px);
-  @apply py-8;
 }
 
 a {

@@ -43,7 +43,7 @@ const Cart = () => {
   }
 
   return loadingRef.current ? <main>Hello World</main> : (
-    <main>
+    <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">GIỎ HÀNG</h1>
       
       {

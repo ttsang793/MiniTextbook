@@ -53,7 +53,7 @@ const OrderPlacement = () => {
   }, []);
   
   return (!loadingRef.current) ? <>Hello World</> : (
-    <main>
+    <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">THANH TOÁN</h1>
       
       <section className="mx-15 mt-4 grid grid-cols-[500px_1fr] gap-x-4 text-pink-900">

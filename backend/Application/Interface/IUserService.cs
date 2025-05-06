@@ -5,6 +5,8 @@ namespace Application.Interface;
 
 public interface IUserService
 {
+    Task<List<string>> GetAllUsername();
+
     Task<User> GetByUserId(int id);
 
     Task<User?> Login(User user);

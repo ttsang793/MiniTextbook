@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Book, Books, PaperPlaneTilt, Atom, CurrencyDollarSimple, UserCircle } from "@phosphor-icons/react";
 import "./Header.css";
+import axios from 'axios';
 
-const AHeader = () => {
+const AHeader = ({aid, afullname}) => {
   return (
     <header className="bg-linear-to-br from-pink-700 to-pink-900 flex justify-between items-center">
       {/* Dàn nút trong header */}
       <div className="flex">
-        <a href="/quan-tri/">
+        <a href="/quan-tri/thong-ke">
           <button className="admin-header-btn">
             <svg
               width="54"
@@ -59,13 +60,17 @@ const AHeader = () => {
       {/* Nút đăng xuất và cài đặt */}
       <div className="flex gap-x-1.5">
         <div className="text-right text-pink-50">
-          <a href="" className="block text-lg font-bold hover:underline!">250101 - Trần Tuấn Sang</a>
-          <a href="/" className="block hover:underline!">Đăng xuất</a>
+          <a href="" className="block text-lg font-bold hover:underline!">{aid} - {afullname}</a>
+          <a onClick={logOut} className="block hover:underline! cursor-pointer">Đăng xuất</a>
         </div>
         <img src="/src/images/avatar/default.jpg" alt="avatar" className="h-13 rounded-full" />
       </div>
     </header>
   )
+
+  function logOut() {
+    axios.post("/admin/admin/logout").then(() => location.href = "/quan-tri");
+  }
 }
 
 export default AHeader;

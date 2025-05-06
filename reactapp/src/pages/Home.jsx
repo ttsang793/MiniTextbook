@@ -13,7 +13,7 @@ const Home = ({fullname}) => {
   }, []);
 
   return (
-    <main>
+    <main className="py-8">
       {/* Banner quang cao */}
       <section className="-mt-8 mb-8">
         <img src="/src/images/banner/banner1.png" alt="banner1" />

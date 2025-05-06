@@ -2,6 +2,7 @@
 
 public interface IService
 {
+    IAdminService Admins { get; }
     IBookService Books { get; }
     ICartService Carts { get; }
     IFavoriteService Favorites { get; }
@@ -9,6 +10,7 @@ public interface IService
     IOrderService Orders { get; }
     IPublisherService Publishers { get; }
     ISeriesService Series { get; }
+    IStatisticService Statistic { get; }
     ISubjectService Subjects { get; }
     IUserService Users { get; }
 }

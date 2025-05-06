@@ -6,7 +6,7 @@ const FourOOne = () => {
   }, []);
 
   return (
-    <main className="text-center mb-10">
+    <main className="text-center mb-10 py-8">
       <div className="flex justify-center">
         <img src="/sad-book.png" alt="404" className="h-70" />
       </div>

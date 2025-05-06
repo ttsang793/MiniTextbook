@@ -68,7 +68,7 @@ const Product = ({fullname}) => {
   }, []);
 
   return loadingRef ? <>Hello World</> : (
-    <main>
+    <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">SẢN PHẨM</h1>
 
       <div className="mt-4 grid grid-cols-[200px_1fr] gap-x-10 mx-15">

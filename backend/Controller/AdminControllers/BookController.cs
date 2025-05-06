@@ -8,7 +8,7 @@ namespace Controller.AdminControllers;
 [Route("/admin/book")]
 public class BookController : ControllerBase
 {
-    private ILogger<BookController> _logger;
+    private readonly ILogger<BookController> _logger;
     private readonly IService _service;
 
     public BookController(ILogger<BookController> logger, IService service)

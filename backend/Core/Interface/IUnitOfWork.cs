@@ -2,6 +2,8 @@
 
 public interface IUnitOfWork
 {
+    IAdminRepository Admins { get; }
+
     IBookRepository Books { get; }
 
     IBookSeriesRepository BookSeries { get; }

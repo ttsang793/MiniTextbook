@@ -13,6 +13,13 @@ public class UserService : IUserService
     {
         _unitOfWork = unitOfWork;
     }
+
+    public async Task<List<string>> GetAllUsername()
+    {
+        var users = await _unitOfWork.Users.GetAll();
+        return (from u in users select u.Username).ToList();
+    }
+
     public async Task<User> GetByUserId(int id)
     {
         User user = await _unitOfWork.Users.GetById(id);

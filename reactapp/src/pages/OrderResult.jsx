@@ -6,7 +6,7 @@ const OrderResult = () => {
   }, []);
 
   return (
-    <main className="text-center">
+    <main className="text-center py-8">
       <h1 className="text-center text-pink-900 font-bold text-5xl">CẢM ƠN BẠN ĐÃ ĐẶT HÀNG</h1>
       
       <div className="mx-[12.5%] mt-4 text-lg text-pink-900">

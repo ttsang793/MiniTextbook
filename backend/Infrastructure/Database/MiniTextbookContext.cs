@@ -56,15 +56,9 @@ public partial class MiniTextbookContext : DbContext
 
             entity.HasIndex(e => e.Role, "FK_Admin_Role");
 
-            entity.HasIndex(e => e.Email, "email").IsUnique();
-
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
-            entity.Property(e => e.Email)
-                .HasMaxLength(200)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("email");
             entity.Property(e => e.Fullname)
                 .HasMaxLength(100)
                 .HasDefaultValueSql("'NULL'")
@@ -75,14 +69,18 @@ public partial class MiniTextbookContext : DbContext
             entity.Property(e => e.Password)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("password");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(15)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("phone");
             entity.Property(e => e.Role)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("role");
+            entity.Property(e => e.TimeBegin)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("time")
+                .HasColumnName("time_begin");
+            entity.Property(e => e.TimeEnd)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("time")
+                .HasColumnName("time_end");
 
             entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Admins)
                 .HasForeignKey(d => d.Role)
@@ -511,8 +509,6 @@ public partial class MiniTextbookContext : DbContext
 
             entity.ToTable("user");
 
-            entity.HasIndex(e => e.Email, "email").IsUnique();
-
             entity.HasIndex(e => e.Username, "username").IsUnique();
 
             entity.Property(e => e.Id)
@@ -522,7 +518,7 @@ public partial class MiniTextbookContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("address");
             entity.Property(e => e.Avatar)
-                .HasDefaultValueSql("'NULL'")
+                .HasDefaultValueSql("'''/src/images/avatar/default.jpg'''")
                 .HasColumnName("avatar");
             entity.Property(e => e.Email)
                 .HasMaxLength(200)

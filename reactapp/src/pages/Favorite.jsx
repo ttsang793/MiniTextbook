@@ -22,7 +22,7 @@ const Favorite = ({fullname}) => {
   }, []);
 
   return loadingRef.current ? <h1>Loading...</h1> : (
-    <main>
+    <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">SẢN PHẨM YÊU THÍCH</h1>
       
       <section className="mx-15 mt-4">
