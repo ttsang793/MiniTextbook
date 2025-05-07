@@ -23,7 +23,7 @@ public partial class Order : BaseEntity
 
     public DateTime? DateCanceled { get; set; }
 
-    public int? Status { get; set; }
+    public string? Status { get; set; }
 
     public int? VertifyAdmin { get; set; }
 

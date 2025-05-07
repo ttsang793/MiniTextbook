@@ -22,7 +22,7 @@ public class StatisticController : ControllerBase
     {
         return Ok(new
         {
-            Delivering = (await _service.Orders.GetAll(o => o.Status == 2)).Count(),
+            Delivering = (await _service.Orders.GetAll(o => o.Status == "Đang giao hàng")).Count(),
             Complete = (await _service.Orders.GetAll(o => o.DateReceived == DateTime.Today)).Count(),
             Canceled = (await _service.Orders.GetAll(o => o.DateCanceled == DateTime.Today)).Count(),
             Revenue = (await _service.Orders.GetAll(o => o.DateReceived == DateTime.Today)).Sum(o => o.Total)

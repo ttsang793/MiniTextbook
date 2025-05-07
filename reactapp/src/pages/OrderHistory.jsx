@@ -12,9 +12,9 @@ const OrderHistory = () => {
     document.title = "Lịch sử đơn hàng - Nhà sách MiniTextbook";
 
     axios.get(`/order/get-history`).then(response => {
-      setOrderList(response.data.filter(s => s.status === 0 || s.status === 1));
-      setDeliverList(response.data.filter(s => s.status === 2 || s.status === 3));
-      setDoneList(response.data.filter(s => s.status === -1 || s.status === 4));
+      setOrderList(response.data.filter(s => s.status === "Chưa xác nhận" || s.status === "Đã xác nhận"));
+      setDeliverList(response.data.filter(s => s.status === "Đang giao hàng" || s.status === "Đã giao hàng"));
+      setDoneList(response.data.filter(s => s.status === "Đã hủy" || s.status === "Đã nhận hàng"));
     })
   }, []);
   
@@ -35,7 +35,7 @@ const OrderHistory = () => {
                     <Fragment key={id}>
                       <tr className="bg-linear-to-r from-pink-700 to-pink-900 font-medium text-white text-lg">
                         <td colSpan={3}>
-                          ĐƠN HÀNG {order.id}: {displayDate(order.datePurchased)} (Trạng thái: {order.status === 0 ? "Chưa xác thực" : "Đã xác thực"})
+                          ĐƠN HÀNG {order.id}: {displayDate(order.datePurchased)} (Trạng thái: {order.status})
                         </td>
                         <td className="py-1">{displayPrice(order.total)}</td>
                         <td className="py-1">
@@ -85,7 +85,7 @@ const OrderHistory = () => {
                         <td className="py-1">{displayPrice(order.total)}</td>
                         <td className="py-1">
                           {
-                            (order.status === 3) &&
+                            (order.status === "Đã giao hàng") &&
                             <button
                               className="bg-green-600 text-white flex gap-x-1 px-2 py-1 rounded-[7px] hover:bg-green-600/70 duration-150 cursor-pointer"
                               onClick={() => receiveDelivery(order.id)}
@@ -128,7 +128,7 @@ const OrderHistory = () => {
                     <Fragment key={id}>
                       <tr className="bg-linear-to-r from-pink-700 to-pink-900 font-medium text-white text-lg">
                         <td colSpan={3}>
-                          ĐƠN HÀNG {order.id}: {displayDate(order.datePurchased)} (Trạng thái: {order.status === 4 ? "Đã nhận hàng" : "Đã hủy"})
+                          ĐƠN HÀNG {order.id}: {displayDate(order.datePurchased)} (Trạng thái: {order.status})
                         </td>
                         <td className="py-1">{displayPrice(order.total)}</td>
                       </tr>

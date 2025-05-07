@@ -18,7 +18,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public async Task<User?> Login(User user)
     {
-        var result = (await GetAll(u => u.Username == user.Username && u.IsActive == true)).FirstOrDefault();
+        var result = (await GetAll(u => u.Username == user.Username && u.Status == "Đang sử dụng")).FirstOrDefault();
         if (result != null)
         {
             var verfityResult = passwordHasher.VerifyHashedPassword(result, result.Password, user.Password);
@@ -81,7 +81,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         var result = passwordHasher.VerifyHashedPassword(deleteUser, deleteUser.Password, oldPassword);
         if (result == PasswordVerificationResult.Failed) return false;
 
-        deleteUser.IsActive = false;
+        deleteUser.Status = "Đã khóa";
         return true;
     }
 }

@@ -141,14 +141,14 @@ public class StatisticService : IStatisticService
                            select new
                            {
                                Name = g.Key.Name,
-                               Value = g.Sum(od => od.Quantity)
-                           }).TakeLast(5);
+                               Value = g.Key.Id
+                           }).Take(5);
 
         var statisticResult = new StatisticDTO();
         foreach (var item in queryResult)
         {
             statisticResult.Label.Add(item.Name);
-            statisticResult.Data.Add((int)item.Value);
+            statisticResult.Data.Add(item.Value);
         }
 
         return statisticResult;
@@ -162,13 +162,13 @@ public class StatisticService : IStatisticService
         var queryResult = (from o in orders
                            join u in users on o.User equals u.Id
                            where o.DateReceived >= start && o.DateReceived <= end
-                           group u by new { u.Username, u.Fullname } into g
+                           group u by new { u.Id, u.Username, u.Fullname } into g
                            orderby g.Count() descending
                            select new
                            {
                                Name = g.Key.Username + " - " + g.Key.Fullname,
-                               Value = g.Count()
-                           }).TakeLast(5);
+                               Value = g.Key.Id
+                           }).Take(5);
 
         var statisticResult = new StatisticDTO();
         foreach (var item in queryResult)

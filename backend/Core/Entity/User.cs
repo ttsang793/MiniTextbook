@@ -19,7 +19,7 @@ public partial class User : BaseEntity
 
     public string? Avatar { get; set; }
 
-    public bool? IsActive { get; set; }
+    public string? Status { get; set; }
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 

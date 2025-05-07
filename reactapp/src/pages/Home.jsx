@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductCell from '/src/components/Product/ProductCell';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
 
 const Home = ({fullname}) => {
   const [series, setSeries] = useState([]);
@@ -16,7 +18,26 @@ const Home = ({fullname}) => {
     <main className="py-8">
       {/* Banner quang cao */}
       <section className="-mt-8 mb-8">
-        <img src="/src/images/banner/banner1.png" alt="banner1" />
+        <Splide
+          options={{
+            type: "loop",
+            speed: 1000,
+            autoplay: true,
+            interval: 3000,
+            pauseOnHover: false,
+            pauseOnFocus: false,
+          }}
+        >
+          <SplideSlide>
+            <img src="/src/images/banner/banner1.png" />
+          </SplideSlide>
+          <SplideSlide>
+            <img src="/src/images/banner/banner2.png" />
+          </SplideSlide>
+          <SplideSlide>
+            <img src="/src/images/banner/banner3.jpg" />
+          </SplideSlide>
+        </Splide>
       </section>
 
       {/* Bo sach */ }

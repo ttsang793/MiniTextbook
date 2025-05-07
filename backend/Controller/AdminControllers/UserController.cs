@@ -1,4 +1,4 @@
-﻿
+﻿using Core.Entity;
 using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +16,9 @@ public class UserController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("get/username")]
-    public async Task<List<string>> GetAllUsername()
+    [HttpGet("get/user")]
+    public async Task<IEnumerable<User>> GetAll()
     {
-        return await _service.Users.GetAllUsername();
+        return await _service.Users.GetAll();
     }
 }

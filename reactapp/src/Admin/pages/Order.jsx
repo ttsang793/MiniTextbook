@@ -1,34 +1,53 @@
-import { React, useState, useEffect, Fragment } from "react";
+import { React, useState, useEffect } from "react";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 import axios from "axios";
-import { displayPrice, displayDate } from "/script";
+import { displayPrice, displayDate, displayDateJS } from "/script";
+import OrderOverlay from "../components/order/OrderOverlay";
 
 const AOrder = () => {
   let [order, setOrder] = useState({});
+  const ORDER_STATUS = ["Đã hủy", "Chưa xác nhận", "Đã xác nhận", "Đang giao hàng", "Đã giao hàng", "Đã nhận hàng"];
+
+  const searchParams = new URLSearchParams();
   const [orderList, setOrderList] = useState([]);
-  const [sUsernameList, setSUsernameList] = useState([]);
+  const [sUserList, setSUsernameList] = useState([]);
   const [sReceiverList, setSReceiverList] = useState([]);
   const [sAddressList, setSAddressList] = useState([]);
   const [sProductList, setSProductList] = useState([]);
   const sGradeList = [10, 11, 12];
   const [sSeriesList, setSSeriesList] = useState([]);
 
-  const [sUsername, setSUsername] = useState("");
+  const [sID, setSID] = useState("");
+  const [sUser, setSUsername] = useState("");
   const [sReceiver, setSReceiver] = useState("");
   const [sAddress, setSAddress] = useState("");
   const [sProduct, setSProduct] = useState("");
   const [sGrade, setSGrade] = useState("");
   const [sSeries, setSSeries] = useState("");
   const [sStatus, setSStatus] = useState("");
+  const [sDate, setSDate] = useState("");
 
   const [advanced, setAdvanced] = useState(false);
-  const [sID, setSID] = useState("");
 
   useEffect(() => {
     document.title = "Quản lý đơn hàng";
-    axios.get("/admin/order/get").then(response => setOrderList(response.data));
-    axios.get("/admin/user/get/username").then(response => {
+    setSUsername(searchParams.get("userid") || "");
+    setSReceiver(searchParams.get("receiver") || "");
+    setSAddress(searchParams.get("address") || "");
+    setSProduct(searchParams.get("product") || "");
+    setSGrade(searchParams.get("grade") || "");
+    setSSeries(searchParams.get("series") || "");
+    setSStatus(searchParams.get("status") || "");
+
+    if (location.search.includes("?id")) {
+      axios.get(`/admin/order/search${location.search}`).then(response => setOrderList(response.data));
+      return
+    }
+
+    axios.get(`/admin/order/get${location.search}`).then(response => setOrderList(response.data));
+    axios.get("/admin/user/get/user").then(response => {
       const temp = [];
-      response.data.forEach(username => temp.push(username));
+      response.data.forEach(user => temp.push({id: user.id, username: user.username}));
       setSUsernameList(temp);
     })
     axios.get("/admin/order/get/receiver").then(response => {
@@ -53,51 +72,9 @@ const AOrder = () => {
     })
   }, [])
 
-  const displayStatus = status => {
-    switch (status) {
-      case -1: return "Đã hủy";
-      case 0: return "Chưa xác nhận";
-      case 1: return "Đã xác nhận";
-      case 2: return "Đang giao hàng";
-      case 3: return "Đã giao hàng";
-      case 4: return "Đã nhận hàng";
-      default: return "";
-    }
-  }
-
   return (
     <main className="mx-20">
-      <div className="bg-black/50 hidden fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center" id="blur-background" onClick={() => closeOrderRender()}>
-        <div className="bg-white rounded-xl w-[75dvw]">
-          <div className="bg-linear-to-br from-pink-100 to-pink-300 rounded-t-xl text-xl font-bold text-pink-700 ps-4 py-2">Đơn hàng {order.id} ({displayDate(order.datePurchased)})</div>
-
-          <table className="text-center w-full text-lg">
-            <thead>
-              <tr className="bg-linear-to-r from-pink-700 to-pink-900">
-                <th className="w-[5%] text-pink-50 py-1">STT</th>
-                <th className="w-[45%] text-pink-50 py-1">Tên sách</th>
-                <th className="w-[10%] text-pink-50 py-1">Số lượng</th>
-                <th className="w-[15%] text-pink-50 py-1">Giá</th>
-                <th className="w-[25%] text-pink-50 py-1">Tổng tiền</th>
-              </tr>
-            </thead>
-            <tbody id="blur-body"></tbody>
-            <tfoot>
-              <tr className="bg-linear-to-bl from-pink-100 to-pink-300 text-pink-700 text-xl font-bold ">
-                <td colSpan={4} className="text-right py-1">TỔNG:</td>
-                <td>{displayPrice(order.total)}</td>
-              </tr>
-            </tfoot>
-          </table>
-
-          <div className="flex justify-end pe-14 py-2">
-            <button className="border-1 border-pink-700 text-pink-700 px-2 py-1 text-lg hover:bg-pink-700 hover:text-pink-50 duration-150 cursor-pointer" onClick={() => closeOrderRender()}>
-              Đóng
-            </button>
-          </div>
-        </div>
-      </div>
-      
+      <OrderOverlay order={order} ORDER_STATUS={ORDER_STATUS} onClose={closeOrderRender} />      
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ ĐƠN HÀNG</h1>
       <hr className="mb-3 border-pink-900" />
 
@@ -106,18 +83,26 @@ const AOrder = () => {
           <input type="checkbox" id="advance-search" checked={advanced} onChange={e => setAdvanced(e.target.checked)} />&nbsp;Tìm kiếm nâng cao
         </div>
 
-        <div className={`${advanced ? "hidden" : "flex"} justify-end items-center gap-x-2`}>
-          Mã đơn: <input type="text" id="sid" value={sID} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 focus:bg-pink-100 border-pink-800 duration-150" placeholder="Nhập ID của hóa đơn" onChange={e => setSID(e.target.value)} />
-        </div>
+        <div className={`${advanced ? "hidden" : "flex"} w-1/4 justify-self-end items-center`}>
+          <p className="me-2">Mã đơn:</p>
+          <input
+            type="search" id="search-input" className="bg-gray-300/70 text-gray-900 flex-1 rounded-s-full py-2 px-5 placeholder:italic"
+            placeholder="Tìm kiếm..." spellCheck="false" value={sID} onChange={e => setSID(e.target.value)}
+            onKeyDown={e => {if (e.nativeEvent.key === "Enter") document.getElementById("search-btn").click()}}
+          />
+          <button id="search-btn" className="p-2 rounded-e-full bg-gray-300/70 text-gray-900 cursor-pointer hover:bg-pink-900 hover:text-pink-300 duration-200" onClick={Search}>
+            <MagnifyingGlass size={24} className="cursor-pointer" />
+          </button>
+        </div>        
 
         <div className={`${advanced ? "grid" : "hidden"} grid-cols-1 lg:grid-cols-2 gap-x-4 pt-8`}>
           <section>
             <div className="mb-3">
               <label htmlFor="username" className="block font-bold italic">Username:</label>
-              <input list="usernames" id="username" className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" value={sUsername} onChange={e => setSUsername(e.target.value)} />
+              <input list="usernames" id="username" className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" value={sUser} onChange={e => setSUsername(e.target.value)} />
               <datalist id="usernames">
               {
-                sUsernameList.map(username => <option>{username}</option>)
+                sUserList.map(user => <option>{user.id} - {user.username}</option>)
               }
               </datalist>
             </div>
@@ -175,22 +160,27 @@ const AOrder = () => {
             </div>
 
           </section>
+          
+          <div className="mb-5">
+            <label htmlFor="status" className="block font-bold italic">Ngày đặt hàng:</label>
+            <input type="date" id="date" max={displayDateJS(new Date())} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" value={sDate} onChange={e => setSDate(e.target.value)} />
+          </div>
 
-          <div className="col-span-2 mb-5">
+          <div className="mb-5">
             <label htmlFor="status" className="block font-bold italic">Tình trạng:</label>
             <input list="statuses" id="status" className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" value={sStatus} onChange={e => setSStatus(e.target.value)} />
             <datalist id="statuses">
-              <option>Chưa xác nhận</option>
-              <option>Đã xác nhận</option>
-              <option>Đang giao hàng</option>
-              <option>Đã giao hàng</option>
-              <option>Đã nhận hàng</option>
-              <option>Đã hủy</option>
+              <option>0 - Chưa xác nhận</option>
+              <option>1 - Đã xác nhận</option>
+              <option>2 - Đang giao hàng</option>
+              <option>3 - Đã giao hàng</option>
+              <option>4 - Đã nhận hàng</option>
+              <option>-1 - Đã hủy</option>
             </datalist>
           </div>
 
           <div className="text-center col-span-2">
-            <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-xl" onClick={() => {}}>
+            <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-xl" onClick={Filter}>
               Lọc
             </button>
           </div>
@@ -199,9 +189,9 @@ const AOrder = () => {
 
       <hr className="mb-3 border-pink-900" />
 
-      <table className="text-center w-full text-pink-900 text-lg">
+      <table className="text-center w-full text-pink-900">
         <thead>
-          <tr className="bg-linear-to-r from-pink-700 to-pink-900">
+          <tr className="bg-linear-to-r from-pink-700 to-pink-900 text-lg">
             <th className="text-pink-50 py-1 w-[5%]">ID</th>
             <th className="text-pink-50 py-1 w-[15%]">Người nhận hàng</th>
             <th className="text-pink-50 py-1 w-[25%]">Địa chỉ</th>
@@ -214,6 +204,7 @@ const AOrder = () => {
         </thead>
         <tbody>
           {
+            (orderList.length === 0) ? (<tr><td colSpan={8}>Không tồn tại dữ liệu</td></tr>) :
             orderList.map(order => 
               <tr key={order.id} className="even:bg-pink-50">
                 <td className="py-1">{order.id}</td>
@@ -230,17 +221,17 @@ const AOrder = () => {
                 <td>{order.dateReceived === null ? "" : displayDate(order.dateReceived)}</td>
                 <td>{order.dateCanceled === null ? "" : displayDate(order.dateCanceled)}</td>
                 */}
-                <td>{displayStatus(order.status)}</td>
+                <td>{order.status}</td>
                 <td>{displayDate(order.datePurchased)}</td>
                 <td>{displayPrice(order.total)}</td>
                 <td className="py-1">
                   {
-                    order.status > -1 && order.status < 3 &&
+                    order.status !== ORDER_STATUS[0] && order.status !== ORDER_STATUS[4] && order.status !== ORDER_STATUS[5] &&
                     <button
                       className="bg-yellow-400 text-black flex gap-x-1 mb-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer"
-                      onClick={() => updateStatus(order.id, order.status + 1)}
+                      onClick={() => updateStatus(order.id, ORDER_STATUS[ORDER_STATUS.indexOf(order.status) + 1])}
                     >
-                      {order.status === 0 ? "Xác nhận đơn hàng" : (order.status === 1 ? "Bắt đầu giao hàng" : "Hoàn tất giao hàng")}
+                      {order.status === ORDER_STATUS[0] ? "Xác nhận đơn hàng" : (order.status === ORDER_STATUS[1] ? "Bắt đầu giao hàng" : "Hoàn tất giao hàng")}
                     </button>
                   }
                   <button
@@ -260,7 +251,7 @@ const AOrder = () => {
 
   function updateStatus(id, status) {
     if (confirm("Bạn có muốn cập nhật trạng thái cho đơn hàng này?")) {
-      axios.put(`/admin/order/update-status?id=${id}&status=${status}${status === 1 ? `&vertify=250101` : ""}`).then(response => {
+      axios.put(`/admin/order/update-status?id=${id}&status=${status}`).then(response => {
         if (response.status === 200) {
           alert("Cập nhật trạng thái đơn hàng thành công!");
           location.reload();
@@ -274,30 +265,31 @@ const AOrder = () => {
   }
 
   function orderRender(displayOrder) {
-    console.log(orderList);
     document.getElementById("blur-background").classList.remove("hidden");
     setOrder(order = displayOrder);
     document.body.style.overflow = "hidden";
-
-    let blurBody = "";
-    displayOrder.orderDetails.forEach((o, i) => 
-      blurBody += `
-        <tr class="even:bg-pink-50 text-pink-900">
-          <td class="py-1">${i + 1}</td>
-          <td>${o.bookNavigation.name}</td>
-          <td>${o.quantity}</td>
-          <td>${displayPrice(o.price)}</td>
-          <td>${displayPrice(o.price * o.quantity)}</td>
-        </tr>
-      `
-    )
-
-    document.getElementById("blur-body").innerHTML = blurBody;
   }
 
   function closeOrderRender() {
     document.getElementById("blur-background").classList.add("hidden");
-    document.body.style.overflow = "initial";
+    document.body.style.overflow = "";
+  }
+
+  function Filter() {
+    if (sUser !== "") searchParams.set("userid", sUser.substring(0, sUser.indexOf("-") - 1));
+    if (sReceiver !== "") searchParams.set("receiver", sReceiver);
+    if (sAddress !== "") searchParams.set("address", sAddress);
+    if (sProduct !== "") searchParams.set("product", sProduct.substring(0, sProduct.indexOf("-") - 1));
+    if (sGrade !== "") searchParams.set("grade", sGrade);
+    if (sSeries !== "") searchParams.set("series", sSeries.substring(0, sSeries.indexOf("-") - 1));
+    if (sStatus !== "") searchParams.set("status", sStatus.substring(0, sStatus.indexOf("-") - 1));
+    if (sDate !== "") searchParams.set("date", sDate);
+
+    location.href = location.origin + location.pathname + "?" + searchParams.toString();
+  }
+
+  function Search() {
+    location.href = `/quan-tri/don-hang${sID !== "" ? `?id=${sID}` : ""}`;
   }
 }
 

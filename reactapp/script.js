@@ -12,9 +12,28 @@ function displayDate(date) {
   catch {return ""}  
 }
 
+function displayDateJS(dateJS) {
+  try {
+    return dateJS.toLocaleDateString("en-CA");
+  }
+  catch {return ""}  
+}
+
+function displayStatus(status) {
+  switch (status) {
+    case -1: return "Đã hủy";
+    case 0: return "Chưa xác nhận";
+    case 1: return "Đã xác nhận";
+    case 2: return "Đang giao hàng";
+    case 3: return "Đã giao hàng";
+    case 4: return "Đã nhận hàng";
+    default: return "";
+  }
+}
+
 function arrayNumber(arr) {
   for (let i = 0; i < arr.length; i++) arr[i] = Number(arr[i]);
   return arr;
 }
 
-export { displayPrice, displayDate, arrayNumber }
+export { displayPrice, displayDate, displayDateJS, displayStatus, arrayNumber }

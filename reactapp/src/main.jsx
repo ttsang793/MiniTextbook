@@ -58,6 +58,7 @@ function App() {
           <AHeader aid={aid} afullname={afullname} />
           <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
             <Routes>
+              <Route path="/quan-tri/" element={<AStatistic />} />
               <Route path="/quan-tri/thong-ke" element={<AStatistic />} />
               <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
               <Route path="/quan-tri/sach" element={<ABook />} />

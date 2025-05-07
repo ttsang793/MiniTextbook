@@ -18,17 +18,17 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
         GetDbSet().Add(order);
     }
 
-    public async Task UpdateStatus(int id, int status, int? vertify)
+    public async Task UpdateStatus(int id, string status, int? vertify)
     {
         var order = await GetById(id);
         order.Status = status;
-        if (status == -1) order.DateCanceled = DateTime.Now;
-        else if (status == 1)
+        if (status == "Đã hủy") order.DateCanceled = DateTime.Now;
+        else if (status == "Đã hủy")
         {
             order.DateVertified = DateTime.Now;
             order.VertifyAdmin = vertify;
         }
-        else if (status == 4) order.DateReceived = DateTime.Now;
+        else if (status == "Đã nhận hàng") order.DateReceived = DateTime.Now;
 
         GetDbSet().Update(order);
     }

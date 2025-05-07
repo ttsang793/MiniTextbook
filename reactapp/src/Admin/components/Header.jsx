@@ -50,20 +50,20 @@ const AHeader = ({aid, afullname}) => {
             <CurrencyDollarSimple size={36} weight="fill" />Đơn hàng
           </button>
         </a>
-        <a href="/quan-tri/quan-tri-vien">
+        <a href="/quan-tri/tai-khoan">
           <button className="admin-header-btn">
-            <UserCircle size={36} weight="fill" />Phân quyền
+            <UserCircle size={36} weight="fill" />Tài khoản
           </button>
         </a>
       </div>
 
       {/* Nút đăng xuất và cài đặt */}
-      <div className="flex gap-x-1.5">
+      <div className="flex gap-x-1.5 items-center">
         <div className="text-right text-pink-50">
           <a href="" className="block text-lg font-bold hover:underline!">{aid} - {afullname}</a>
           <a onClick={logOut} className="block hover:underline! cursor-pointer">Đăng xuất</a>
         </div>
-        <img src="/src/images/avatar/default.jpg" alt="avatar" className="h-13 rounded-full" />
+        <UserCircle weight='fill' size={56} color="#fff" />
       </div>
     </header>
   )

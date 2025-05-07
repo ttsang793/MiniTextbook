@@ -22,9 +22,9 @@ public class OrderService : IOrderService
 
     public async Task<IEnumerable<Order>> GetAll(Expression<Func<Order, bool>> expression = null)
     {
-        var orders = (await _unitOfWork.Orders.GetAll(expression)).OrderByDescending(o => o.Id);
+        var orderList = (await _unitOfWork.Orders.GetAll(expression)).OrderByDescending(o => o.Id);
 
-        foreach (Order order in orders)
+        foreach (Order order in orderList)
         {
             order.OrderDetails = (await _unitOfWork.OrderDetails.GetAll(o => o.Order == order.Id)).ToList();
 
@@ -34,7 +34,51 @@ public class OrderService : IOrderService
             }
         }
 
-        return orders;
+        return orderList;
+    }
+
+    public async Task<IEnumerable<Order>> GetAll(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? date, DateTime? dateReceived, DateTime? dateCanceled)
+    {
+        var orders = (await _unitOfWork.Orders.GetAll(o =>
+            (userID == null || o.User == userID) &&
+            (string.IsNullOrEmpty(receiver) || o.Receiver == receiver) &&
+            (string.IsNullOrEmpty(address) || o.Address == address) &&
+            (date == null || o.DatePurchased == date) &&
+            (dateReceived == null || o.DateReceived == dateReceived) &&
+            (dateCanceled == null || o.DateCanceled == dateCanceled) &&
+            (string.IsNullOrEmpty(status) || o.Status == status)
+        )).OrderByDescending(o => o.Id);
+
+        var orderDetails = (await _unitOfWork.OrderDetails.GetAll(od => (product == null || od.Book == product)));
+        var books = (await _unitOfWork.Books.GetAll(b =>
+            (product == null || b.Id == product) &&
+            (grade == null || b.Grade == grade)
+        ));
+        var bookSeries = (await _unitOfWork.BookSeries.GetAll(bs => series == null || bs.Series == series));
+
+        var orderList = from o in orders
+                        join od in orderDetails on o.Id equals od.Order
+                        join b in books on od.Book equals b.Id
+                        join bs in bookSeries on b.Id equals bs.Id
+                        group o by o.Id into g
+                        select g.First();
+
+        foreach (Order order in orderList)
+        {
+            order.OrderDetails = (await _unitOfWork.OrderDetails.GetAll(o => o.Order == order.Id)).ToList();
+
+            foreach (var od in order.OrderDetails)
+            {
+                od.BookNavigation = (await _unitOfWork.Books.GetById((int)od.Book));
+            }
+        }
+
+        return orderList;
+    }
+
+    public async Task<Order> GetById(int id)
+    {
+        return await _unitOfWork.Orders.GetById(id);
     }
 
     public async Task<IEnumerable<Order>> GetByUserId(int userID)
@@ -113,7 +157,7 @@ public class OrderService : IOrderService
         return await _unitOfWork.SaveChanges() > 0;
     }
 
-    public async Task<bool> UpdateStatus(int id, int status, int? vertify = null)
+    public async Task<bool> UpdateStatus(int id, string status, int? vertify = null)
     {
         await _unitOfWork.Orders.UpdateStatus(id, status, vertify);
         return await _unitOfWork.SaveChanges() > 0;

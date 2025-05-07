@@ -44,8 +44,7 @@ public class OrderController : ControllerBase
             Phone = orderDTO.Phone,
             Total = orderDTO.Total,
             DatePurchased = DateTime.Now,
-            Status = 0,
-            PaidMethod = "cash"
+            PaidMethod = "Tiền mặt"
         };
 
         return await _service.Orders.Insert(order, orderDTO.Carts, isInstant) ? StatusCode(200) : StatusCode(404);
@@ -54,12 +53,12 @@ public class OrderController : ControllerBase
     [HttpPut("cancel")]
     public async Task<IActionResult> Cancel(int id)
     {
-        return await _service.Orders.UpdateStatus(id, -1) ? StatusCode(200) : StatusCode(404);
+        return await _service.Orders.UpdateStatus(id, "Đã hủy") ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("receive")]
     public async Task<IActionResult> Receive(int id)
     {
-        return await _service.Orders.UpdateStatus(id, 4) ? StatusCode(200) : StatusCode(404);
+        return await _service.Orders.UpdateStatus(id, "Đã nhận hàng") ? StatusCode(200) : StatusCode(404);
     }
 }

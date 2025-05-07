@@ -14,10 +14,10 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<string>> GetAllUsername()
+    public async Task<IEnumerable<User>> GetAll()
     {
         var users = await _unitOfWork.Users.GetAll();
-        return (from u in users select u.Username).ToList();
+        return (from u in users select new User { Id = u.Id, Username = u.Username }).ToList();
     }
 
     public async Task<User> GetByUserId(int id)

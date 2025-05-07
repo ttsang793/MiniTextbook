@@ -277,11 +277,11 @@ public partial class MiniTextbookContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasColumnName("is_paid");
             entity.Property(e => e.PaidMethod)
-                .HasMaxLength(20)
                 .HasDefaultValueSql("'NULL'")
+                .HasColumnType("enum('Tiền mặt','VNPay')")
                 .HasColumnName("paid_method");
             entity.Property(e => e.Phone)
-                .HasMaxLength(15)
+                .HasMaxLength(12)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("phone");
             entity.Property(e => e.Receiver)
@@ -289,8 +289,8 @@ public partial class MiniTextbookContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("receiver");
             entity.Property(e => e.Status)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("int(11)")
+                .HasDefaultValueSql("'''Chưa xác nhận'''")
+                .HasColumnType("enum('Đã hủy','Chưa xác nhận','Đã xác nhận','Đang giao hàng','Đã giao hàng','Đã nhận hàng')")
                 .HasColumnName("status");
             entity.Property(e => e.Total)
                 .HasPrecision(10)
@@ -528,16 +528,17 @@ public partial class MiniTextbookContext : DbContext
                 .HasMaxLength(100)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("fullname");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValueSql("'1'")
-                .HasColumnName("is_active");
             entity.Property(e => e.Password)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("password");
             entity.Property(e => e.Phone)
-                .HasMaxLength(15)
+                .HasMaxLength(12)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("phone");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'''Đang sử dụng'''")
+                .HasColumnType("enum('Đang sử dụng','Mới khôi phục','Đã khóa')")
+                .HasColumnName("status");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasDefaultValueSql("'NULL'")

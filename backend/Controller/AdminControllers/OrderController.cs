@@ -18,9 +18,15 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IEnumerable<Order>> GetOrders()
+    public async Task<IEnumerable<Order>> GetOrders(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? date, DateTime? dateReceived, DateTime? dateCanceled)
     {
-        return await _service.Orders.GetAll();
+        return await _service.Orders.GetAll(userID, receiver, address, product, grade, series, status, date, dateReceived, dateCanceled);
+    }
+
+    [HttpGet("search")]
+    public async Task<IEnumerable<Order>> Search (int id)
+    {
+        return new List<Order>() { await _service.Orders.GetById(id) };
     }
 
     [HttpGet("get/receiver")]
@@ -36,9 +42,18 @@ public class OrderController : ControllerBase
     }
 
     [HttpPut("update-status")]
-    public async Task<IActionResult> UpdateStatus(int id, int status, int? vertify)
+    public async Task<IActionResult> UpdateStatus(int id, string status)
     {
-        if (vertify.HasValue) return await _service.Orders.UpdateStatus(id, 1, vertify) ? StatusCode(200) : StatusCode(404);
-        return await _service.Orders.UpdateStatus(id, status) ? StatusCode(200) : StatusCode(404);
+        try
+        {
+            int adminID = (int)HttpContext.Session.GetInt32("aid")!;
+
+            if (status == "Đã xác nhận") return await _service.Orders.UpdateStatus(id, status, adminID) ? StatusCode(200) : StatusCode(404);
+            return await _service.Orders.UpdateStatus(id, status) ? StatusCode(200) : StatusCode(404);
+        }
+        catch
+        {
+            return StatusCode(403);
+        }
     }
 }
