@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Entity;
+﻿using Core.Entity;
 using Core.Interface;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 
@@ -16,14 +12,14 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public UserRepository(MiniTextbookContext _dbContext) : base(_dbContext) { }
 
-    public async Task<User?> Login(User user)
+    public async Task<User?> Verify(User user)
     {
-        var result = (await GetAll(u => u.Username == user.Username && u.Status == "Đang sử dụng")).FirstOrDefault();
+        var result = (await GetAll(u => u.Username == user.Username && u.Status != "Đã khóa")).FirstOrDefault();
         if (result != null)
         {
             var verfityResult = passwordHasher.VerifyHashedPassword(result, result.Password, user.Password);
             if (verfityResult == PasswordVerificationResult.Success)
-                return new User { Id = result.Id, Avatar = result.Avatar, Fullname = result.Fullname };
+                return new User { Id = result.Id, Avatar = result.Avatar, Fullname = result.Fullname, Status = result.Status };
             return new User { Fullname = "Nhập sai mật khẩu." };
         }
         return new User { Fullname = "Username không tồn tại." };
@@ -63,25 +59,18 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return new User { Id = updateUser.Id, Avatar = updateUser.Avatar, Fullname = updateUser.Fullname };
     }
 
-    public async Task<bool> UpdatePassword(User user, string oldPassword)
+    public async Task UpdatePassword(User user)
     {
         var updateUser = await GetById(user.Id);
-        var result = passwordHasher.VerifyHashedPassword(updateUser, updateUser.Password, oldPassword);
-        if (result == PasswordVerificationResult.Failed) return false;
-
+        updateUser.Status = "Đang sử dụng";
         updateUser.Password = passwordHasher.HashPassword(updateUser, user.Password);
         GetDbSet().Update(updateUser);
-
-        return true;
     }
 
-    public async Task<bool> DeactivateAccount(int id, string oldPassword)
+    public async Task UpdateStatus(int id, string status)
     {
-        var deleteUser = await GetById(id);
-        var result = passwordHasher.VerifyHashedPassword(deleteUser, deleteUser.Password, oldPassword);
-        if (result == PasswordVerificationResult.Failed) return false;
-
-        deleteUser.Status = "Đã khóa";
-        return true;
+        var user = await GetById(id);
+        if (status != "Đang sử dụng") user.Password = passwordHasher.HashPassword(user, user.Username);
+        user.Status = status;
     }
 }

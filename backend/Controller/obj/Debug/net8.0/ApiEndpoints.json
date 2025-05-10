@@ -1,12 +1,85 @@
 [
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "GetAll",
+    "RelativePath": "admin/admin/get",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "fullname",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Core.Entity.Admin, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "GetSessionData",
     "RelativePath": "admin/admin/get-session",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "GetAdminsByRole",
+    "RelativePath": "admin/admin/get/role",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Core.Entity.Admin, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "Insert",
+    "RelativePath": "admin/admin/insert",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "admin",
+        "Type": "Core.Entity.Admin",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -33,6 +106,70 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "ResetPassword",
+    "RelativePath": "admin/admin/password/reset",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "UpdatePassword",
+    "RelativePath": "admin/admin/password/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pass",
+        "Type": "Application.DTO.PassDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "Update",
+    "RelativePath": "admin/admin/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "admin",
+        "Type": "Core.Entity.Admin",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.AdminController",
+    "Method": "UpdateStatus",
+    "RelativePath": "admin/admin/update/status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -467,6 +604,163 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "Delete",
+    "RelativePath": "admin/role/delete",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "DeleteWithAdmins",
+    "RelativePath": "admin/role/delete",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleRedelegateDTO",
+        "Type": "Application.DTO.RoleRedelegateDTO",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "GetById",
+    "RelativePath": "admin/role/get",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Core.Entity.Role",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "GetAllRoles",
+    "RelativePath": "admin/role/get-all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Core.Entity.Role, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "GetAllPermissionGroups",
+    "RelativePath": "admin/role/get/permission",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Core.Entity.PermissionGroup, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "Insert",
+    "RelativePath": "admin/role/insert",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "Core.Entity.Role",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "Update",
+    "RelativePath": "admin/role/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "Core.Entity.Role",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.RoleController",
+    "Method": "UpdatePermission",
+    "RelativePath": "admin/role/update/permission",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rolePermissionDTO",
+        "Type": "Application.DTO.RolePermissionDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -918,11 +1212,17 @@
   {
     "ContainingType": "Controller.AdminControllers.UserController",
     "Method": "GetAll",
-    "RelativePath": "admin/user/get/user",
+    "RelativePath": "admin/user/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[Core.Entity.User, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
@@ -934,6 +1234,38 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.UserController",
+    "Method": "LockUser",
+    "RelativePath": "admin/user/lock",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.UserController",
+    "Method": "UnlockUser",
+    "RelativePath": "admin/user/unlock",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "Controller.Controllers.CartController",
@@ -1135,6 +1467,42 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Controller.Controllers.OrderController",
+    "Method": "CreateVnPayPayment",
+    "RelativePath": "order/vnpay/payment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "o",
+        "Type": "Application.DTO.OrderDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.Controllers.OrderController",
+    "Method": "GetVnPayResult",
+    "RelativePath": "order/vnpay/result",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Controller.Controllers.ProductController",
     "Method": "GetById",
     "RelativePath": "product/get",
@@ -1317,7 +1685,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "Core.Entity.User",
+        "Type": "Application.DTO.UserDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1361,6 +1729,38 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
+    "Method": "ResetPassword",
+    "RelativePath": "user/password/reset",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "Core.Entity.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
+    "Method": "UpdatePassword",
+    "RelativePath": "user/password/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pass",
+        "Type": "Application.DTO.PassDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -1451,22 +1851,6 @@
         "Name": "file",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Controller.Controllers.UserController",
-    "Method": "UpdatePassword",
-    "RelativePath": "user/update-key",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "pass",
-        "Type": "Application.DTO.PassDTO",
-        "IsRequired": true
       }
     ],
     "ReturnTypes": []

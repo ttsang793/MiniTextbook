@@ -2,6 +2,7 @@
 using Application.Interface;
 using Application.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 namespace Controller.Controllers;
 
 [ApiController]
@@ -10,11 +11,13 @@ public class OrderController : ControllerBase
 {
     private ILogger<OrderController> _logger;
     private readonly IService _service;
+    private readonly IVnPayService _vnPayService;
 
-    public OrderController(ILogger<OrderController> logger, IService service)
+    public OrderController(ILogger<OrderController> logger, IService service, IVnPayService vnPayService)
     {
         _logger = logger;
         _service = service;
+        _vnPayService = vnPayService;
     }
 
     [HttpGet("get-history")]
@@ -31,6 +34,23 @@ public class OrderController : ControllerBase
     public async Task<IEnumerable<CartDTO>> GetTransactionItems(int[] cartID)
     {
         return await _service.Orders.GetTransactionItems(cartID);
+    }
+
+    [HttpPost("vnpay/payment")]
+    [EnableCors("AllowVnPay")]
+    public string CreateVnPayPayment([Bind("Receiver", "Total")] OrderDTO o)
+    {
+        o.User = HttpContext.Session.GetInt32("id");
+        string url = _vnPayService.CreatePaymentUrl(o, HttpContext);
+        return url;
+    }
+
+    [HttpGet("vnpay/result")]
+    [EnableCors("AllowVnPay")]
+    public IActionResult GetVnPayResult()
+    {
+        var response = _vnPayService.PaymentExecute(Request.Query);
+        return Redirect($"https://localhost:5173/nguoi-dung/thanh-toan/ket-qua?vnpaypd={response.PaymentId}");
     }
 
     [HttpPost("insert")]

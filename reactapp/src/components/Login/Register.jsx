@@ -67,7 +67,9 @@ const Register = ({onSwitch}) => {
     document.getElementById("fullname").classList.remove("focus-error");
   }
   
-  function Register() {
+  function Register(e) {
+    e.preventDefault();
+
     clearUsernameValidation();
     clearPasswordValidation();
     clearConfirmValidation();

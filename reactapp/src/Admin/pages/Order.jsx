@@ -1,12 +1,14 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import axios from "axios";
 import { displayPrice, displayDate, displayDateJS } from "/script";
-import OrderOverlay from "../components/order/OrderOverlay";
+import OrderOverlay from "/src/Admin/components/order/OrderOverlay";
+import Loading from "/src/components/Loading";
 
 const AOrder = () => {
   let [order, setOrder] = useState({});
   const ORDER_STATUS = ["Đã hủy", "Chưa xác nhận", "Đã xác nhận", "Đang giao hàng", "Đã giao hàng", "Đã nhận hàng"];
+  const loadingRef = useRef(true);
 
   const searchParams = new URLSearchParams();
   const [orderList, setOrderList] = useState([]);
@@ -30,49 +32,53 @@ const AOrder = () => {
   const [advanced, setAdvanced] = useState(false);
 
   useEffect(() => {
-    document.title = "Quản lý đơn hàng";
-    setSUsername(searchParams.get("userid") || "");
-    setSReceiver(searchParams.get("receiver") || "");
-    setSAddress(searchParams.get("address") || "");
-    setSProduct(searchParams.get("product") || "");
-    setSGrade(searchParams.get("grade") || "");
-    setSSeries(searchParams.get("series") || "");
-    setSStatus(searchParams.get("status") || "");
+    if (loadingRef.current) {
+      document.title = "Quản lý đơn hàng";
+      setSUsername(searchParams.get("userid") || "");
+      setSReceiver(searchParams.get("receiver") || "");
+      setSAddress(searchParams.get("address") || "");
+      setSProduct(searchParams.get("product") || "");
+      setSGrade(searchParams.get("grade") || "");
+      setSSeries(searchParams.get("series") || "");
+      setSStatus(searchParams.get("status") || "");
 
-    if (location.search.includes("?id")) {
-      axios.get(`/admin/order/search${location.search}`).then(response => setOrderList(response.data));
-      return
+      if (location.search.includes("?id")) {
+        axios.get(`/admin/order/search${location.search}`).then(response => setOrderList(response.data));
+        return
+      }
+
+      axios.get(`/admin/order/get${location.search}`).then(response => setOrderList(response.data));
+      axios.get("/admin/user/get").then(response => {
+        const temp = [];
+        response.data.forEach(user => temp.push({id: user.id, username: user.username}));
+        setSUsernameList(temp);
+      })
+      axios.get("/admin/order/get/receiver").then(response => {
+        const temp = [];
+        response.data.forEach(receiver => temp.push(receiver));
+        setSReceiverList(temp);
+      })
+      axios.get("/admin/order/get/address").then(response => {
+        const temp = [];
+        response.data.forEach(address => temp.push(address));
+        setSAddressList(temp);
+      })
+      axios.get("/admin/book/get-all").then(response => {
+        const temp = [];
+        response.data.forEach(product => temp.push({id: product.id, name: product.name}));
+        setSProductList(temp);
+      })
+      axios.get("/admin/series/get-all").then(response => {
+        const temp = [];
+        response.data.forEach(series => temp.push({id: series.id, name: series.name}));
+        setSSeriesList(temp);
+      })
+
+      loadingRef.current = false;
     }
-
-    axios.get(`/admin/order/get${location.search}`).then(response => setOrderList(response.data));
-    axios.get("/admin/user/get/user").then(response => {
-      const temp = [];
-      response.data.forEach(user => temp.push({id: user.id, username: user.username}));
-      setSUsernameList(temp);
-    })
-    axios.get("/admin/order/get/receiver").then(response => {
-      const temp = [];
-      response.data.forEach(receiver => temp.push(receiver));
-      setSReceiverList(temp);
-    })
-    axios.get("/admin/order/get/address").then(response => {
-      const temp = [];
-      response.data.forEach(address => temp.push(address));
-      setSAddressList(temp);
-    })
-    axios.get("/admin/book/get-all").then(response => {
-      const temp = [];
-      response.data.forEach(product => temp.push({id: product.id, name: product.name}));
-      setSProductList(temp);
-    })
-    axios.get("/admin/series/get-all").then(response => {
-      const temp = [];
-      response.data.forEach(series => temp.push({id: series.id, name: series.name}));
-      setSSeriesList(temp);
-    })
   }, [])
 
-  return (
+  return loadingRef.current ? <Loading /> : (
     <main className="mx-20">
       <OrderOverlay order={order} ORDER_STATUS={ORDER_STATUS} onClose={closeOrderRender} />      
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ ĐƠN HÀNG</h1>
@@ -83,7 +89,7 @@ const AOrder = () => {
           <input type="checkbox" id="advance-search" checked={advanced} onChange={e => setAdvanced(e.target.checked)} />&nbsp;Tìm kiếm nâng cao
         </div>
 
-        <div className={`${advanced ? "hidden" : "flex"} w-1/4 justify-self-end items-center`}>
+        <div className={`${advanced ? "hidden" : "flex"} w-1/4 ml-auto justify-end items-center`}>
           <p className="me-2">Mã đơn:</p>
           <input
             type="search" id="search-input" className="bg-gray-300/70 text-gray-900 flex-1 rounded-s-full py-2 px-5 placeholder:italic"

@@ -1,5 +1,4 @@
-﻿
-using Application.Interface;
+﻿using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Core.Entity;
 using Application.DTO;
@@ -20,9 +19,20 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<User> GetByUserId()
+    public async Task<UserDTO> GetByUserId()
     {
-        return await _service.Users.GetByUserId((int)HttpContext.Session.GetInt32("id")!);
+        var user = await _service.Users.GetByUserId((int)HttpContext.Session.GetInt32("id")!);
+
+        return new UserDTO
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Fullname = user.Fullname,
+            Address = user.Address,
+            Phone = user.Phone,
+            Email = user.Email,
+            Avatar = user.Avatar
+        };
     }
 
     [HttpGet("get-session")]
@@ -31,32 +41,43 @@ public class UserController : ControllerBase
         return Ok(new { Fullname = HttpContext.Session.GetString("fullname"), Avatar = HttpContext.Session.GetString("avatar") });
     }
 
+    private IActionResult SetSessionData(User user)
+    {
+        HttpContext.Session.SetInt32("id", user.Id);
+        HttpContext.Session.SetString("fullname", user.Fullname!);
+        HttpContext.Session.SetString("avatar", user.Avatar!);
+        return StatusCode(200);
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([Bind("Username", "Password")] User user)
     {
-        var loginUser = await _service.Users.Login(user);
+        var loginUser = await _service.Users.Verify(user);
         if (loginUser == null) return BadRequest();
         if (loginUser.Fullname == "Username không tồn tại.") return StatusCode(404, new { input = "username", message = loginUser.Fullname });
         if (loginUser.Fullname == "Nhập sai mật khẩu.") return StatusCode(404, new { input = "password", message = loginUser.Fullname });
 
-        HttpContext.Session.SetInt32("id", loginUser.Id);
-        HttpContext.Session.SetString("fullname", loginUser.Fullname!);
-        HttpContext.Session.SetString("avatar", loginUser.Avatar!);
-        return StatusCode(200);
+        if (loginUser.Status == "Mới khôi phục") return StatusCode(307);
+        return SetSessionData(loginUser);
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([Bind("Username", "Password", "FullName")] User user)
     {
         var loginUser = await _service.Users.Insert(user);
-        if (loginUser != null)
-        {
-            HttpContext.Session.SetInt32("id", loginUser.Id);
-            HttpContext.Session.SetString("fullname", loginUser.Fullname!);
-            HttpContext.Session.SetString("avatar", loginUser.Avatar!);
-            return StatusCode(200);
-        }
-        return StatusCode(404);
+        return (loginUser != null) ? SetSessionData(loginUser) : StatusCode(404);
+    }
+
+
+    [HttpPut("password/reset")]
+    public async Task<IActionResult> ResetPassword([Bind("Username", "Password", "FullName")] User user)
+    {
+        var availableUser = (await _service.Users.GetAll(u => u.Username == user.Username && u.Fullname == user.Fullname)).FirstOrDefault();
+        if (availableUser == null) return StatusCode(400);
+
+        availableUser = await _service.Users.GetByUserId(availableUser.Id);
+        availableUser.Password = user.Password;
+        return await _service.Users.UpdatePassword(availableUser) ? SetSessionData(availableUser) : StatusCode(404);
     }
 
     [HttpPost("logout")]
@@ -86,22 +107,47 @@ public class UserController : ControllerBase
         return StatusCode(404);
     }
 
-    [HttpPut("update-key")]
+    [HttpPut("password/update")]
     public async Task<IActionResult> UpdatePassword([Bind("OldPassword", "NewPassword")] PassDTO pass)
     {
-        var user = new User
+        var id = (int)HttpContext.Session.GetInt32("id")!;
+        var currentUser = await _service.Users.GetByUserId(id);
+
+        var verifyUser = new User
         {
-            Id = (int)HttpContext.Session.GetInt32("id")!,
-            Password = pass.NewPassword
+            Username = currentUser.Username,
+            Password = pass.OldPassword,
+            Status = currentUser.Status
         };
 
-        return (await _service.Users.UpdatePassword(user, pass.OldPassword!)) ? LogOut() : StatusCode(404);
+        var verificationResult = await _service.Users.Verify(verifyUser);
+
+        if (verificationResult.Fullname == "Nhập sai mật khẩu.")
+            return BadRequest(new { input = "oldPassword", message = verificationResult.Fullname });
+
+        currentUser.Password = pass.NewPassword;
+        return (await _service.Users.UpdatePassword(currentUser)) ? LogOut() : StatusCode(404);
     }
 
     [HttpDelete("delete")]
     public async Task<IActionResult> DeactivateAccount([Bind("OldPassword")] PassDTO pass)
     {
-        int id = (int)HttpContext.Session.GetInt32("id")!;
-        return (await _service.Users.DeactivateAccount(id, pass.OldPassword!)) ? LogOut() : StatusCode(404);
+
+        var id = (int)HttpContext.Session.GetInt32("id")!;
+        var currentUser = await _service.Users.GetByUserId(id);
+
+        var verifyUser = new User
+        {
+            Username = currentUser.Username,
+            Password = pass.OldPassword,
+            Status = currentUser.Status
+        };
+
+        var verificationResult = await _service.Users.Verify(verifyUser);
+
+        if (verificationResult.Fullname == "Nhập sai mật khẩu.")
+            return BadRequest(new { input = "oldPassword", message = verificationResult.Fullname });
+
+        return (await _service.Users.UpdateStatus(id, "Đã khóa")) ? LogOut() : StatusCode(404);
     }
 }

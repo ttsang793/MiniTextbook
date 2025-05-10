@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Entity;
+﻿using Core.Entity;
 using Core.Interface;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
@@ -38,17 +33,44 @@ public class AdminRepository : BaseRepository<Admin>, IAdminRepository
 
     public async Task Insert(Admin admin)
     {
+        admin.Password = passwordHasher.HashPassword(admin, admin.Id + "");
         await GetDbSet().AddAsync(admin);
     }
 
     public async Task Update(Admin admin)
     {
+        var updateAdmin = await GetById(admin.Id);
+        updateAdmin.Fullname = admin.Fullname;
+        updateAdmin.TimeBegin = admin.TimeBegin;
+        updateAdmin.TimeEnd = admin.TimeEnd;
+        updateAdmin.Role = admin.Role;
+
+        GetDbSet().Update(updateAdmin);
+    }
+
+    public async Task ResetPassword(int id)
+    {
+        var admin = await GetById(id);
+        admin.Password = passwordHasher.HashPassword(admin, admin.Id + "");
         GetDbSet().Update(admin);
+    }
+
+    public async Task<bool> UpdatePassword(Admin admin, string oldPassword)
+    {
+        var updateAdmin = await GetById(admin.Id);
+        var result = passwordHasher.VerifyHashedPassword(updateAdmin, updateAdmin.Password, oldPassword);
+        if (result == PasswordVerificationResult.Failed) return false;
+
+        updateAdmin.Password = passwordHasher.HashPassword(updateAdmin, admin.Password);
+        GetDbSet().Update(updateAdmin);
+
+        return true;
     }
 
     public async Task UpdateStatus(int id)
     {
         var admin = await GetById(id);
         admin.IsActive = !admin.IsActive;
+        admin.Password = passwordHasher.HashPassword(admin, admin.Id + "");
     }
 }

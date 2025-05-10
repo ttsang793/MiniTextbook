@@ -60,8 +60,8 @@ const AHeader = ({aid, afullname}) => {
       {/* Nút đăng xuất và cài đặt */}
       <div className="flex gap-x-1.5 items-center">
         <div className="text-right text-pink-50">
-          <a href="" className="block text-lg font-bold hover:underline!">{aid} - {afullname}</a>
-          <a onClick={logOut} className="block hover:underline! cursor-pointer">Đăng xuất</a>
+          <a href="/quan-tri/dat-lai-mat-khau" className="block text-lg font-bold hover:underline!">{aid} - {afullname}</a>
+          <a onClick={logOut} className="block hover:underline!">Đăng xuất</a>
         </div>
         <UserCircle weight='fill' size={56} color="#fff" />
       </div>

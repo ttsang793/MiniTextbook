@@ -2,6 +2,7 @@ import { React, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ProductCell from '/src/components/Product/ProductCell';
 import Pagination from '/src/components/Pagination';
+import Loading from "/src/components/Loading";
 
 const Favorite = ({fullname}) => {
   let [favoriteList, setFavoriteList] = useState([]);
@@ -21,7 +22,7 @@ const Favorite = ({fullname}) => {
     }
   }, []);
 
-  return loadingRef.current ? <h1>Loading...</h1> : (
+  return loadingRef.current ? <Loading /> : (
     <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">SẢN PHẨM YÊU THÍCH</h1>
       

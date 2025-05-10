@@ -3,6 +3,7 @@ import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/rea
 import axios from "axios";
 import Search from "/src/Admin/components/Search";
 import Pagination from "/src/Admin/components/Pagination";
+import Loading from "/src/components/Loading";
 
 const ASubject = () => {
   const [subject, setSubject] = useState([]);
@@ -12,13 +13,17 @@ const ASubject = () => {
   const pageRef = useRef(0);
   const totalRef = useRef(0);
   const searchRef = useRef("");
+  const loadingRef = useRef(true);
 
   useEffect(() => {
-    document.title = "Quản lý môn học";
-    loadData();
+    if (loadingRef.current) {
+      document.title = "Quản lý môn học";
+      loadData();
+      loadingRef.current = false;
+    }
   }, []);
 
-  return (
+  return loadingRef.current ? <Loading /> : (
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ MÔN HỌC</h1>
       <hr className="mb-3 border-pink-900" />
@@ -42,7 +47,7 @@ const ASubject = () => {
               <FloppyDisk size={28} /> Lưu
             </button>
 
-            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={() => cancel()} >
+            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={e => cancel(e)} >
               <X size={28} /> Hủy
             </button>
           </div>          
@@ -75,7 +80,7 @@ const ASubject = () => {
                             <LockKey size={28} /> Khóa
                           </button>
                         </div>) : (
-                          <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
+                          <button className="bg-green-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
                             <LockKeyOpen size={28} /> Mở khóa
                           </button>
                         )
@@ -124,22 +129,23 @@ const ASubject = () => {
     (id === "") ? insert() : update();
   }
 
-  function cancel() {
+  function cancel(e) {
+    e.preventDefault()
     setID("");
     setName("");
   }
 
   function insert() {
     if (confirm("Bạn có muốn thêm môn học này?")) {
-      const book = { name };
+      const subject = { name };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/subject/insert", book, headers).then(response => {
+      axios.post("/admin/subject/insert", subject, headers).then(response => {
         if (response.status === 200) {
-          alert("Thêm thành công");
+          alert("Thêm môn học thành công");
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, thêm thất bại");
+          alert("Đã có lỗi xảy ra, thêm môn học thất bại!");
           console.error(response)
         }
       }).catch(err => console.error(err));
@@ -148,15 +154,15 @@ const ASubject = () => {
 
   function update() {
     if (confirm("Bạn có muốn cập nhật môn học này?")) {
-      const book = { id, name, isActive: true };
+      const subject = { id, name, isActive: true };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/subject/update", book, headers).then(response => {
+      axios.put("/admin/subject/update", subject, headers).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert("Cập nhật thông tin thành công!");
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, thêm thất bại");
+          alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response)
         }
       }).catch(err => console.error(err));
@@ -167,11 +173,11 @@ const ASubject = () => {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa môn học này?`)) {
       axios.delete(`/admin/subject/update-status?id=${id}`).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert(`${status === 1 ? "Mở khóa" : "Khóa"} môn học thành công!`);
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, thêm thất bại");
+          alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa môn học thất bại!`);
           console.error(response)
         }
       }).catch(err => console.error(err));

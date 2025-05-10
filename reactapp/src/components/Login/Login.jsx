@@ -6,7 +6,7 @@ const Login = ({onSwitch}) => {
   const [password, setPassword] = useState("");
 
   return (
-    <div className='text-pink-800'>
+    <form className='text-pink-800'>
       <h1 className='font-bold text-3xl mb-2'>ĐĂNG NHẬP</h1>
 
       <hr className='mb-4 text-zinc-600' />
@@ -21,7 +21,7 @@ const Login = ({onSwitch}) => {
         <label htmlFor="password" className="block font-bold italic text-xl">Mật khẩu: </label>
         <input type="password" id="password" value={password} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" placeholder='Mật khẩu' onChange={e => setPassword(e.target.value)} onInput={() => clearPasswordValidation()} />
         <p id="error-password" className='text-red-700 italic'></p>
-        <a className='cursor-pointer italic underline! mt-2'>Quên mật khẩu?</a>
+        <a onClick={ForgetPassword} className='cursor-pointer italic underline! mt-2'>Quên mật khẩu?</a>
       </div>
 
       <div className="text-center">
@@ -31,7 +31,7 @@ const Login = ({onSwitch}) => {
       <br />
       Đã có tài khoản? <a className='cursor-pointer italic underline!' onClick={onSwitch}>Đăng ký ngay!</a> <br />
       </div>
-    </div>
+    </form>
   )
 
   function clearUsernameValidation() {
@@ -44,7 +44,9 @@ const Login = ({onSwitch}) => {
     document.getElementById("password").classList.remove("focus-error");
   }
 
-  function Login() {
+  function Login(e) {
+    e.preventDefault();
+
     clearUsernameValidation();
     clearPasswordValidation();
     let errorFlag = false;
@@ -70,19 +72,30 @@ const Login = ({onSwitch}) => {
         location.reload();
       })
       .catch(response => {
-        if (response.status === 404) {
+        if (response.status === 307) {
+          alert("Chào mừng bạn quay trở lại Mini Textbook. Vui lòng đặt lại mật khẩu!");
+          location.href = "/dat-lai-mat-khau"
+        }
+
+        else if (response.status === 404) {
           const data = response.response.data;
 
           document.getElementById(`error-${data.input}`).innerHTML = data.message;
           document.getElementById(`${data.input}`).classList.add("focus-error");
           document.getElementById(`${data.input}`).focus();
         }
+
         else {
           alert("Đã có lỗi xảy ra, vui lòng thử lại!");
           console.error(response);
         }
       })
     }
+  }
+
+  function ForgetPassword(e) {
+    e.preventDefault();
+    location.href = "/dat-lai-mat-khau";
   }
 }
 

@@ -13,7 +13,11 @@ public class UnitOfWork : IUnitOfWork
     private IFavoriteRepository? _favoriteRepository;
     private IOrderRepository? _orderRepository;
     private IOrderDetailRepository? _orderDetailRepository;
+    private IPermissionRepository? _permissionRepository;
+    private IPermissionGroupRepository? _permissionGroupRepository;
     private IPublisherRepository? _publisherRepository;
+    private IRoleRepository? _roleRepository;
+    private IRolePermissionRepository? _rolePermissionRepository;
     private ISeriesRepository? _seriesRepository;
     private ISubjectRepository? _subjectRepository;
     private IUserRepository? _userRepository;
@@ -30,7 +34,11 @@ public class UnitOfWork : IUnitOfWork
     public IFavoriteRepository Favorites => _favoriteRepository ??= new FavoriteRepository(_dbContext);
     public IOrderRepository Orders => _orderRepository ??= new OrderRepository(_dbContext);
     public IOrderDetailRepository OrderDetails => _orderDetailRepository ??= new OrderDetailRepository(_dbContext);
+    public IPermissionRepository Permissions => _permissionRepository ??= new PermissionRepository(_dbContext);
+    public IPermissionGroupRepository PermissionGroups => _permissionGroupRepository ??= new PermissionGroupRepository(_dbContext);
     public IPublisherRepository Publishers => _publisherRepository ??= new PublisherRepository(_dbContext);
+    public IRoleRepository Roles => _roleRepository ??= new RoleRepository(_dbContext);
+    public IRolePermissionRepository RolePermissions => _rolePermissionRepository ??= new RolePermissionRepository(_dbContext);
     public ISeriesRepository Series => _seriesRepository ??= new SeriesRepository(_dbContext);
     public ISubjectRepository Subjects => _subjectRepository ??= new SubjectRepository(_dbContext);
     public IUserRepository Users => _userRepository ??= new UserRepository(_dbContext);

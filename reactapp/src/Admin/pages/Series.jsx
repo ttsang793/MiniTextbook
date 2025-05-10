@@ -3,6 +3,7 @@ import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/rea
 import axios from "axios";
 import Search from "/src/Admin/components/Search";
 import Pagination from "/src/Admin/components/Pagination";
+import Loading from "/src/components/Loading";
 
 const ASeries = () => {
   const defaultThumbnail = "/src/images/series/default.png";
@@ -13,14 +14,18 @@ const ASeries = () => {
   const numPerPage = 10;
   const pageRef = useRef(0);
   const totalRef = useRef(0);
-  const searchRef = useRef("");  
+  const searchRef = useRef("");
+  const loadingRef = useRef(true);
 
   useEffect(() => {
-    document.title = "Quản lý bộ sách";
-    axios.get("/admin/series/get-all").then(response => setSeries(response.data))
+    if (loadingRef) {
+      document.title = "Quản lý bộ sách";
+      axios.get("/admin/series/get-all").then(response => setSeries(response.data))
+      loadingRef.current = false;
+    }
   }, []);
 
-  return (
+  return loadingRef.current ? <Loading /> : (
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ BỘ SÁCH</h1>
       <hr className="mb-3 border-pink-900" />
@@ -167,7 +172,7 @@ const ASeries = () => {
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
       axios.post("/admin/series/insert", formData, headers).then(response => {
         if (response.status === 200) {
-          alert("Thêm thành công");
+          alert("Thêm bộ sách thành công!");
           location.reload();
         }
         else {
@@ -198,11 +203,11 @@ const ASeries = () => {
 
       axios.post("/admin/series/update", formData, headers).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
-          //location.reload();
+          alert("Cập nhật thông tin thành công!");
+          location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response)
         }
       }).catch(err => console.error(err));
@@ -213,11 +218,11 @@ const ASeries = () => {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa bộ sách này?`)) {
       axios.delete(`/admin/series/update-status?id=${id}`).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert(`${status === 1 ? "Khóa" : "Mở khóa"} bộ sách thành công!`);
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại!`);
           console.error(response)
         }
       }).catch(err => console.error(err));

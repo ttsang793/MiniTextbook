@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from "axios";
+import Loading from "/src/components/Loading";
 
 const UserDetail = () => {
   const defaultThumbnail = "/src/images/avatar/default.jpg";
@@ -47,7 +48,7 @@ const UserDetail = () => {
     }
   }, []);
 
-  return (!loadingRef.current) ? <>Hello World</> : (
+  return (!loadingRef.current) ? <Loading /> : (
     <main className="bg-pink-100 grid grid-cols-1 lg:grid-cols-2 gap-x-10 p-8">
       {/* Cài đặt */}
       <section className="bg-white rounded-2xl box-shadow p-4">
@@ -330,13 +331,13 @@ const UserDetail = () => {
       if(confirm("Bạn có muốn cập nhật mật khẩu không?")) {
         const pass = { oldPassword: oldPass, newPassword: newPass };
 
-        axios.put("/user/update-key", pass, { 'Content-Type': 'multipart/form-data' })
+        axios.put("/user/password/update", pass, { 'Content-Type': 'application/json' })
         .then(() => {
           alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại!")
           location.href = "/";
         })
         .catch(response => {
-          if (response.status === 404) {
+          if (response.status === 400) {
             document.getElementById("error-oldpass").innerHTML = "Mật khẩu cũ không chính xác!";
             document.getElementById("oldpass").classList.add("focus-error");
             document.getElementById("oldpass").focus();
@@ -364,7 +365,7 @@ const UserDetail = () => {
           location.href = "/";
         })
         .catch(response => {
-          if (response.status === 404) {
+          if (response.status === 400) {
             document.getElementById("error-deletepass").innerHTML = "Mật khẩu không chính xác!";
             document.getElementById("deletepass").classList.add("focus-error");
             document.getElementById("deletepass").focus();

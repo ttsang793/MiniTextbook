@@ -3,21 +3,22 @@ import TimelimeGraph from "../components/statistic/TimelineGraph";
 import Percentage from "../components/statistic/Percentage";
 import Top5 from "../components/statistic/Top5";
 import { displayDateJS } from "/script";
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Loading from "/src/components/Loading";
 
 const AStatistic = () => {
-  const loadingRef = useRef(true);
+  const [loading, setLoading] = useState(true);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
   useEffect(() => {
-    if (loadingRef.current) {
+    if (loading) {
       document.title = "Thống kê | Quản trị MiniTextbook";
-      loadingRef.current = false;
+      setLoading(false);
     }
   }, []);
 
-  return (
+  return (loading) ? <Loading /> : (
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">THỐNG KÊ</h1>
       <hr className="mb-3 border-pink-900" />

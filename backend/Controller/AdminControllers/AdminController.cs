@@ -43,4 +43,54 @@ public class AdminController : ControllerBase
         HttpContext.Session.Remove("afullname");
         return StatusCode(200);
     }
+
+    [HttpGet("get")]
+    public async Task<IEnumerable<Admin>> GetAll(int? id, string? fullname)
+    {
+        if (id != null) return new List<Admin> { await _service.Admins.GetByUserId((int)id) };
+        if (string.IsNullOrEmpty(fullname)) return await _service.Admins.GetAll();
+        return await _service.Admins.GetAll(a => a.Fullname.ToLower().Contains(fullname.ToLower()));
+    }
+
+    [HttpGet("get/role")]
+    public async Task<IEnumerable<Admin>> GetAdminsByRole(int roleId)
+    {
+        return await _service.Admins.GetAll(a => a.Role == roleId);
+    }
+
+    [HttpPost("insert")]
+    public async Task<IActionResult> Insert([Bind("Id", "Fullname", "TimeBegin", "TimeEnd", "Role")] Admin admin)
+    {
+        return await _service.Admins.Insert(admin) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPut("update")]
+    public async Task<IActionResult> Update([Bind("Id", "Fullname", "TimeBegin", "TimeEnd", "Role")] Admin admin)
+    {
+        return await _service.Admins.Update(admin) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPut("password/update")]
+    public async Task<IActionResult> UpdatePassword([Bind("OldPassword", "NewPassword")] PassDTO pass)
+    {
+        var admin = new Admin
+        {
+            Id = (int)HttpContext.Session.GetInt32("aid")!,
+            Password = pass.NewPassword
+        };
+
+        return (await _service.Admins.UpdatePassword(admin, pass.OldPassword!)) ? LogOut() : StatusCode(404);
+    }
+
+    [HttpPut("password/reset")]
+    public async Task<IActionResult> ResetPassword(int id)
+    {
+        return (await _service.Admins.ResetPassword(id)) ? Ok() : StatusCode(404);
+    }
+
+    [HttpPut("update/status")]
+    public async Task<IActionResult> UpdateStatus(int id)
+    {
+        return await _service.Admins.UpdateStatus(id) ? StatusCode(200) : StatusCode(404);
+    }
 }

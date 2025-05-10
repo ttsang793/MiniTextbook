@@ -16,7 +16,15 @@ public interface IUnitOfWork
 
     IOrderDetailRepository OrderDetails { get; }
 
+    IPermissionRepository Permissions { get; }
+
+    IPermissionGroupRepository PermissionGroups { get; }
+
     IPublisherRepository Publishers { get; }
+
+    IRoleRepository Roles { get; }
+
+    IRolePermissionRepository RolePermissions { get; }
 
     ISeriesRepository Series { get; }
 

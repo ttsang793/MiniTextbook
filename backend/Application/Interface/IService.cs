@@ -9,6 +9,8 @@ public interface IService
     IImageService Images { get; }
     IOrderService Orders { get; }
     IPublisherService Publishers { get; }
+
+    IRoleService Roles { get; }
     ISeriesService Series { get; }
     IStatisticService Statistic { get; }
     ISubjectService Subjects { get; }

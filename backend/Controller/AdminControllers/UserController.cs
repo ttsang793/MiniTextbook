@@ -16,9 +16,22 @@ public class UserController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("get/user")]
-    public async Task<IEnumerable<User>> GetAll()
+    [HttpGet("get")]
+    public async Task<IEnumerable<User>> GetAll(string? username)
     {
-        return await _service.Users.GetAll();
+        if (username == null) return await _service.Users.GetAll();
+        return await _service.Users.GetAll(u => u.Username!.Contains(username));
+    }
+
+    [HttpPost("lock")]
+    public async Task<IActionResult> LockUser(int id)
+    {
+        return await _service.Users.UpdateStatus(id, "Đã khóa") ? Ok() : StatusCode(404);
+    }
+
+    [HttpPost("unlock")]
+    public async Task<IActionResult> UnlockUser(int id)
+    {
+        return await _service.Users.UpdateStatus(id, "Mới khôi phục") ? Ok() : StatusCode(404);
     }
 }

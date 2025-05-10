@@ -3,6 +3,7 @@ import axios from 'axios';
 import ProductCell from '/src/components/Product/ProductCell';
 import Pagination from '/src/components/Pagination';
 import { arrayNumber } from "/script";
+import Loading from "/src/components/Loading";
 
 const Product = ({fullname}) => {
   // Hằng số mặc định
@@ -67,7 +68,7 @@ const Product = ({fullname}) => {
     }
   }, []);
 
-  return loadingRef ? <>Hello World</> : (
+  return loadingRef ? <Loading /> : (
     <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">SẢN PHẨM</h1>
 

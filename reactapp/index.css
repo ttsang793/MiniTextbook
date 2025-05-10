@@ -3,6 +3,7 @@
 * {
   box-sizing: border-box;
   outline: none;
+  cursor: default;
 }
 
 main {
@@ -11,6 +12,15 @@ main {
 
 a {
   text-decoration: none!important;
+  cursor: pointer!important;
+}
+
+button {
+  cursor: pointer!important;
+
+  * {
+    cursor: pointer!important;
+  }
 }
 
 .text-shadow {

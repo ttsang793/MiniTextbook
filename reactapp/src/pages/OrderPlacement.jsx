@@ -1,6 +1,7 @@
 import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { displayPrice } from "/script";
+import Loading from "/src/components/Loading";
 
 const OrderPlacement = () => {
   const [receiver, setReceiver] = useState("");
@@ -52,7 +53,7 @@ const OrderPlacement = () => {
     }    
   }, []);
   
-  return (!loadingRef.current) ? <>Hello World</> : (
+  return (!loadingRef.current) ? <Loading /> : (
     <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">THANH TOÁN</h1>
       
@@ -82,7 +83,7 @@ const OrderPlacement = () => {
               Đặt hàng
             </button>
 
-            <button className="bg-sky-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-sky-700 duration-150" onClick={e => addOrder(e)}>
+            <button className="bg-sky-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-sky-700 duration-150" onClick={e => addOrderVnPay(e)}>
               Thanh toán bằng VNPay
             </button>
 
@@ -132,7 +133,7 @@ const OrderPlacement = () => {
 
   function addOrder(e) {
     e.preventDefault();
-    const order = { receiver, address, phone, total, carts: orderList }
+    const order = { receiver, address, phone, total, carts: orderList };
     const header = { headers: {"Content-Type": "application/json"} };
 
     axios.post(`/order/insert?isInstant=${(locationParam == "instant")}`, order, header).then(response => {
@@ -144,6 +145,16 @@ const OrderPlacement = () => {
         alert("Đặt hàng thất bại, đã có lỗi xảy ra.")
         console.error(response);
       }
+    })
+  }
+
+  function addOrderVnPay(e) {
+    e.preventDefault();
+    const order = { receiver, total };
+    const header = { headers: {"Content-Type": "application/json"} };
+
+    axios.post("/order/vnpay/payment", order, header).then(response => {
+      location.href = response.data;
     })
   }
 }

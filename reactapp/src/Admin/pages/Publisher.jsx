@@ -3,6 +3,7 @@ import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/rea
 import axios from "axios";
 import Search from "/src/Admin/components/Search";
 import Pagination from "/src/Admin/components/Pagination";
+import Loading from "/src/components/Loading";
 
 const APublisher = () => {
   const [publisher, setPublisher] = useState([]);
@@ -12,13 +13,17 @@ const APublisher = () => {
   const pageRef = useRef(0);
   const totalRef = useRef(0);
   const searchRef = useRef("");
+  const loadingRef = useRef(true);
 
   useEffect(() => {
-    document.title = "Quản lý nhà xuất bản";
-    loadData();
+    if (loadingRef.current) {
+      document.title = "Quản lý nhà xuất bản";
+      loadData();
+      loadingRef.current = false;
+    }
   }, []);
 
-  return (
+  return loadingRef.current ? <Loading /> : (
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ NHÀ XUẤT BẢN</h1>
       <hr className="mb-3 border-pink-900" />
@@ -131,9 +136,9 @@ const APublisher = () => {
 
   function insert() {
     if (confirm("Bạn có muốn thêm nhà xuất bản này?")) {
-      const book = { name };
+      const publisher = { name };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/publisher/insert", book, headers).then(response => {
+      axios.post("/admin/publisher/insert", publisher, headers).then(response => {
         if (response.status === 200) {
           alert("Thêm thành công");
           location.reload();
@@ -148,15 +153,15 @@ const APublisher = () => {
 
   function update() {
     if (confirm("Bạn có muốn cập nhật nhà xuất bản này?")) {
-      const book = { id, name, isActive: true };
+      const publisher = { id, name, isActive: true };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/publisher/update", book, headers).then(response => {
+      axios.put("/admin/publisher/update", publisher, headers).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert("Cập nhật thông tin thành công!");
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          alert("Đã có lỗi xảy ra, cập nhật thông tin thất bại!");
           console.error(response)
         }
       }).catch(err => console.error(err));
@@ -167,11 +172,11 @@ const APublisher = () => {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa nhà xuất bản này?`)) {
       axios.delete(`/admin/publisher/update-status?id=${id}`).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert(`${status === 1 ? "Khóa" : "Mở khóa"} nhà xuất bản thành công!`);
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại`);
           console.error(response)
         }
       }).catch(err => console.error(err));

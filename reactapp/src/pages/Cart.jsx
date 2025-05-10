@@ -2,6 +2,7 @@ import { React, useState, useEffect, useRef } from "react";
 import { Trash } from "@phosphor-icons/react";
 import axios from "axios";
 import { displayPrice } from "/script";
+import Loading from "/src/components/Loading";
 
 const Cart = () => {
   let [checkbox, setCheckbox] = useState([]);
@@ -13,7 +14,6 @@ const Cart = () => {
     document.title = "Giỏ hàng - Nhà sách MiniTextbook";
 
     if (loadingRef.current) {
-
       axios.get("/cart/get").then(response => {
         setCartList(response.data);
         response.data.forEach(r => checkbox.push(false));
@@ -42,7 +42,7 @@ const Cart = () => {
     checkbox.forEach((c, i) => handleCheckbox(i, status));
   }
 
-  return loadingRef.current ? <main>Hello World</main> : (
+  return loadingRef.current ? <Loading /> : (
     <main className="py-8">
       <h1 className="text-center text-pink-900 font-bold text-4xl">GIỎ HÀNG</h1>
       

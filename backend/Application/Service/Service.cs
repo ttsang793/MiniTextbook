@@ -13,6 +13,7 @@ public class Service : IService
     private IImageService? _imageService;
     private IOrderService? _orderService;
     private IPublisherService? _publisherService;
+    private IRoleService? _roleService;
     private ISeriesService? _seriesService;
     private IStatisticService? _statisticService;
     private ISubjectService? _subjectService;
@@ -30,6 +31,7 @@ public class Service : IService
     public IImageService Images => _imageService ??= new ImageService();
     public IOrderService Orders => _orderService ??= new OrderService(_unitOfWork);
     public IPublisherService Publishers => _publisherService ??= new PublisherService(_unitOfWork);
+    public IRoleService Roles => _roleService ??= new RoleService(_unitOfWork);
     public ISeriesService Series => _seriesService ??= new SeriesService(_unitOfWork);
     public IStatisticService Statistic => _statisticService ??= new StatisticService(_unitOfWork);
     public ISubjectService Subjects => _subjectService ??= new SubjectService(_unitOfWork);

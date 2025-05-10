@@ -5,17 +5,17 @@ namespace Application.Interface;
 
 public interface IUserService
 {
-    Task<IEnumerable<User>> GetAll();
+    Task<IEnumerable<User>> GetAll(Expression<Func<User, bool>> expression = null);
 
     Task<User> GetByUserId(int id);
 
-    Task<User?> Login(User user);
+    Task<User?> Verify(User user);
 
     Task<User?> Insert(User user);
 
     Task<User?> Update(User user);
 
-    Task<bool> UpdatePassword(User user, string oldPassword);
+    Task<bool> UpdatePassword(User user);
 
-    Task<bool> DeactivateAccount(int id, string oldPassword);
+    Task<bool> UpdateStatus(int id, string status);
 }

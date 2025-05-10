@@ -19,12 +19,12 @@ const Search = (props) => {
         <option value="name">Tên</option>
       </select>
       <input
-        type="search" id="search-input" className="bg-gray-300/70 text-gray-900 flex-1 rounded-s-full py-2 px-5 placeholder:italic"
+        type="search" id="search-input" className="bg-gray-300/70 text-gray-900 flex-1 rounded-s-full py-2 ps-5 placeholder:italic"
         placeholder="Tìm kiếm..." spellCheck="false" value={search} onChange={e => setSearch(e.target.value)}
         onKeyDown={e => {if (e.nativeEvent.key === "Enter") document.getElementById("search-btn").click()}}
       />
       <button id="search-btn" className="p-2 rounded-e-full bg-gray-300/70 text-gray-900 cursor-pointer hover:bg-pink-900 hover:text-pink-300 duration-200" onClick={() => onClick()}>
-        <MagnifyingGlass size={28} className="cursor-pointer" />
+        <MagnifyingGlass size={24} className="cursor-pointer" />
       </button>
     </div>
   )

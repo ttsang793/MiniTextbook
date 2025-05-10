@@ -3,6 +3,7 @@ import { FloppyDisk, X, Pencil, LockKey, LockKeyOpen } from "@phosphor-icons/rea
 import axios from "axios";
 import Search from "/src/Admin/components/Search";
 import Pagination from "/src/Admin/components/Pagination";
+import Loading from "/src/components/Loading";
 
 const ABook = () => {
   // Hằng số mặc định
@@ -61,7 +62,7 @@ const ABook = () => {
     }
   }, []);
 
-  return loadingRef.current ? <>Hello World</> : (
+  return loadingRef.current ? <Loading /> : (
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ SÁCH</h1>
       <hr className="mb-3 border-pink-900" />
@@ -105,7 +106,7 @@ const ABook = () => {
             {
               seriesList.map(s =>
                 <div key={`series-${s.id}`}>
-                  <input type="checkbox" id={`series-${s.id}`} checked={bSeries[`${s.id}`]} onChange={() => handleBSeries(s.id)} />
+                  <input type="checkbox" className="accent-pink-700" id={`series-${s.id}`} checked={bSeries[`${s.id}`]} onChange={() => handleBSeries(s.id)} />
                   &nbsp;<label htmlFor={`series-${s.id}`}>{s.name}</label>
                 </div>
               )
@@ -200,7 +201,6 @@ const ABook = () => {
     setSeriesList(seriesResponse.data);
     seriesResponse.data.forEach(r => temp[`${r.id}`] = false);
     setBSeries(bSeries = temp);
-    console.log(bSeries);
 
     axios.get(searchRef.current === "" ? '/admin/book/get-all' : `/admin/book/get?name=${searchRef.current}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
@@ -286,11 +286,11 @@ const ABook = () => {
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
       axios.post("/admin/book/insert", formData, headers).then(response => {
         if (response.status === 200) {
-          alert("Thêm thành công");
+          alert("Thêm sách giáo khoa thành công!");
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, thêm thất bại");
+          alert("Đã có lỗi xảy ra, thêm thất bại!");
           console.error(response)
         }
       }).catch(err => console.error(err));
@@ -324,11 +324,11 @@ const ABook = () => {
 
       axios.post("/admin/book/update", formData, headers).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert("Cập nhật thông tin thành công!");
           location.reload();
         }
         else if (typeof bImage === "string") {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response);
         }
       }).catch(err => console.error(err));
@@ -339,11 +339,11 @@ const ABook = () => {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa sách giáo khoa này?`)) {
       axios.delete(`/admin/book/update-status?id=${id}`).then(response => {
         if (response.status === 200) {
-          alert("Cập nhật thành công");
+          alert(`${status == 1 ? "Khóa" : "Mở khóa"} sách giáo khoa thành công!`);
           location.reload();
         }
         else {
-          alert("Đã có lỗi xảy ra, cập nhật thất bại");
+          alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại`);
           console.error(response)
         }
       }).catch(err => console.error(err));
