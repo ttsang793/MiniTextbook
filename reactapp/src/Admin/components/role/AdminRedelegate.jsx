@@ -16,7 +16,7 @@ const AdminRedelegate = ({show, roleId, roleList, onClose}) => {
   useEffect(() => {
     if (roleId !== "") {
       try {
-        axios.get(`/admin/admin/get/role?roleId=${roleId}`).then(response => {
+        axios.get(`/api/admin/get/role?roleId=${roleId}`).then(response => {
           setAdmin(admin = response.data);
           handleAll(-1);
         });
@@ -110,7 +110,7 @@ const AdminRedelegate = ({show, roleId, roleList, onClose}) => {
 
       const headers = { headers: { 'Content-Type': 'application/json' }}
 
-      axios.put(`/admin/role/delete?id=${roleId}`, { admins: admin }, headers).then(() => {
+      axios.put(`/api/role/delete?id=${roleId}`, { admins: admin }, headers).then(() => {
         alert("Xóa vai trò thành công. Các nhân viên đã được chuyển đến vai trò mới!");
         location.reload();
       }).catch(response => {

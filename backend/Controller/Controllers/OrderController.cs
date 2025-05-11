@@ -12,6 +12,7 @@ public class OrderController : ControllerBase
     private ILogger<OrderController> _logger;
     private readonly IService _service;
     private readonly IVnPayService _vnPayService;
+    private static OrderDTO? _temp { get; set; }
 
     public OrderController(ILogger<OrderController> logger, IService service, IVnPayService vnPayService)
     {
@@ -38,23 +39,44 @@ public class OrderController : ControllerBase
 
     [HttpPost("vnpay/payment")]
     [EnableCors("AllowVnPay")]
-    public string CreateVnPayPayment([Bind("Receiver", "Total")] OrderDTO o)
+    public string CreateVnPayPayment(OrderDTO o)
     {
         o.User = HttpContext.Session.GetInt32("id");
+        _temp = o;
         string url = _vnPayService.CreatePaymentUrl(o, HttpContext);
         return url;
     }
 
     [HttpGet("vnpay/result")]
     [EnableCors("AllowVnPay")]
-    public IActionResult GetVnPayResult()
+    public async Task<IActionResult> GetVnPayResult()
     {
         var response = _vnPayService.PaymentExecute(Request.Query);
-        return Redirect($"https://localhost:5173/nguoi-dung/thanh-toan/ket-qua?vnpaypd={response.PaymentId}");
+        var url = "https://localhost:5173/nguoi-dung/thanh-toan/ket-qua?" + (response.Success ? $"vnpaypd={response.PaymentId}" : "fail");
+
+        if (response.Success)
+        {
+            var order = new Order
+            {
+                User = (int)HttpContext.Session.GetInt32("id")!,
+                Receiver = _temp.Receiver,
+                Address = _temp.Address,
+                Phone = _temp.Phone,
+                Total = _temp.Total,
+                DatePurchased = DateTime.Now,
+                PaidMethod = response.PaymentMethod,
+                IsPaid = true
+            };
+
+            await _service.Orders.Insert(order, _temp.Carts, _temp.Instant);
+        }
+
+        _temp = null;        
+        return Redirect(url);
     }
 
     [HttpPost("insert")]
-    public async Task<IActionResult> Insert(OrderDTO orderDTO, bool isInstant)
+    public async Task<IActionResult> Insert(OrderDTO orderDTO)
     {
         var order = new Order
         {
@@ -67,7 +89,7 @@ public class OrderController : ControllerBase
             PaidMethod = "Tiền mặt"
         };
 
-        return await _service.Orders.Insert(order, orderDTO.Carts, isInstant) ? StatusCode(200) : StatusCode(404);
+        return await _service.Orders.Insert(order, orderDTO.Carts, orderDTO.Instant) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("cancel")]

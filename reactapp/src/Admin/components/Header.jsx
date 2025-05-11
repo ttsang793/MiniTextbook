@@ -3,7 +3,7 @@ import { Book, Books, PaperPlaneTilt, Atom, CurrencyDollarSimple, UserCircle } f
 import "./Header.css";
 import axios from 'axios';
 
-const AHeader = ({aid, afullname}) => {
+const AHeader = ({aid, afullname, agroup}) => {
   return (
     <header className="bg-linear-to-br from-pink-700 to-pink-900 flex justify-between items-center">
       {/* Dàn nút trong header */}
@@ -25,36 +25,54 @@ const AHeader = ({aid, afullname}) => {
             Trang chủ
           </button>
         </a>
-        <a href="/quan-tri/sach">
-          <button className="admin-header-btn">
-            <Book size={36} weight="fill" />Sách
-          </button>
-        </a>
-        <a href="/quan-tri/bo-sach">
-          <button className="admin-header-btn">
-            <Books size={36} weight="fill" />Bộ sách
-          </button>
-        </a>
-        <a href="/quan-tri/nha-xuat-ban">
-          <button className="admin-header-btn">
-            <PaperPlaneTilt size={36} weight="fill" />NXB
-          </button>
-        </a>
-        <a href="/quan-tri/mon-hoc">
-          <button className="admin-header-btn">
-            <Atom size={36} />Môn học
-          </button>
-        </a>
-        <a href="/quan-tri/don-hang">
-          <button className="admin-header-btn">
-            <CurrencyDollarSimple size={36} weight="fill" />Đơn hàng
-          </button>
-        </a>
-        <a href="/quan-tri/tai-khoan">
-          <button className="admin-header-btn">
-            <UserCircle size={36} weight="fill" />Tài khoản
-          </button>
-        </a>
+        {
+          agroup.includes(1) &&
+          <a href="/quan-tri/sach">
+            <button className="admin-header-btn">
+              <Book size={36} weight="fill" />Sách
+            </button>
+          </a>
+        }
+        {
+          agroup.includes(2) &&
+          <a href="/quan-tri/bo-sach">
+            <button className="admin-header-btn">
+              <Books size={36} weight="fill" />Bộ sách
+            </button>
+          </a>
+        }
+        {
+          agroup.includes(3) &&
+          <a href="/quan-tri/nha-xuat-ban">
+            <button className="admin-header-btn">
+              <PaperPlaneTilt size={36} weight="fill" />NXB
+            </button>
+          </a>
+        }
+        {
+          agroup.includes(4) &&
+          <a href="/quan-tri/mon-hoc">
+            <button className="admin-header-btn">
+              <Atom size={36} />Môn học
+            </button>
+          </a>
+        }
+        {
+          agroup.includes(5) &&
+          <a href="/quan-tri/don-hang">
+            <button className="admin-header-btn">
+              <CurrencyDollarSimple size={36} weight="fill" />Đơn hàng
+            </button>
+          </a>
+        }
+        {
+          (agroup.includes(6) || agroup.includes(7) || agroup.includes(8)) &&
+          <a href="/quan-tri/tai-khoan">
+            <button className="admin-header-btn">
+              <UserCircle size={36} weight="fill" />Tài khoản
+            </button>
+          </a>
+        }
       </div>
 
       {/* Nút đăng xuất và cài đặt */}
@@ -69,7 +87,7 @@ const AHeader = ({aid, afullname}) => {
   )
 
   function logOut() {
-    axios.post("/admin/admin/logout").then(() => location.href = "/quan-tri");
+    axios.post("/api/admin/logout").then(() => location.href = "/quan-tri");
   }
 }
 

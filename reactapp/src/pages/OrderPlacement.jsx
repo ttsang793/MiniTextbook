@@ -133,10 +133,10 @@ const OrderPlacement = () => {
 
   function addOrder(e) {
     e.preventDefault();
-    const order = { receiver, address, phone, total, carts: orderList };
+    const order = { receiver, address, phone, total, carts: orderList, instant: locationParam == "instant" };
     const header = { headers: {"Content-Type": "application/json"} };
 
-    axios.post(`/order/insert?isInstant=${(locationParam == "instant")}`, order, header).then(response => {
+    axios.post(`/order/insert}`, order, header).then(response => {
       if (response.status === 200) {
         alert("Đặt hàng thành công");
         location.href = "/nguoi-dung/thanh-toan/ket-qua";
@@ -150,7 +150,7 @@ const OrderPlacement = () => {
 
   function addOrderVnPay(e) {
     e.preventDefault();
-    const order = { receiver, total };
+    const order = { receiver, address, phone, total, carts: orderList, instant: locationParam == "instant" };
     const header = { headers: {"Content-Type": "application/json"} };
 
     axios.post("/order/vnpay/payment", order, header).then(response => {

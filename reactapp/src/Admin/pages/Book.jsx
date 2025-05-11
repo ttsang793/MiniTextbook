@@ -43,16 +43,16 @@ const ABook = () => {
     if (loadingRef.current) {
       document.title = "Quản lý sách";
       loadData();
-      axios.get("/admin/publisher/get-all").then(response => {
+      axios.get("/api/publisher/get-all").then(response => {
         setPublisherList(response.data);
         setBPublisher(response.data[0].id);
       });
-      axios.get("/admin/subject/get-all").then(response => {
+      axios.get("/api/subject/get-all").then(response => {
         setSubjectList(response.data);
         setBSubject(response.data[0].id);
       });
 
-      axios.get("/admin/series/get-all").then(response => {
+      axios.get("/api/series/get-all").then(response => {
         let temp = {}
         setSeriesList(response.data);
         response.data.forEach(r => temp[`${r.id}`] = false);
@@ -174,7 +174,7 @@ const ABook = () => {
                           </div>
                         ) : (
                           <button
-                            className="bg-green-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer"
+                            className="bg-green-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/80 duration-150 cursor-pointer"
                             onClick={() => status(b.id, b.isActive)}
                           >
                             <LockKeyOpen size={28} /> Mở khóa
@@ -202,7 +202,7 @@ const ABook = () => {
     seriesResponse.data.forEach(r => temp[`${r.id}`] = false);
     setBSeries(bSeries = temp);
 
-    axios.get(searchRef.current === "" ? '/admin/book/get-all' : `/admin/book/get?name=${searchRef.current}`).then(response => {
+    axios.get(searchRef.current === "" ? '/api/book/get-all' : `/api/book/get?name=${searchRef.current}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -211,11 +211,11 @@ const ABook = () => {
   function search(attr, prop) {
     pageRef.current = 1;
     searchRef.current = prop;
-    if (prop === "") axios.get("/admin/book/get-all").then(response => {
+    if (prop === "") axios.get("/api/book/get-all").then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
-    else axios.get(`/admin/book/get?${attr}=${prop}`).then(response => {
+    else axios.get(`/api/book/get?${attr}=${prop}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setBookList(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -264,6 +264,7 @@ const ABook = () => {
     setBPublisher(publisherList[0]);
     setBSubject(subjectList[0]);
     setBPrice(0);
+    document.getElementById("file-upload").value = "";
 
     for (const [key, value] of Object.entries(bSeries)) if (value) handleBSeries(key);
   }
@@ -284,11 +285,11 @@ const ABook = () => {
       formData.append("file", bImage);
       
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
-      axios.post("/admin/book/insert", formData, headers).then(response => {
-        if (response.status === 200) {
-          alert("Thêm sách giáo khoa thành công!");
-          location.reload();
-        }
+      axios.post("/api/book/insert", formData, headers).then(() => {
+        alert("Thêm sách giáo khoa thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, thêm thất bại!");
           console.error(response)
@@ -322,31 +323,31 @@ const ABook = () => {
 
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }};
 
-      axios.post("/admin/book/update", formData, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật thông tin thành công!");
-          location.reload();
-        }
-        else if (typeof bImage === "string") {
+      axios.post("/api/book/update", formData, headers).then(() => {
+        alert("Cập nhật thông tin thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
+        else {
           alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response);
         }
-      }).catch(err => console.error(err));
+      });
     };
   }
 
   function status(id, status) {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa sách giáo khoa này?`)) {
-      axios.delete(`/admin/book/update-status?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert(`${status == 1 ? "Khóa" : "Mở khóa"} sách giáo khoa thành công!`);
-          location.reload();
-        }
+      axios.delete(`/api/book/update/status?id=${id}`).then(() => {
+        alert(`${status == 1 ? "Khóa" : "Mở khóa"} sách giáo khoa thành công!`);
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
-          alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại`);
+          alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại!`);
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     }    
   }
 }

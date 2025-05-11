@@ -2,7 +2,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "GetAll",
-    "RelativePath": "admin/admin/get",
+    "RelativePath": "api/admin/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -33,7 +33,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "GetSessionData",
-    "RelativePath": "admin/admin/get-session",
+    "RelativePath": "api/admin/get-session",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -43,7 +43,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "GetAdminsByRole",
-    "RelativePath": "admin/admin/get/role",
+    "RelativePath": "api/admin/get/role",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -69,7 +69,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "Insert",
-    "RelativePath": "admin/admin/insert",
+    "RelativePath": "api/admin/insert",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -85,7 +85,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "Login",
-    "RelativePath": "admin/admin/login",
+    "RelativePath": "api/admin/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -101,7 +101,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "LogOut",
-    "RelativePath": "admin/admin/logout",
+    "RelativePath": "api/admin/logout",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -111,7 +111,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "ResetPassword",
-    "RelativePath": "admin/admin/password/reset",
+    "RelativePath": "api/admin/password/reset",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -127,7 +127,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "UpdatePassword",
-    "RelativePath": "admin/admin/password/update",
+    "RelativePath": "api/admin/password/update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -143,7 +143,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "Update",
-    "RelativePath": "admin/admin/update",
+    "RelativePath": "api/admin/update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -159,7 +159,7 @@
   {
     "ContainingType": "Controller.AdminControllers.AdminController",
     "Method": "UpdateStatus",
-    "RelativePath": "admin/admin/update/status",
+    "RelativePath": "api/admin/update/status",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -175,7 +175,7 @@
   {
     "ContainingType": "Controller.AdminControllers.BookController",
     "Method": "Search",
-    "RelativePath": "admin/book/get",
+    "RelativePath": "api/book/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -206,7 +206,7 @@
   {
     "ContainingType": "Controller.AdminControllers.BookController",
     "Method": "GetAll",
-    "RelativePath": "admin/book/get-all",
+    "RelativePath": "api/book/get-all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -226,7 +226,7 @@
   {
     "ContainingType": "Controller.AdminControllers.BookController",
     "Method": "Insert",
-    "RelativePath": "admin/book/insert",
+    "RelativePath": "api/book/insert",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -282,7 +282,7 @@
   {
     "ContainingType": "Controller.AdminControllers.BookController",
     "Method": "Update",
-    "RelativePath": "admin/book/update",
+    "RelativePath": "api/book/update",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -338,7 +338,7 @@
   {
     "ContainingType": "Controller.AdminControllers.BookController",
     "Method": "UpdateStatus",
-    "RelativePath": "admin/book/update-status",
+    "RelativePath": "api/book/update/status",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -354,7 +354,7 @@
   {
     "ContainingType": "Controller.AdminControllers.OrderController",
     "Method": "GetOrders",
-    "RelativePath": "admin/order/get",
+    "RelativePath": "api/order/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -425,7 +425,7 @@
   {
     "ContainingType": "Controller.AdminControllers.OrderController",
     "Method": "GetAllAddress",
-    "RelativePath": "admin/order/get/address",
+    "RelativePath": "api/order/get/address",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -445,7 +445,7 @@
   {
     "ContainingType": "Controller.AdminControllers.OrderController",
     "Method": "GetAllReceiver",
-    "RelativePath": "admin/order/get/receiver",
+    "RelativePath": "api/order/get/receiver",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -464,8 +464,28 @@
   },
   {
     "ContainingType": "Controller.AdminControllers.OrderController",
+    "Method": "GetAll",
+    "RelativePath": "api/order/get/user",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Core.Entity.User, Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Controller.AdminControllers.OrderController",
     "Method": "Search",
-    "RelativePath": "admin/order/search",
+    "RelativePath": "api/order/search",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -491,7 +511,7 @@
   {
     "ContainingType": "Controller.AdminControllers.OrderController",
     "Method": "UpdateStatus",
-    "RelativePath": "admin/order/update-status",
+    "RelativePath": "api/order/update/status",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -512,7 +532,7 @@
   {
     "ContainingType": "Controller.AdminControllers.PublisherController",
     "Method": "Search",
-    "RelativePath": "admin/publisher/get",
+    "RelativePath": "api/publisher/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -543,7 +563,7 @@
   {
     "ContainingType": "Controller.AdminControllers.PublisherController",
     "Method": "GetAll",
-    "RelativePath": "admin/publisher/get-all",
+    "RelativePath": "api/publisher/get-all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -563,7 +583,7 @@
   {
     "ContainingType": "Controller.AdminControllers.PublisherController",
     "Method": "Insert",
-    "RelativePath": "admin/publisher/insert",
+    "RelativePath": "api/publisher/insert",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -579,7 +599,7 @@
   {
     "ContainingType": "Controller.AdminControllers.PublisherController",
     "Method": "Update",
-    "RelativePath": "admin/publisher/update",
+    "RelativePath": "api/publisher/update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -595,7 +615,7 @@
   {
     "ContainingType": "Controller.AdminControllers.PublisherController",
     "Method": "UpdateStatus",
-    "RelativePath": "admin/publisher/update-status",
+    "RelativePath": "api/publisher/update/status",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -611,7 +631,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "Delete",
-    "RelativePath": "admin/role/delete",
+    "RelativePath": "api/role/delete",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -627,7 +647,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "DeleteWithAdmins",
-    "RelativePath": "admin/role/delete",
+    "RelativePath": "api/role/delete",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -648,7 +668,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "GetById",
-    "RelativePath": "admin/role/get",
+    "RelativePath": "api/role/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -674,7 +694,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "GetAllRoles",
-    "RelativePath": "admin/role/get-all",
+    "RelativePath": "api/role/get-all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -700,7 +720,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "GetAllPermissionGroups",
-    "RelativePath": "admin/role/get/permission",
+    "RelativePath": "api/role/get/permission",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -720,7 +740,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "Insert",
-    "RelativePath": "admin/role/insert",
+    "RelativePath": "api/role/insert",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -736,7 +756,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "Update",
-    "RelativePath": "admin/role/update",
+    "RelativePath": "api/role/update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -752,7 +772,7 @@
   {
     "ContainingType": "Controller.AdminControllers.RoleController",
     "Method": "UpdatePermission",
-    "RelativePath": "admin/role/update/permission",
+    "RelativePath": "api/role/update/permission",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -768,7 +788,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SeriesController",
     "Method": "Search",
-    "RelativePath": "admin/series/get",
+    "RelativePath": "api/series/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -799,7 +819,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SeriesController",
     "Method": "GetAll",
-    "RelativePath": "admin/series/get-all",
+    "RelativePath": "api/series/get-all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -819,7 +839,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SeriesController",
     "Method": "Insert",
-    "RelativePath": "admin/series/insert",
+    "RelativePath": "api/series/insert",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -860,7 +880,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SeriesController",
     "Method": "Update",
-    "RelativePath": "admin/series/update",
+    "RelativePath": "api/series/update",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -901,7 +921,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SeriesController",
     "Method": "UpdateStatus",
-    "RelativePath": "admin/series/update-status",
+    "RelativePath": "api/series/update/status",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -917,7 +937,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetPercentageByGrade",
-    "RelativePath": "admin/statistic/grade",
+    "RelativePath": "api/statistic/grade",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -948,7 +968,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetRevenue",
-    "RelativePath": "admin/statistic/revenue",
+    "RelativePath": "api/statistic/revenue",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -979,7 +999,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetPercentageBySeries",
-    "RelativePath": "admin/statistic/series",
+    "RelativePath": "api/statistic/series",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1010,7 +1030,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetPercentageBySubject",
-    "RelativePath": "admin/statistic/subject",
+    "RelativePath": "api/statistic/subject",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1041,7 +1061,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetToday",
-    "RelativePath": "admin/statistic/today",
+    "RelativePath": "api/statistic/today",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1051,7 +1071,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetTop5Books",
-    "RelativePath": "admin/statistic/top-5-books",
+    "RelativePath": "api/statistic/top-5-books",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1082,7 +1102,7 @@
   {
     "ContainingType": "Controller.AdminControllers.StatisticController",
     "Method": "GetTop5Customers",
-    "RelativePath": "admin/statistic/top-5-customers",
+    "RelativePath": "api/statistic/top-5-customers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1113,7 +1133,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SubjectController",
     "Method": "Search",
-    "RelativePath": "admin/subject/get",
+    "RelativePath": "api/subject/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1144,7 +1164,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SubjectController",
     "Method": "GetAll",
-    "RelativePath": "admin/subject/get-all",
+    "RelativePath": "api/subject/get-all",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1164,7 +1184,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SubjectController",
     "Method": "Insert",
-    "RelativePath": "admin/subject/insert",
+    "RelativePath": "api/subject/insert",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1180,7 +1200,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SubjectController",
     "Method": "Update",
-    "RelativePath": "admin/subject/update",
+    "RelativePath": "api/subject/update",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -1196,7 +1216,7 @@
   {
     "ContainingType": "Controller.AdminControllers.SubjectController",
     "Method": "UpdateStatus",
-    "RelativePath": "admin/subject/update-status",
+    "RelativePath": "api/subject/update/status",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -1212,7 +1232,7 @@
   {
     "ContainingType": "Controller.AdminControllers.UserController",
     "Method": "GetAll",
-    "RelativePath": "admin/user/get",
+    "RelativePath": "api/user/get",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -1238,7 +1258,7 @@
   {
     "ContainingType": "Controller.AdminControllers.UserController",
     "Method": "LockUser",
-    "RelativePath": "admin/user/lock",
+    "RelativePath": "api/user/lock",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1254,7 +1274,7 @@
   {
     "ContainingType": "Controller.AdminControllers.UserController",
     "Method": "UnlockUser",
-    "RelativePath": "admin/user/unlock",
+    "RelativePath": "api/user/unlock",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1441,11 +1461,6 @@
         "Name": "orderDTO",
         "Type": "Application.DTO.OrderDTO",
         "IsRequired": true
-      },
-      {
-        "Name": "isInstant",
-        "Type": "System.Boolean",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []

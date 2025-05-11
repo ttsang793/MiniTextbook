@@ -80,7 +80,7 @@ const ASubject = () => {
                             <LockKey size={28} /> Khóa
                           </button>
                         </div>) : (
-                          <button className="bg-green-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
+                          <button className="bg-green-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/80 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
                             <LockKeyOpen size={28} /> Mở khóa
                           </button>
                         )
@@ -99,7 +99,7 @@ const ASubject = () => {
 
   function loadData(newPage = 1) {
     pageRef.current = newPage;
-    axios.get(searchRef.current === "" ? '/admin/subject/get-all' : `/admin/subject/get?name=${searchRef.current}`).then(response => {
+    axios.get(searchRef.current === "" ? '/api/subject/get-all' : `/api/subject/get?name=${searchRef.current}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setSubject(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -108,11 +108,11 @@ const ASubject = () => {
   function search(attr, prop) {
     pageRef.current = 1;
     searchRef.current = prop;
-    if (prop === "") axios.get("/admin/subject/get-all").then(response => {
+    if (prop === "") axios.get("/api/subject/get-all").then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setSubject(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
-    else axios.get(`/admin/subject/get?${attr}=${prop}`).then(response => {
+    else axios.get(`/api/subject/get?${attr}=${prop}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setSubject(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -139,16 +139,16 @@ const ASubject = () => {
     if (confirm("Bạn có muốn thêm môn học này?")) {
       const subject = { name };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/subject/insert", subject, headers).then(response => {
-        if (response.status === 200) {
-          alert("Thêm môn học thành công");
-          location.reload();
-        }
+      axios.post("/api/subject/insert", subject, headers).then(() => {
+        alert("Thêm môn học thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, thêm môn học thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     };
   }
 
@@ -156,31 +156,31 @@ const ASubject = () => {
     if (confirm("Bạn có muốn cập nhật môn học này?")) {
       const subject = { id, name, isActive: true };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/subject/update", subject, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật thông tin thành công!");
-          location.reload();
-        }
+      axios.put("/api/subject/update", subject, headers).then(() => {
+        alert("Cập nhật thông tin thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     }
   }
 
   function status(id, status) {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa môn học này?`)) {
-      axios.delete(`/admin/subject/update-status?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert(`${status === 1 ? "Mở khóa" : "Khóa"} môn học thành công!`);
-          location.reload();
-        }
+      axios.delete(`/api/subject/update/status?id=${id}`).then(() => {
+        alert(`${status === 1 ? "Mở khóa" : "Khóa"} môn học thành công!`);
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa môn học thất bại!`);
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     }
   }
 }

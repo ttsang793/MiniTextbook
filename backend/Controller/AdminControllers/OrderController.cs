@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Controller.AdminControllers;
 [ApiController]
-[Route("/admin/order")]
+[Route("/api/order")]
 public class OrderController : ControllerBase
 {
     private readonly ILogger<OrderController> _logger;
@@ -20,30 +20,41 @@ public class OrderController : ControllerBase
     [HttpGet("get")]
     public async Task<IEnumerable<Order>> GetOrders(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? date, DateTime? dateReceived, DateTime? dateCanceled)
     {
+        if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
         return await _service.Orders.GetAll(userID, receiver, address, product, grade, series, status, date, dateReceived, dateCanceled);
     }
 
     [HttpGet("search")]
     public async Task<IEnumerable<Order>> Search (int id)
     {
+        if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
         return new List<Order>() { await _service.Orders.GetById(id) };
+    }
+
+    [HttpGet("get/user")]
+    public async Task<IEnumerable<User>> GetAll()
+    {
+        return (Permission.Check(Permission.READ_ORDER, HttpContext)) ? await _service.Users.GetAll() : null;
     }
 
     [HttpGet("get/receiver")]
     public async Task<List<string>> GetAllReceiver()
     {
+        if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
         return await _service.Orders.GetAllReceiver();
     }
 
     [HttpGet("get/address")]
     public async Task<List<string>> GetAllAddress()
     {
+        if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
         return await _service.Orders.GetAllAddress();
     }
 
-    [HttpPut("update-status")]
+    [HttpPut("update/status")]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
+        if (!Permission.Check(Permission.UPDATE_ORDER, HttpContext)) return StatusCode(403);
         try
         {
             int adminID = (int)HttpContext.Session.GetInt32("aid")!;

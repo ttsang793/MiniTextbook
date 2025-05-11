@@ -80,7 +80,7 @@ const APublisher = () => {
                             <LockKey size={28} /> Khóa
                           </button>
                         </div>) : (
-                          <button className="bg-green-400 text-black  flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(p.id, p.isActive)}>
+                          <button className="bg-green-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/80 duration-150 cursor-pointer" onClick={() => status(p.id, p.isActive)}>
                             <LockKeyOpen size={28} /> Mở khóa
                           </button>
                         )
@@ -99,7 +99,7 @@ const APublisher = () => {
 
   function loadData(newPage = 1) {
     pageRef.current = newPage;
-    axios.get(searchRef.current === "" ? '/admin/publisher/get-all' : `/admin/publisher/get?name=${searchRef.current}`).then(response => {
+    axios.get(searchRef.current === "" ? '/api/publisher/get-all' : `/api/publisher/get?name=${searchRef.current}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setPublisher(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -108,11 +108,11 @@ const APublisher = () => {
   function search(attr, prop) {
     pageRef.current = 1;
     searchRef.current = prop;
-    if (prop === "") axios.get("/admin/publisher/get-all").then(response => {
+    if (prop === "") axios.get("/api/publisher/get-all").then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setPublisher(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
-    else axios.get(`/admin/publisher/get?${attr}=${prop}`).then(response => {
+    else axios.get(`/api/publisher/get?${attr}=${prop}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setPublisher(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -138,16 +138,16 @@ const APublisher = () => {
     if (confirm("Bạn có muốn thêm nhà xuất bản này?")) {
       const publisher = { name };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/publisher/insert", publisher, headers).then(response => {
-        if (response.status === 200) {
-          alert("Thêm thành công");
-          location.reload();
-        }
+      axios.post("/api/publisher/insert", publisher, headers).then(() => {
+        alert("Thêm thành công");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên."); 
         else {
           alert("Đã có lỗi xảy ra, thêm thất bại");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     };
   }
 
@@ -155,31 +155,31 @@ const APublisher = () => {
     if (confirm("Bạn có muốn cập nhật nhà xuất bản này?")) {
       const publisher = { id, name, isActive: true };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/publisher/update", publisher, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật thông tin thành công!");
-          location.reload();
-        }
+      axios.put("/api/publisher/update", publisher, headers).then(() => {
+        alert("Cập nhật thông tin thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, cập nhật thông tin thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     }
   }
 
   function status(id, status) {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa nhà xuất bản này?`)) {
-      axios.delete(`/admin/publisher/update-status?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert(`${status === 1 ? "Khóa" : "Mở khóa"} nhà xuất bản thành công!`);
-          location.reload();
-        }
+      axios.delete(`/api/publisher/update/status?id=${id}`).then(() => {
+        alert(`${status === 1 ? "Khóa" : "Mở khóa"} nhà xuất bản thành công!`);
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại`);
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     }
   }
 }

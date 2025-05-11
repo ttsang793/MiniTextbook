@@ -19,6 +19,13 @@ function displayDateJS(dateJS) {
   catch {return ""}  
 }
 
+function dateParse(date) {
+  try {
+    return new Date(displayDate(date).split("-"));
+  }
+  catch { return "" }
+}
+
 function displayStatus(status) {
   switch (status) {
     case -1: return "Đã hủy";
@@ -36,4 +43,4 @@ function arrayNumber(arr) {
   return arr;
 }
 
-export { displayPrice, displayDate, displayDateJS, displayStatus, arrayNumber }
+export { displayPrice, displayDate, displayDateJS, dateParse, displayStatus, arrayNumber }

@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/admin/admin/get-session": {
+    "/api/admin/get-session": {
       "get": {
         "tags": [
           "Admin"
@@ -17,7 +17,7 @@
         }
       }
     },
-    "/admin/admin/login": {
+    "/api/admin/login": {
       "post": {
         "tags": [
           "Admin"
@@ -48,7 +48,7 @@
         }
       }
     },
-    "/admin/admin/logout": {
+    "/api/admin/logout": {
       "post": {
         "tags": [
           "Admin"
@@ -60,7 +60,7 @@
         }
       }
     },
-    "/admin/admin/get": {
+    "/api/admin/get": {
       "get": {
         "tags": [
           "Admin"
@@ -115,7 +115,7 @@
         }
       }
     },
-    "/admin/admin/get/role": {
+    "/api/admin/get/role": {
       "get": {
         "tags": [
           "Admin"
@@ -163,7 +163,7 @@
         }
       }
     },
-    "/admin/admin/insert": {
+    "/api/admin/insert": {
       "post": {
         "tags": [
           "Admin"
@@ -194,7 +194,7 @@
         }
       }
     },
-    "/admin/admin/update": {
+    "/api/admin/update": {
       "put": {
         "tags": [
           "Admin"
@@ -225,7 +225,7 @@
         }
       }
     },
-    "/admin/admin/password/update": {
+    "/api/admin/password/update": {
       "put": {
         "tags": [
           "Admin"
@@ -256,7 +256,7 @@
         }
       }
     },
-    "/admin/admin/password/reset": {
+    "/api/admin/password/reset": {
       "put": {
         "tags": [
           "Admin"
@@ -278,7 +278,7 @@
         }
       }
     },
-    "/admin/admin/update/status": {
+    "/api/admin/update/status": {
       "put": {
         "tags": [
           "Admin"
@@ -300,7 +300,7 @@
         }
       }
     },
-    "/admin/book/get-all": {
+    "/api/book/get-all": {
       "get": {
         "tags": [
           "Book"
@@ -338,7 +338,7 @@
         }
       }
     },
-    "/admin/book/get": {
+    "/api/book/get": {
       "get": {
         "tags": [
           "Book"
@@ -393,7 +393,7 @@
         }
       }
     },
-    "/admin/book/insert": {
+    "/api/book/insert": {
       "post": {
         "tags": [
           "Book"
@@ -482,7 +482,7 @@
         }
       }
     },
-    "/admin/book/update": {
+    "/api/book/update": {
       "post": {
         "tags": [
           "Book"
@@ -571,7 +571,7 @@
         }
       }
     },
-    "/admin/book/update-status": {
+    "/api/book/update/status": {
       "delete": {
         "tags": [
           "Book"
@@ -921,15 +921,6 @@
         "tags": [
           "Order"
         ],
-        "parameters": [
-          {
-            "name": "isInstant",
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1000,7 +991,7 @@
         }
       }
     },
-    "/admin/order/get": {
+    "/api/order/get": {
       "get": {
         "tags": [
           "Order"
@@ -1117,7 +1108,7 @@
         }
       }
     },
-    "/admin/order/search": {
+    "/api/order/search": {
       "get": {
         "tags": [
           "Order"
@@ -1165,7 +1156,45 @@
         }
       }
     },
-    "/admin/order/get/receiver": {
+    "/api/order/get/user": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/get/receiver": {
       "get": {
         "tags": [
           "Order"
@@ -1203,7 +1232,7 @@
         }
       }
     },
-    "/admin/order/get/address": {
+    "/api/order/get/address": {
       "get": {
         "tags": [
           "Order"
@@ -1241,7 +1270,7 @@
         }
       }
     },
-    "/admin/order/update-status": {
+    "/api/order/update/status": {
       "put": {
         "tags": [
           "Order"
@@ -1527,7 +1556,7 @@
         }
       }
     },
-    "/admin/publisher/get-all": {
+    "/api/publisher/get-all": {
       "get": {
         "tags": [
           "Publisher"
@@ -1565,7 +1594,7 @@
         }
       }
     },
-    "/admin/publisher/get": {
+    "/api/publisher/get": {
       "get": {
         "tags": [
           "Publisher"
@@ -1620,7 +1649,7 @@
         }
       }
     },
-    "/admin/publisher/insert": {
+    "/api/publisher/insert": {
       "post": {
         "tags": [
           "Publisher"
@@ -1651,7 +1680,7 @@
         }
       }
     },
-    "/admin/publisher/update": {
+    "/api/publisher/update": {
       "put": {
         "tags": [
           "Publisher"
@@ -1682,7 +1711,7 @@
         }
       }
     },
-    "/admin/publisher/update-status": {
+    "/api/publisher/update/status": {
       "delete": {
         "tags": [
           "Publisher"
@@ -1704,7 +1733,7 @@
         }
       }
     },
-    "/admin/role/get-all": {
+    "/api/role/get-all": {
       "get": {
         "tags": [
           "Role"
@@ -1751,7 +1780,7 @@
         }
       }
     },
-    "/admin/role/get/permission": {
+    "/api/role/get/permission": {
       "get": {
         "tags": [
           "Role"
@@ -1789,7 +1818,7 @@
         }
       }
     },
-    "/admin/role/get": {
+    "/api/role/get": {
       "get": {
         "tags": [
           "Role"
@@ -1828,7 +1857,7 @@
         }
       }
     },
-    "/admin/role/insert": {
+    "/api/role/insert": {
       "post": {
         "tags": [
           "Role"
@@ -1859,7 +1888,7 @@
         }
       }
     },
-    "/admin/role/update": {
+    "/api/role/update": {
       "put": {
         "tags": [
           "Role"
@@ -1890,7 +1919,7 @@
         }
       }
     },
-    "/admin/role/update/permission": {
+    "/api/role/update/permission": {
       "post": {
         "tags": [
           "Role"
@@ -1921,7 +1950,7 @@
         }
       }
     },
-    "/admin/role/delete": {
+    "/api/role/delete": {
       "delete": {
         "tags": [
           "Role"
@@ -2020,7 +2049,7 @@
         }
       }
     },
-    "/admin/series/get-all": {
+    "/api/series/get-all": {
       "get": {
         "tags": [
           "Series"
@@ -2058,7 +2087,7 @@
         }
       }
     },
-    "/admin/series/get": {
+    "/api/series/get": {
       "get": {
         "tags": [
           "Series"
@@ -2113,7 +2142,7 @@
         }
       }
     },
-    "/admin/series/insert": {
+    "/api/series/insert": {
       "post": {
         "tags": [
           "Series"
@@ -2179,7 +2208,7 @@
         }
       }
     },
-    "/admin/series/update": {
+    "/api/series/update": {
       "post": {
         "tags": [
           "Series"
@@ -2245,7 +2274,7 @@
         }
       }
     },
-    "/admin/series/update-status": {
+    "/api/series/update/status": {
       "delete": {
         "tags": [
           "Series"
@@ -2267,7 +2296,7 @@
         }
       }
     },
-    "/admin/statistic/today": {
+    "/api/statistic/today": {
       "get": {
         "tags": [
           "Statistic"
@@ -2279,7 +2308,7 @@
         }
       }
     },
-    "/admin/statistic/revenue": {
+    "/api/statistic/revenue": {
       "get": {
         "tags": [
           "Statistic"
@@ -2326,7 +2355,7 @@
         }
       }
     },
-    "/admin/statistic/grade": {
+    "/api/statistic/grade": {
       "get": {
         "tags": [
           "Statistic"
@@ -2373,7 +2402,7 @@
         }
       }
     },
-    "/admin/statistic/subject": {
+    "/api/statistic/subject": {
       "get": {
         "tags": [
           "Statistic"
@@ -2420,7 +2449,7 @@
         }
       }
     },
-    "/admin/statistic/series": {
+    "/api/statistic/series": {
       "get": {
         "tags": [
           "Statistic"
@@ -2467,7 +2496,7 @@
         }
       }
     },
-    "/admin/statistic/top-5-books": {
+    "/api/statistic/top-5-books": {
       "get": {
         "tags": [
           "Statistic"
@@ -2514,7 +2543,7 @@
         }
       }
     },
-    "/admin/statistic/top-5-customers": {
+    "/api/statistic/top-5-customers": {
       "get": {
         "tags": [
           "Statistic"
@@ -2561,7 +2590,7 @@
         }
       }
     },
-    "/admin/subject/get-all": {
+    "/api/subject/get-all": {
       "get": {
         "tags": [
           "Subject"
@@ -2599,7 +2628,7 @@
         }
       }
     },
-    "/admin/subject/get": {
+    "/api/subject/get": {
       "get": {
         "tags": [
           "Subject"
@@ -2654,7 +2683,7 @@
         }
       }
     },
-    "/admin/subject/insert": {
+    "/api/subject/insert": {
       "post": {
         "tags": [
           "Subject"
@@ -2685,7 +2714,7 @@
         }
       }
     },
-    "/admin/subject/update": {
+    "/api/subject/update": {
       "put": {
         "tags": [
           "Subject"
@@ -2716,7 +2745,7 @@
         }
       }
     },
-    "/admin/subject/update-status": {
+    "/api/subject/update/status": {
       "delete": {
         "tags": [
           "Subject"
@@ -3060,7 +3089,7 @@
         }
       }
     },
-    "/admin/user/get": {
+    "/api/user/get": {
       "get": {
         "tags": [
           "User"
@@ -3107,7 +3136,7 @@
         }
       }
     },
-    "/admin/user/lock": {
+    "/api/user/lock": {
       "post": {
         "tags": [
           "User"
@@ -3129,7 +3158,7 @@
         }
       }
     },
-    "/admin/user/unlock": {
+    "/api/user/unlock": {
       "post": {
         "tags": [
           "User"
@@ -3498,6 +3527,9 @@
             "type": "number",
             "format": "double",
             "nullable": true
+          },
+          "instant": {
+            "type": "boolean"
           },
           "carts": {
             "type": "array",

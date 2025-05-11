@@ -47,7 +47,7 @@ public class VnPayLibrary
         return new VnPayPaymentResponseModel()
         {
             Success = vnpResponseCode.Equals("00"),
-            PaymentMethod = "VnPay",
+            PaymentMethod = "VNPay",
             OrderDescription = orderInfo,
             OrderId = orderId.ToString(),
             PaymentId = vnPayTranId.ToString(),

@@ -27,7 +27,7 @@ const TimelimeGraph = ({dateFrom, dateTo}) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    let url = `/admin/statistic/revenue`;
+    let url = `/api/statistic/revenue`;
     url = url + (dateFrom === "" ? "" : `?from=${dateFrom}`);
     url = url + (dateTo === "" ? "" : (dateFrom === "" ? `?to=${dateTo}` : `&to=${dateTo}`));
 

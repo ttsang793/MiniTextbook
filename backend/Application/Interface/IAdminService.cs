@@ -11,7 +11,12 @@ namespace Application.Interface;
 public interface IAdminService
 {
     Task<IEnumerable<Admin>> GetAll(Expression<Func<Admin, bool>> expression = null);
+
     Task<Admin> GetByUserId(int id);
+
+    Task<List<int?>> GetPermission(int adminId);
+
+    Task<List<int>> GetPermissionGroup(int adminId);
 
     Task<Admin?> Login(Admin admin);
 

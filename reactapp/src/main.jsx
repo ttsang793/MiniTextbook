@@ -14,6 +14,7 @@ import HelloWorld from '/src/pages/HelloWorld'
 import ResetPassword from '/src/pages/ResetPassword'
 import FourOOne from '/src/pages/FourOOne'
 import FourOFour from '/src/pages/FourOFour'
+import BackToTop from "/src/components/BackToTop";
 import Footer from '/src/components/Footer'
 
 //order_user
@@ -40,16 +41,18 @@ function App() {
   const [avatar, setAvatar] = useState(null);
   const [aid, setAId] = useState(null);
   const [afullname, setAFullname] = useState(null);
+  const [agroup, setAGroup] = useState([]);
 
   useEffect(() => {
     axios.get("/user/get-session").then(response => {
       setFullname(response.data.fullname || "");
       setAvatar(response.data.avatar || "");
-    });
-    axios.get("/admin/admin/get-session").then(response => {
+    }).catch(() => {});
+    axios.get("/api/admin/get-session").then(response => {
       setAId(response.data.aid);
       setAFullname(response.data.afullname);
-    })
+      setAGroup(response.data.agroup);
+    }).catch(() => {});
   }, []);
 
   const loadPage = () => {
@@ -60,17 +63,17 @@ function App() {
 
       return (
         <>
-          <AHeader aid={aid} afullname={afullname} />
+          <AHeader aid={aid} afullname={afullname} agroup={agroup} />
           <Router future={{v7_relativeSplatPath: true, v7_startTransition: true}}>
             <Routes>
               <Route path="/quan-tri/" element={<AStatistic />} />
               <Route path="/quan-tri/thong-ke" element={<AStatistic />} />
-              <Route path="/quan-tri/nha-xuat-ban" element={<APublisher />} />
-              <Route path="/quan-tri/sach" element={<ABook />} />
-              <Route path="/quan-tri/bo-sach" element={<ASeries />} />
-              <Route path="/quan-tri/mon-hoc" element={<ASubject />} />
-              <Route path="/quan-tri/don-hang" element={<AOrder />} />
-              <Route path="/quan-tri/tai-khoan" element={<AAcount />} />
+              <Route path="/quan-tri/sach" element={agroup.includes(1) ? <ABook /> : <Navigate to="/quan-tri/403" replace />} />
+              <Route path="/quan-tri/bo-sach" element={agroup.includes(2) ? <ASeries /> : <Navigate to="/quan-tri/403" replace />} />
+              <Route path="/quan-tri/nha-xuat-ban" element={agroup.includes(3) ? <APublisher /> : <Navigate to="/quan-tri/403" replace />} />
+              <Route path="/quan-tri/mon-hoc" element={agroup.includes(4) ? <ASubject /> : <Navigate to="/quan-tri/403" replace />} />
+              <Route path="/quan-tri/don-hang" element={agroup.includes(5) ? <AOrder /> : <Navigate to="/quan-tri/403" replace />} />
+              <Route path="/quan-tri/tai-khoan" element={(agroup.includes(6) || agroup.includes(7) || agroup.includes(8)) ? <AAcount agroup={agroup} /> : <Navigate to="/quan-tri/403" replace />} />
               <Route path="/quan-tri/dat-lai-mat-khau" element={<AResetPassword />} />
               <Route path="/quan-tri/403" element={<AFourOThree />} />
               <Route path="/quan-tri/*" element={<AFourOFour />} />
@@ -112,6 +115,7 @@ function App() {
               <Route path="/404" element={<FourOFour />} />
             </Routes>
           </Router>
+          <BackToTop />
           <Footer />
         </>
       )

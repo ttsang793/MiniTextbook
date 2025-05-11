@@ -21,7 +21,7 @@ const Percentage = ({prop, title, dateFrom, dateTo}) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    let url = `/admin/statistic/${prop}`;
+    let url = `/api/statistic/${prop}`;
     url = url + (dateFrom === "" ? "" : `?from=${dateFrom}`);
     url = url + (dateTo === "" ? "" : (dateFrom === "" ? `?to=${dateTo}` : `&to=${dateTo}`));
 

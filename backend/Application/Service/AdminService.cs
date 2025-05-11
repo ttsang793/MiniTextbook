@@ -32,6 +32,27 @@ public class AdminService : IAdminService
         return await _unitOfWork.Admins.GetById(id);
     }
 
+    public async Task<List<int?>> GetPermission(int adminId)
+    {
+        var adminRole = (await GetByUserId(adminId)).Role;
+        return (from u in (await _unitOfWork.RolePermissions.GetAll(r => r.Role == adminRole)) select u.Permission).ToList();
+    }
+
+    public async Task<List<int>> GetPermissionGroup(int adminId)
+    {
+        var adminRole = (await GetByUserId(adminId)).Role;
+        var rolePermission = await _unitOfWork.RolePermissions.GetAll(r => r.Role == adminRole);
+        var permission = await _unitOfWork.Permissions.GetAll();
+        var permissionGroup = await _unitOfWork.PermissionGroups.GetAll();
+
+        var permissionResult = (from rp in rolePermission
+                                join p in permission on rp.Permission equals p.Id
+                                join pg in permissionGroup on p.Group equals pg.Id
+                                select pg.Id).Distinct().ToList();
+
+        return permissionResult;
+    }
+
     public async Task<Admin?> Login(Admin admin)
     {
         return await _unitOfWork.Admins.Login(admin);

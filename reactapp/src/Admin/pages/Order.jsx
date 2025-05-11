@@ -1,7 +1,7 @@
 import { React, useState, useEffect, useRef } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import axios from "axios";
-import { displayPrice, displayDate, displayDateJS } from "/script";
+import { displayPrice, displayDate, displayDateJS, dateParse } from "/script";
 import OrderOverlay from "/src/Admin/components/order/OrderOverlay";
 import Loading from "/src/components/Loading";
 
@@ -43,32 +43,32 @@ const AOrder = () => {
       setSStatus(searchParams.get("status") || "");
 
       if (location.search.includes("?id")) {
-        axios.get(`/admin/order/search${location.search}`).then(response => setOrderList(response.data));
+        axios.get(`/api/order/search${location.search}`).then(response => setOrderList(response.data));
         return
       }
 
-      axios.get(`/admin/order/get${location.search}`).then(response => setOrderList(response.data));
-      axios.get("/admin/user/get").then(response => {
+      axios.get(`/api/order/get${location.search}`).then(response => setOrderList(response.data));
+      axios.get("/api/order/get/user").then(response => {
         const temp = [];
         response.data.forEach(user => temp.push({id: user.id, username: user.username}));
         setSUsernameList(temp);
       })
-      axios.get("/admin/order/get/receiver").then(response => {
+      axios.get("/api/order/get/receiver").then(response => {
         const temp = [];
         response.data.forEach(receiver => temp.push(receiver));
         setSReceiverList(temp);
       })
-      axios.get("/admin/order/get/address").then(response => {
+      axios.get("/api/order/get/address").then(response => {
         const temp = [];
         response.data.forEach(address => temp.push(address));
         setSAddressList(temp);
       })
-      axios.get("/admin/book/get-all").then(response => {
+      axios.get("/api/book/get-all").then(response => {
         const temp = [];
         response.data.forEach(product => temp.push({id: product.id, name: product.name}));
         setSProductList(temp);
       })
-      axios.get("/admin/series/get-all").then(response => {
+      axios.get("/api/series/get-all").then(response => {
         const temp = [];
         response.data.forEach(series => temp.push({id: series.id, name: series.name}));
         setSSeriesList(temp);
@@ -217,18 +217,8 @@ const AOrder = () => {
                 <td className="py-1">{order.receiver}</td>
                 <td className="py-1">{order.address}</td>
                 <td className="py-1">{order.phone}</td>
-
-                {/*
-                <td>{displayDate(order.datePurchased)}</td>
-                <td>
-                  {order.dateVertified === null ? "" : displayDate(order.dateVertified)} <br />
-                  {order.dateVertified === null ? "" : `(${order.vertifyAdmin})`}
-                </td>
-                <td>{order.dateReceived === null ? "" : displayDate(order.dateReceived)}</td>
-                <td>{order.dateCanceled === null ? "" : displayDate(order.dateCanceled)}</td>
-                */}
                 <td>{order.status}</td>
-                <td>{displayDate(order.datePurchased)}</td>
+                <td>{getLatestDay(order)}</td>
                 <td>{displayPrice(order.total)}</td>
                 <td className="py-1">
                   {
@@ -237,11 +227,11 @@ const AOrder = () => {
                       className="bg-yellow-400 text-black flex gap-x-1 mb-1 px-3 py-1 rounded-[7px] hover:bg-yellow-400/50 duration-150 cursor-pointer"
                       onClick={() => updateStatus(order.id, ORDER_STATUS[ORDER_STATUS.indexOf(order.status) + 1])}
                     >
-                      {order.status === ORDER_STATUS[0] ? "Xác nhận đơn hàng" : (order.status === ORDER_STATUS[1] ? "Bắt đầu giao hàng" : "Hoàn tất giao hàng")}
+                      {order.status === ORDER_STATUS[1] ? "Xác nhận đơn hàng" : (order.status === ORDER_STATUS[2] ? "Bắt đầu giao hàng" : "Hoàn tất giao hàng")}
                     </button>
                   }
                   <button
-                    className="bg-green-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/50 duration-150 cursor-pointer"
+                    className="bg-green-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/80 duration-150 cursor-pointer"
                     onClick={() => orderRender(order)}
                   >
                     Xem đơn hàng
@@ -255,13 +245,23 @@ const AOrder = () => {
     </main>
   )
 
+  function getLatestDay(order) {
+    let latest = order.datePurchased;
+
+    if (dateParse(order.dateVertified) > dateParse(order.datePurchased)) latest = order.dateVertified;
+    if (dateParse(order.dateCanceled) > dateParse(latest)) latest = order.dateCanceled;
+    if (dateParse(order.dateReceived) > dateParse(latest)) latest = order.dateReceived;
+
+    return displayDate(latest);
+  }
+
   function updateStatus(id, status) {
     if (confirm("Bạn có muốn cập nhật trạng thái cho đơn hàng này?")) {
-      axios.put(`/admin/order/update-status?id=${id}&status=${status}`).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật trạng thái đơn hàng thành công!");
-          location.reload();
-        }
+      axios.put(`/api/order/update/status?id=${id}&status=${status}`).then(() => {
+        alert("Cập nhật trạng thái đơn hàng thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, vui lòng thử lại.")
           console.error(response);

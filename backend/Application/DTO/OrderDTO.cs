@@ -18,5 +18,7 @@ public partial class OrderDTO
 
     public decimal? Total { get; set; }
 
+    public bool Instant { get; set; }
+
     public virtual List<CartDTO> Carts { get; set; } = new List<CartDTO>();
 }

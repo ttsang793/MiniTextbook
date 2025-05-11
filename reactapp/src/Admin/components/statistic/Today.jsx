@@ -11,7 +11,7 @@ const Today = () => {
   const today = displayDateJS(new Date());
 
   useEffect(() => {
-    axios.get("/admin/statistic/today").then(response => {
+    axios.get("/api/statistic/today").then(response => {
       const data = response.data;
       setDelivering(data.delivering);
       setComplete(data.complete);

@@ -69,7 +69,7 @@ const ALogin = () => {
     }
 
     if (!errorFlag) {
-      axios.post("/admin/admin/login", { id: username, password }, { 'Content-Type': 'application/json' })
+      axios.post("/api/admin/login", { id: username, password }, { 'Content-Type': 'application/json' })
       .then(() => {
         alert("Đăng nhập thành công!");
         location.href = "/quan-tri/thong-ke";

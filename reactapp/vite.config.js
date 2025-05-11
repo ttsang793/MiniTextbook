@@ -39,7 +39,7 @@ export default defineConfig({
         secure: false
       },
       
-      '^/admin/*': {
+      '^/api/*': {
         target: 'https://localhost:7247',
         secure: false
       },

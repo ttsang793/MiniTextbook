@@ -4,7 +4,7 @@ import axios from "axios";
 import Search from "/src/Admin/components/Search";
 import Pagination from "/src/Admin/components/Pagination";
 
-const Admin = ({show}) => {
+const Admin = ({show, agroup}) => {
   const [admin, setAdmin] = useState([]);
   const [id, setID] = useState("");
   const [fullname, setFullname] = useState("");
@@ -18,8 +18,10 @@ const Admin = ({show}) => {
   const searchRef = useRef("");
 
   useEffect(() => {
-    axios.get("/admin/role/get-all").then(response => setRoleList(response.data));
-    loadData();
+    if (agroup.includes(7)) {
+      axios.get("/api/role/get-all").then(response => setRoleList(response.data));
+      loadData();
+    }
   }, []);
 
   return (
@@ -99,7 +101,7 @@ const Admin = ({show}) => {
                           <ArrowClockwise size={28} /> Đặt lại mật khẩu
                         </button>
                       </div>) : (
-                        <button className="bg-green-400 text-black flex items-center gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(a.id, a.isActive)}>
+                        <button className="bg-green-600 text-whie flex items-center gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/80 duration-150 cursor-pointer" onClick={() => status(a.id, a.isActive)}>
                           <LockKeyOpen size={28} /> Mở khóa
                         </button>
                       ))
@@ -117,7 +119,7 @@ const Admin = ({show}) => {
 
   function loadData(newPage = 1) {
     pageRef.current = newPage;
-    axios.get(`/admin/admin/get${searchRef.current !== "" ? `?fullname=${searchRef.current}` : ""}`).then(response => {
+    axios.get(`/api/admin/get${searchRef.current !== "" ? `?fullname=${searchRef.current}` : ""}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setAdmin(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -128,7 +130,7 @@ const Admin = ({show}) => {
     searchRef.current = prop;
     if (attr === "name") attr = "fullname";
     
-    axios.get(`/admin/admin/get${searchRef.current !== "" ? `?${attr}=${prop}` : ""}`).then(response => {
+    axios.get(`/api/admin/get${searchRef.current !== "" ? `?${attr}=${prop}` : ""}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setAdmin(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -165,7 +167,7 @@ const Admin = ({show}) => {
     if (confirm("Bạn có muốn thêm nhân viên này?")) {
       const admin = { id, fullname, timeBegin, timeEnd, role };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/admin/insert", admin, headers).then(response => {
+      axios.post("/api/admin/insert", admin, headers).then(response => {
         if (response.status === 200) {
           alert("Thêm nhân viên thành công!");
           location.reload();
@@ -174,7 +176,7 @@ const Admin = ({show}) => {
           alert("Đã có lỗi xảy ra, thêm thất bại");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     };
   }
 
@@ -182,47 +184,47 @@ const Admin = ({show}) => {
     if (confirm("Bạn có muốn cập nhật thông tin của nhân viên này?")) {
       const admin = { id, fullname, timeBegin, timeEnd, role };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/admin/update", admin, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật thông tin thành công!");
-          location.reload();
-        }
+      axios.put("/api/admin/update", admin, headers).then(() => {
+        alert("Cập nhật thông tin thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     }
   }
 
   function resetPassword(id) {
     if (confirm("Bạn có muốn đặt lại mật khẩu của nhân viên này?")) {
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put(`/admin/admin/password/reset?id=${id}`, {}, headers).then(response => {
-        if (response.status === 200) {
-          alert("Đặt lại mật khẩu thành công!");
-          location.reload();
-        }
+      axios.put(`/api/admin/password/reset?id=${id}`, {}, headers).then(() => {
+        alert("Đặt lại mật khẩu thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, đặt lại mật khẩu thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     }
   }
 
   function status(id, status) {
     if (confirm(`Bạn có muốn ${status == 1 ? "" : "mở "}khóa nhân viên này?`)) {
-      axios.put(`/admin/admin/update/status?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert(`${status == 1 ? "Khóa" : "Mở khóa"} nhân viên thành công!`);
-          location.reload();
-        }
+      axios.put(`/api/admin/update/status?id=${id}`).then(() => {
+        alert(`${status == 1 ? "Khóa" : "Mở khóa"} nhân viên thành công!`);
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert(`Đã có lỗi xảy ra, ${status == 1 ? "" : "mở "}khóa thất bại!`);
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     }
   }
 }

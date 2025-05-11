@@ -92,7 +92,7 @@ const AResetPassword = () => {
       if(confirm("Bạn có muốn cập nhật mật khẩu không?")) {
         const pass = { oldPassword: oldPass, newPassword: newPass };
 
-        axios.put("/admin/admin/password/update", pass, { 'Content-Type': 'application/json' })
+        axios.put("/api/admin/password/update", pass, { 'Content-Type': 'application/json' })
         .then(() => {
           alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại!")
           location.href = "/quan-tri";

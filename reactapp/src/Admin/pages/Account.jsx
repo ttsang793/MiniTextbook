@@ -4,10 +4,16 @@ import Admin from './Account/Admin';
 import Role from './Account/Role';
 import "./Account.css";
 
-const AAccount = () => {
-  const [showUser, setShowUser] = useState(true);
-  const [showAdmin, setShowAdmin] = useState(false);
-  const [showRole, setShowRole] = useState(false);
+const minPermission = agroup => {
+  if (agroup.includes(6)) return 6;
+  if (agroup.includes(7)) return 7;
+  return 8;
+}
+
+const AAccount = ({agroup}) => {
+  const [showUser, setShowUser] = useState(minPermission(agroup) === 6);
+  const [showAdmin, setShowAdmin] = useState(minPermission(agroup) === 7);
+  const [showRole, setShowRole] = useState(minPermission(agroup) === 8);
 
   const changeCurrent = e => {
     document.querySelectorAll(".account-btn").forEach(btn => btn.classList.remove("account-current"));
@@ -45,20 +51,29 @@ const AAccount = () => {
       <hr className="mb-3 border-pink-900" />
 
       <div className="text-center">
-        <button className="account-btn me-2 account-current" onClick={handleShowUser}>
-          Khách hàng
-        </button>
-        <button className="account-btn me-2" onClick={handleShowAdmin}>
-          Nhân viên
-        </button>
-        <button className="account-btn" onClick={handleShowRole}>
-          Phân quyền
-        </button>
+        {
+          agroup.includes(6) &&
+          <button className="account-btn me-2 account-current" onClick={handleShowUser}>
+            Khách hàng
+          </button>
+        }
+        {
+          agroup.includes(7) &&
+          <button className="account-btn me-2" onClick={handleShowAdmin}>
+            Nhân viên
+          </button>
+        }
+        {
+          agroup.includes(8) &&
+          <button className="account-btn" onClick={handleShowRole}>
+            Phân quyền
+          </button>
+        }
       </div>
 
-      <User show={showUser} />
-      <Admin show={showAdmin} />
-      <Role show={showRole} />
+      <User show={showUser} agroup={agroup} />
+      <Admin show={showAdmin} agroup={agroup} />
+      <Role show={showRole} agroup={agroup} />
     </main>
   )
 }

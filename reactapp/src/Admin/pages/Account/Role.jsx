@@ -1,17 +1,15 @@
-import { React, useState, useEffect, useRef, Fragment } from "react";
+import { React, useState, useEffect, Fragment } from "react";
 import { FloppyDisk, X, MagnifyingGlass, Trash } from "@phosphor-icons/react";
-import Loading from "/src/components/Loading";
 import axios from "axios";
 import AdminRedelegate from "/src/Admin/components/role/AdminRedelegate";
 
-const Role = ({show}) => {
+const Role = ({show, agroup}) => {
   const [role, setRole] = useState([]);
   const [id, setID] = useState("");
   const [name, setName] = useState("");
   const [permissionList, setPermissionList] = useState([]);
   let [permission, setPermission] = useState({});
   const [searchVal, setSearchVal] = useState("")
-  const loadingRef = useRef(true);
   const [showAdmin, setShowAdmin] = useState(false);
   const [redelegateId, setRedelegateId] = useState("");
 
@@ -27,20 +25,19 @@ const Role = ({show}) => {
   }
     
   useEffect(() => {
-    if (loadingRef.current) {
-      axios.get("/admin/role/get-all").then(response => setRole(response.data));
-      axios.get("/admin/role/get/permission").then(response => {
+    if (agroup.includes(8)) {
+      axios.get("/api/role/get-all").then(response => setRole(response.data));
+      axios.get("/api/role/get/permission").then(response => {
         setPermissionList(response.data);
 
         let temp = {};
         response.data.forEach(group => group.permissions.forEach(p => temp[`${p.id}`] = false));
         setPermission(permission = temp);
       });
-      loadingRef.current = false;
     }
   }, []);
 
-  return loadingRef.current ? <Loading /> : (
+  return (
     <section className={show ? "grid grid-cols-[250px_1fr] gap-x-6 text-pink-900 items-start mt-2" : "hidden"}>      
       <AdminRedelegate show={showAdmin} roleId={redelegateId} roleList={role} onClose={() => toggleRedelegate(false)} />
 
@@ -137,7 +134,7 @@ const Role = ({show}) => {
   )
 
   function search() {
-    axios.get(`/admin/role/get-all${searchVal !== "" ? `?name=${searchVal}` : ""}`).then(response => setRole(response.data));
+    axios.get(`/api/role/get-all${searchVal !== "" ? `?name=${searchVal}` : ""}`).then(response => setRole(response.data));
   }
 
   function loadUpdate(role) {
@@ -171,16 +168,16 @@ const Role = ({show}) => {
     if (confirm("Bạn có muốn thêm vai trò này?")) {
       const role = { name };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/role/insert", role, headers).then(response => {
-        if (response.status === 200) {
-          alert("Thêm vai trò thành công!");
-          location.reload();
-        }
+      axios.post("/api/role/insert", role, headers).then(() => {
+        alert("Thêm vai trò thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, thêm thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     };
   }
 
@@ -188,16 +185,16 @@ const Role = ({show}) => {
     if (confirm("Bạn có muốn cập nhật vai trò này?")) {
       const role = { id, name };
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.put("/admin/role/update", role, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật vai trò thành công!");
-          location.reload();
-        }
+      axios.put("/api/role/update", role, headers).then(() => {
+        alert("Cập nhật vai trò thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, cập nhật vai trò thất bại");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     }
   }
 
@@ -216,26 +213,27 @@ const Role = ({show}) => {
         if (value) permissions.push(key);
       
       const headers = { headers: { 'Content-Type': 'application/json' }}
-      axios.post("/admin/role/update/permission", { id, permissions }, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật quyền thành công!");
-          location.reload();
-        }
+      axios.post("/api/role/update/permission", { id, permissions }, headers).then(() => {
+        alert("Cập nhật quyền thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên."); 
         else {
           alert("Đã có lỗi xảy ra, cập nhật quyền thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     }
   }
 
   function deleteRole(id, name) {
     if (confirm(`Bạn có muốn xóa vai trò ${name}?`)) {
-      axios.delete(`/admin/role/delete?id=${id}`).then(() => {
+      axios.delete(`/api/role/delete?id=${id}`).then(() => {
         alert("Xóa vai trò thành công!")
         location.reload();
       }).catch(response => {
-        if (response.status === 500) {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
+        else if (response.status === 500) {
           toggleRedelegate(true);
           setRedelegateId(id);
         }

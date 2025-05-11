@@ -3,7 +3,7 @@ import { LockKey, LockKeyOpen, MagnifyingGlass } from "@phosphor-icons/react";
 import axios from "axios";
 import Pagination from "/src/Admin/components/Pagination";
 
-const User = ({show}) => {
+const User = ({show, agroup}) => {
   const [user, setUser] = useState([]);
   const [searchVal, setSearchVal] = useState("");
   const numPerPage = 20;
@@ -12,7 +12,7 @@ const User = ({show}) => {
   const searchRef = useRef("");
 
   useEffect(() => {
-    loadData();
+    if (agroup.includes(6)) loadData();
   }, []);
 
   return (
@@ -69,7 +69,7 @@ const User = ({show}) => {
 
   function loadData(newPage = 1) {
     pageRef.current = newPage;
-    axios.get('/admin/user/get').then(response => {
+    axios.get('/api/user/get').then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setUser(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -78,7 +78,7 @@ const User = ({show}) => {
   function search() {
     pageRef.current = 1;
     searchRef.current = searchVal;
-    axios.get(`/admin/user/get${searchRef.current !== "" ? `?username=${searchRef.current}` : ""}`).then(response => {
+    axios.get(`/api/user/get${searchRef.current !== "" ? `?username=${searchRef.current}` : ""}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setUser(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -86,31 +86,31 @@ const User = ({show}) => {
 
   function lock(id) {
     if (confirm("Bạn có muốn khóa tài khoản này?")) {
-      axios.post(`/admin/user/lock?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert("Khóa tài khoản thành công!");
-          location.reload();
-        }
+      axios.post(`/api/user/lock?id=${id}`).then(() => {
+        alert("Khóa tài khoản thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, khóa tài khoản thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     }
   }
 
   function unlock(id) {
     if (confirm("Bạn có muốn mở khóa tài khoản này?")) {
-      axios.post(`/admin/user/unlock?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert("Mở khóa tài khoản thành công!");
-          location.reload();
-        }
+      axios.post(`/api/user/unlock?id=${id}`).then(() => {
+        alert("Mở khóa tài khoản thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, mở khóa tài khoản thất bại!");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      });
     }
   }
 }

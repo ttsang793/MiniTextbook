@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Controller.AdminControllers;
 [ApiController]
-[Route("/admin/user")]
+[Route("/api/user")]
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
@@ -19,6 +19,7 @@ public class UserController : ControllerBase
     [HttpGet("get")]
     public async Task<IEnumerable<User>> GetAll(string? username)
     {
+        if (!Permission.Check(Permission.READ_USER, HttpContext)) return null;
         if (username == null) return await _service.Users.GetAll();
         return await _service.Users.GetAll(u => u.Username!.Contains(username));
     }
@@ -26,12 +27,14 @@ public class UserController : ControllerBase
     [HttpPost("lock")]
     public async Task<IActionResult> LockUser(int id)
     {
+        if (!Permission.Check(Permission.LOCK_USER, HttpContext)) return StatusCode(403);
         return await _service.Users.UpdateStatus(id, "Đã khóa") ? Ok() : StatusCode(404);
     }
 
     [HttpPost("unlock")]
     public async Task<IActionResult> UnlockUser(int id)
     {
+        if (!Permission.Check(Permission.UNLOCK_USER, HttpContext)) return StatusCode(403);
         return await _service.Users.UpdateStatus(id, "Mới khôi phục") ? Ok() : StatusCode(404);
     }
 }

@@ -20,7 +20,7 @@ const ASeries = () => {
   useEffect(() => {
     if (loadingRef) {
       document.title = "Quản lý bộ sách";
-      axios.get("/admin/series/get-all").then(response => setSeries(response.data))
+      axios.get("/api/series/get-all").then(response => setSeries(response.data))
       loadingRef.current = false;
     }
   }, []);
@@ -54,7 +54,7 @@ const ASeries = () => {
               <FloppyDisk size={28} /> Lưu
             </button>
 
-            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={() => cancel()} >
+            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={e => cancel(e)} >
               <X size={28} /> Hủy
             </button>
           </div>          
@@ -91,7 +91,7 @@ const ASeries = () => {
                             <LockKey size={28} /> Khóa
                           </button>
                         </div>) : (
-                          <button className="bg-green-400 text-black flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-400/50 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
+                          <button className="bg-green-600 text-white flex gap-x-1 px-3 py-1 rounded-[7px] hover:bg-green-600/80 duration-150 cursor-pointer" onClick={() => status(s.id, s.isActive)}>
                             <LockKeyOpen size={28} /> Mở khóa
                           </button>
                         )
@@ -110,7 +110,7 @@ const ASeries = () => {
 
   function loadData(newPage = 1) {
     pageRef.current = newPage;
-    axios.get(searchRef.current === "" ? '/admin/series/get-all' : `/admin/series/get?name=${searchRef.current}`).then(response => {
+    axios.get(searchRef.current === "" ? '/api/series/get-all' : `/api/series/get?name=${searchRef.current}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setSeries(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -119,11 +119,11 @@ const ASeries = () => {
   function search(attr, prop) {
     pageRef.current = 1;
     searchRef.current = prop;
-    if (prop === "") axios.get("/admin/series/get-all").then(response => {
+    if (prop === "") axios.get("/api/series/get-all").then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setSeries(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
-    else axios.get(`/admin/series/get?${attr}=${prop}`).then(response => {
+    else axios.get(`/api/series/get?${attr}=${prop}`).then(response => {
       totalRef.current = Math.ceil(response.data.length / numPerPage);
       setSeries(response.data.slice((pageRef.current - 1) * numPerPage, pageRef.current * numPerPage));
     });
@@ -159,7 +159,7 @@ const ASeries = () => {
     setID("");
     setName("");
     setImage(defaultThumbnail);
-    setDescription("");
+    document.getElementById("file-upload").value = "";
   }
 
   function insert() {
@@ -170,16 +170,16 @@ const ASeries = () => {
       formData.append("file", image);
 
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
-      axios.post("/admin/series/insert", formData, headers).then(response => {
-        if (response.status === 200) {
-          alert("Thêm bộ sách thành công!");
-          location.reload();
-        }
+      axios.post("/api/series/insert", formData, headers).then(() => {
+        alert("Thêm bộ sách thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên."); 
         else {
           alert("Đã có lỗi xảy ra, thêm thất bại");
           console.error(response)
         }
-      }).catch(err => console.error(err));
+      })
     };
   }
 
@@ -201,11 +201,11 @@ const ASeries = () => {
 
       const headers = { headers: { 'Content-Type': 'multipart/form-data' }}
 
-      axios.post("/admin/series/update", formData, headers).then(response => {
-        if (response.status === 200) {
-          alert("Cập nhật thông tin thành công!");
-          location.reload();
-        }
+      axios.post("/api/series/update", formData, headers).then(() => {
+        alert("Cập nhật thông tin thành công!");
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert("Đã có lỗi xảy ra, cập nhật thất bại!");
           console.error(response)
@@ -216,11 +216,11 @@ const ASeries = () => {
 
   function status(id, status) {
     if (confirm(`Bạn có muốn ${status === 1 ? "" : "mở "}khóa bộ sách này?`)) {
-      axios.delete(`/admin/series/update-status?id=${id}`).then(response => {
-        if (response.status === 200) {
-          alert(`${status === 1 ? "Khóa" : "Mở khóa"} bộ sách thành công!`);
-          location.reload();
-        }
+      axios.delete(`/api/series/update/status?id=${id}`).then(() => {
+        alert(`${status === 1 ? "Khóa" : "Mở khóa"} bộ sách thành công!`);
+        location.reload();
+      }).catch(response => {
+        if (response.status === 403) alert("Bạn không có quyền. Vui lòng liên hệ lại với quản trị viên.");
         else {
           alert(`Đã có lỗi xảy ra, ${status === 1 ? "" : "mở "}khóa thất bại!`);
           console.error(response)

@@ -5,7 +5,7 @@ using Application.DTO;
 
 namespace Controller.AdminControllers;
 [ApiController]
-[Route("/admin/statistic")]
+[Route("/api/statistic")]
 public class StatisticController : ControllerBase
 {
     private ILogger<StatisticController> _logger;

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "HnbPcqMssI8=",
+  "dgSpecHash": "uVBtBnN6tBs=",
   "success": true,
   "projectFilePath": "D:\\SGU\\DoAnCode\\MiniTextbook\\backend\\Controller\\Controller.csproj",
   "expectedPackageFiles": [
@@ -53,6 +53,7 @@
     "C:\\Users\\Sang\\.nuget\\packages\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
     "C:\\Users\\Sang\\.nuget\\packages\\mysql.data\\9.2.0\\mysql.data.9.2.0.nupkg.sha512",
     "C:\\Users\\Sang\\.nuget\\packages\\mysql.entityframeworkcore\\8.0.11\\mysql.entityframeworkcore.8.0.11.nupkg.sha512",
+    "C:\\Users\\Sang\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\Sang\\.nuget\\packages\\swashbuckle.aspnetcore\\6.6.2\\swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
     "C:\\Users\\Sang\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.6.2\\swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
     "C:\\Users\\Sang\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.6.2\\swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",

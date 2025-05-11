@@ -2,10 +2,11 @@
 using Application.DTO;
 using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Controller.AdminControllers;
 [ApiController]
-[Route("/admin/admin")]
+[Route("/api/admin")]
 public class AdminController : ControllerBase
 {
     private ILogger<BookController> _logger;
@@ -20,7 +21,7 @@ public class AdminController : ControllerBase
     [HttpGet("get-session")]
     public IActionResult GetSessionData()
     {
-        return Ok(new { Aid = HttpContext.Session.GetInt32("aid"), Afullname = HttpContext.Session.GetString("afullname") });
+        return Ok(new { Aid = HttpContext.Session.GetInt32("aid"), Afullname = HttpContext.Session.GetString("afullname"), Agroup = HttpContext.Session.GetString("agroup") });
     }
 
     [HttpPost("login")]
@@ -33,6 +34,8 @@ public class AdminController : ControllerBase
 
         HttpContext.Session.SetInt32("aid", admin.Id);
         HttpContext.Session.SetString("afullname", loginAdmin.Fullname!);
+        HttpContext.Session.SetString("apermission", JsonConvert.SerializeObject(await _service.Admins.GetPermission(admin.Id)));
+        HttpContext.Session.SetString("agroup", JsonConvert.SerializeObject(await _service.Admins.GetPermissionGroup(admin.Id)));
         return StatusCode(200);
     }
 
@@ -41,12 +44,15 @@ public class AdminController : ControllerBase
     {
         HttpContext.Session.Remove("aid");
         HttpContext.Session.Remove("afullname");
+        HttpContext.Session.Remove("apermission");
+        HttpContext.Session.Remove("agroup");
         return StatusCode(200);
     }
 
     [HttpGet("get")]
     public async Task<IEnumerable<Admin>> GetAll(int? id, string? fullname)
     {
+        if (!Permission.Check(Permission.READ_ADMIN, HttpContext)) return null;
         if (id != null) return new List<Admin> { await _service.Admins.GetByUserId((int)id) };
         if (string.IsNullOrEmpty(fullname)) return await _service.Admins.GetAll();
         return await _service.Admins.GetAll(a => a.Fullname.ToLower().Contains(fullname.ToLower()));
@@ -55,24 +61,28 @@ public class AdminController : ControllerBase
     [HttpGet("get/role")]
     public async Task<IEnumerable<Admin>> GetAdminsByRole(int roleId)
     {
+        if (!Permission.Check(Permission.DELETE_ROLE, HttpContext)) return null;
         return await _service.Admins.GetAll(a => a.Role == roleId);
     }
 
     [HttpPost("insert")]
     public async Task<IActionResult> Insert([Bind("Id", "Fullname", "TimeBegin", "TimeEnd", "Role")] Admin admin)
     {
+        if (!Permission.Check(Permission.ADD_ADMIN, HttpContext)) return StatusCode(403);
         return await _service.Admins.Insert(admin) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
     public async Task<IActionResult> Update([Bind("Id", "Fullname", "TimeBegin", "TimeEnd", "Role")] Admin admin)
     {
+        if (!Permission.Check(Permission.UPDATE_ADMIN, HttpContext)) return StatusCode(403);
         return await _service.Admins.Update(admin) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("password/update")]
     public async Task<IActionResult> UpdatePassword([Bind("OldPassword", "NewPassword")] PassDTO pass)
     {
+        if (!Permission.Check(Permission.RESET_PASS_ADMIN, HttpContext)) return StatusCode(403);
         var admin = new Admin
         {
             Id = (int)HttpContext.Session.GetInt32("aid")!,
@@ -91,6 +101,7 @@ public class AdminController : ControllerBase
     [HttpPut("update/status")]
     public async Task<IActionResult> UpdateStatus(int id)
     {
+        if (!Permission.Check(Permission.LOCK_ADMIN, HttpContext)) return StatusCode(403);
         return await _service.Admins.UpdateStatus(id) ? StatusCode(200) : StatusCode(404);
     }
 }
