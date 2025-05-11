@@ -15,6 +15,8 @@ public interface IUserService
 
     Task<User?> Update(User user);
 
+    Task<bool> UpdateAddress(User user);
+
     Task<bool> UpdatePassword(User user);
 
     Task<bool> UpdateStatus(int id, string status);

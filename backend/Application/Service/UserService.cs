@@ -44,6 +44,12 @@ public class UserService : IUserService
         return null;
     }
 
+    public async Task<bool> UpdateAddress(User user)
+    {
+        await _unitOfWork.Users.UpdateAddress(user);
+        return await _unitOfWork.SaveChanges() > 0;
+    }
+
     public async Task<bool> UpdatePassword(User user)
     {
         await _unitOfWork.Users.UpdatePassword(user);

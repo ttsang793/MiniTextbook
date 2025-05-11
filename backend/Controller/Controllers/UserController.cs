@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Core.Entity;
 using Application.DTO;
+using System.Net;
 
 namespace Controller.Controllers;
 
@@ -105,6 +106,20 @@ public class UserController : ControllerBase
             return (await _service.Images.UploadImage(file, user.Username!, "avatar")) ? StatusCode(200) : StatusCode(400);
         }
         return StatusCode(404);
+    }
+
+    [HttpPut("update/address")]
+    public async Task<IActionResult> UpdateAddress([Bind("Address", "Phone")] User user)
+    {
+        try
+        {
+            user.Id = (int)HttpContext.Session.GetInt32("id")!;
+            return (await _service.Users.UpdateAddress(user)) ? StatusCode(200) : StatusCode(404);
+        }
+        catch
+        {
+            return StatusCode(403);
+        }
     }
 
     [HttpPut("password/update")]

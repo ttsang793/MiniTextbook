@@ -77,9 +77,9 @@ const Product = ({fullname}) => {
           <h2 className="text-pink-900 font-bold text-3xl pb-2">BỘ LỌC</h2>
           <div className="mb-4">
             <h3 className="text-pink-900 pb-2 font-bold text-2xl">Khối</h3>
-            <div className="text-pink-900 pb-2"><input type="checkbox" checked={grade["10"]} onChange={() => handleGrade("10")} /> Lớp 10</div>
-            <div className="text-pink-900 pb-2"><input type="checkbox" checked={grade["11"]} onChange={() => handleGrade("11")} /> Lớp 11</div>
-            <div className="text-pink-900 pb-2"><input type="checkbox" checked={grade["12"]} onChange={() => handleGrade("12")} /> Lớp 12</div>
+            <div className="text-pink-900 pb-2"><input type="checkbox" className="accent-pink-700" checked={grade["10"]} onChange={() => handleGrade("10")} /> Lớp 10</div>
+            <div className="text-pink-900 pb-2"><input type="checkbox" className="accent-pink-700" checked={grade["11"]} onChange={() => handleGrade("11")} /> Lớp 11</div>
+            <div className="text-pink-900 pb-2"><input type="checkbox" className="accent-pink-700" checked={grade["12"]} onChange={() => handleGrade("12")} /> Lớp 12</div>
           </div>
           
           <div className="mb-4">
@@ -89,7 +89,7 @@ const Product = ({fullname}) => {
                 <h3 className="text-pink-900 pb-2 font-bold text-2xl">Bộ môn</h3>
                 {
                   subjectList.map(s =>
-                    <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" checked={subject[`${s.id}`]} onChange={() => handleSubject(s.id)} /> {s.name}</div>
+                    <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" className="accent-pink-700" checked={subject[`${s.id}`]} onChange={() => handleSubject(s.id)} /> {s.name}</div>
                   )
                 }
                 </>
@@ -104,7 +104,7 @@ const Product = ({fullname}) => {
                 <h3 className="text-pink-900 pb-2 font-bold text-2xl">Nhà xuất bản</h3>
                 {
                   publisherList.map(p =>
-                    <div className="text-pink-900 pb-2" key={p.name}><input type="checkbox" checked={publisher[`${p.id}`]} onChange={() => handlePublisher(p.id)} /> {p.name}</div>
+                    <div className="text-pink-900 pb-2" key={p.name}><input type="checkbox" className="accent-pink-700" checked={publisher[`${p.id}`]} onChange={() => handlePublisher(p.id)} /> {p.name}</div>
                   )
                 }
                 </>
@@ -119,7 +119,7 @@ const Product = ({fullname}) => {
                 <h3 className="text-pink-900 pb-2 font-bold text-2xl">Bộ sách</h3>
                 {
                   seriesList.map(s =>
-                    <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" checked={series[`${s.id}`]} onChange={() => handleSeries(s.id)} /> {s.name}</div>
+                    <div className="text-pink-900 pb-2" key={s.name}><input type="checkbox" className="accent-pink-700" checked={series[`${s.id}`]} onChange={() => handleSeries(s.id)} /> {s.name}</div>
                   )
                 }
                 </>

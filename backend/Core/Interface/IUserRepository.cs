@@ -10,6 +10,8 @@ public interface IUserRepository : IRepository<User>
 
     Task<User?> Update(User user);
 
+    Task UpdateAddress(User user);
+
     Task UpdatePassword(User user);
 
     Task UpdateStatus(int id, string status);

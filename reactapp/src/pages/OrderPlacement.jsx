@@ -2,6 +2,7 @@ import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { displayPrice } from "/script";
 import Loading from "/src/components/Loading";
+import { Footprints } from "@phosphor-icons/react";
 
 const OrderPlacement = () => {
   const [receiver, setReceiver] = useState("");
@@ -9,6 +10,7 @@ const OrderPlacement = () => {
   const [phone, setPhone] = useState("");
   const [total, setTotal] = useState(0);
   const [orderList, setOrderList] = useState([]);
+  const [defaultAddress, setDefaultAddress] = useState(false);
   const locationParam = new URLSearchParams(location.search).get("location");
   const loadingRef = useRef(false);
 
@@ -78,6 +80,10 @@ const OrderPlacement = () => {
               onChange={e => setPhone(e.target.value)} />
           </div>
 
+          <div className="mb-3">
+            <input type="checkbox" className="accent-pink-700" checked={defaultAddress} onChange={e => setDefaultAddress(e.target.checked)} /> Đặt làm địa chỉ mặc định.
+          </div>
+
           <div className="flex gap-x-4 pt-3 justify-center">
             <button className="bg-green-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-green-600 duration-150" onClick={e => addOrder(e)}>
               Đặt hàng
@@ -131,12 +137,26 @@ const OrderPlacement = () => {
     </main>
   );
 
+  function updateDefaultAddress() {
+    const user = { address, phone }
+    const header = { headers: {"Content-Type": "application/json"} };
+
+    axios.put("/user/update/address", user, header)
+    .catch(response => {
+      alert("Đã có lỗi xảy ra, vui lòng thử lại!");
+      console.error(response);
+    })
+  }
+
   function addOrder(e) {
     e.preventDefault();
+
+    if (defaultAddress) updateDefaultAddress();
+
     const order = { receiver, address, phone, total, carts: orderList, instant: locationParam == "instant" };
     const header = { headers: {"Content-Type": "application/json"} };
 
-    axios.post(`/order/insert}`, order, header).then(response => {
+    axios.post(`/order/insert`, order, header).then(response => {
       if (response.status === 200) {
         alert("Đặt hàng thành công");
         location.href = "/nguoi-dung/thanh-toan/ket-qua";
@@ -150,6 +170,9 @@ const OrderPlacement = () => {
 
   function addOrderVnPay(e) {
     e.preventDefault();
+
+    if (defaultAddress) updateDefaultAddress();
+
     const order = { receiver, address, phone, total, carts: orderList, instant: locationParam == "instant" };
     const header = { headers: {"Content-Type": "application/json"} };
 

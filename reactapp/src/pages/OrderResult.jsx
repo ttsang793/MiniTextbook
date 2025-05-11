@@ -5,7 +5,30 @@ const OrderResult = () => {
     document.title = "Kết quả đặt hàng - Nhà sách MiniTextbook"
   }, []);
 
-  return (
+  return (location.search == "?fail") ? (
+    <main className="text-center py-8">
+      <h1 className="text-center text-pink-900 font-bold text-5xl">ĐẶT ĐƠN HÀNG THẤT BẠI!</h1>
+      
+      <div className="mx-[12.5%] mt-4 text-lg text-pink-900">
+        Quá trình đặt hàng của bạn đã gặp sự cố. Bạn hãy thử đặt lại đơn hàng nhé!
+      </div>
+
+      <div className="flex justify-center">
+        <img src="/sad-book.png" alt="fail" className="h-70" /> 
+      </div>           
+
+      <div className="flex justify-center gap-x-4 text-xl">
+        <a href="/gio-hang" className="bg-sky-900 text-white flex gap-x-1 px-4 py-1 rounded-full cursor-pointer hover:bg-sky-700 duration-150">
+          Giỏ hàng
+        </a>
+
+        <a href="/san-pham" className="bg-yellow-400 text-black flex gap-x-1 px-4 py-1 rounded-full cursor-pointer hover:bg-yellow-400/70 duration-150">
+          Tiếp tục mua sắm
+        </a>
+      </div>
+
+    </main>
+  ) : (
     <main className="text-center py-8">
       <h1 className="text-center text-pink-900 font-bold text-5xl">CẢM ƠN BẠN ĐÃ ĐẶT HÀNG</h1>
       

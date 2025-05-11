@@ -59,6 +59,14 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return new User { Id = updateUser.Id, Avatar = updateUser.Avatar, Fullname = updateUser.Fullname };
     }
 
+    public async Task UpdateAddress(User user)
+    {
+        var updateUser = await GetById(user.Id);
+        updateUser.Address = user.Address;
+        updateUser.Phone = user.Phone;
+        GetDbSet().Update(updateUser);
+    }
+
     public async Task UpdatePassword(User user)
     {
         var updateUser = await GetById(user.Id);

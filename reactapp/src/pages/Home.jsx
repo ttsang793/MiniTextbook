@@ -50,7 +50,7 @@ const Home = ({fullname}) => {
             <p>Hiện tại chưa có bộ sách nào!</p>
           </div>
           ) : (
-            <section className="mx-15 flex justify-center gap-x-10">
+            <section className="mx-15 max-md:grid max-md:grid-cols-1 md:flex justify-self-center gap-x-10">
               {
                 series.map(s => 
                   <a href={`/san-pham?bo=${s.id}`} key={s.id} className="size-50 bg-white flex justify-center items-center mb-4 rounded-xl hover:scale-[1.2] duration-300">

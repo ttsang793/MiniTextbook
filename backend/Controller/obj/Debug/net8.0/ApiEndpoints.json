@@ -1869,5 +1869,21 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Controller.Controllers.UserController",
+    "Method": "UpdateAddress",
+    "RelativePath": "user/update/address",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "Core.Entity.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
