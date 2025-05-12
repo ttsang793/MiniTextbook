@@ -38,8 +38,9 @@ const ASubject = () => {
 
           <div className="mb-3">
             <label htmlFor="name" className="block font-bold italic">Tên môn học:</label>
-            <input type="text" id="name" required value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-              onChange={e => setName(e.target.value)} />
+            <input type="text" id="name" value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => setName(e.target.value)} onInput={() => clearNameValidation()} />
+            <p id="error-name" className="text-red-700 italic text-base"></p>
           </div>
 
           <div className="flex gap-x-4 justify-center">
@@ -124,15 +125,28 @@ const ASubject = () => {
     document.getElementById("name").focus();
   }
 
+  function clearNameValidation() {
+    document.getElementById("error-name").innerHTML = "";
+    document.getElementById("name").classList.remove("focus-error");
+  }
+
   function save(e) {
     e.preventDefault();
-    (id === "") ? insert() : update();
+
+    clearNameValidation();
+    if (name === "") {
+      document.getElementById("error-name").innerHTML = "Vui lòng nhập tên môn học.";
+      document.getElementById("name").classList.add("focus-error");
+      document.getElementById("name").focus();
+    }
+    else (id === "") ? insert() : update();
   }
 
   function cancel(e) {
     e.preventDefault()
     setID("");
     setName("");
+    clearNameValidation();
   }
 
   function insert() {

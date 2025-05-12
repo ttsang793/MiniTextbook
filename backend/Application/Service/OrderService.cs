@@ -32,16 +32,19 @@ public class OrderService : IOrderService
         return orderList;
     }
 
-    public async Task<IEnumerable<Order>> GetAll(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? date, DateTime? dateReceived, DateTime? dateCanceled)
+    public async Task<IEnumerable<Order>> GetAll(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime dateStart, DateTime dateEnd)
     {
         var orders = (await _unitOfWork.Orders.GetAll(o =>
             (userID == null || o.User == userID) &&
             (string.IsNullOrEmpty(receiver) || o.Receiver == receiver) &&
             (string.IsNullOrEmpty(address) || o.Address == address) &&
-            (date == null || o.DatePurchased == date) &&
-            (dateReceived == null || o.DateReceived == dateReceived) &&
-            (dateCanceled == null || o.DateCanceled == dateCanceled) &&
-            (string.IsNullOrEmpty(status) || o.Status == status)
+            (
+                (string.IsNullOrEmpty(status) && (o.DatePurchased >= dateStart && o.DatePurchased <= dateEnd)) ||
+                (status == "Chưa xác nhận" && (o.Status == status && o.DatePurchased >= dateStart && o.DatePurchased <= dateEnd)) ||
+                (status == "Đã hủy" && (o.Status == status && o.DateCanceled >= dateStart && o.DateCanceled <= dateEnd)) ||
+                (status == "Đã nhận hàng" && (o.Status == status && o.DateReceived >= dateStart && o.DateReceived <= dateEnd)) ||
+                (o.Status == status && o.DateVertified >= dateStart && o.DateVertified <= dateEnd)
+            )
         )).OrderByDescending(o => o.Id);
 
         var orderDetails = (await _unitOfWork.OrderDetails.GetAll(od => (product == null || od.Book == product)));

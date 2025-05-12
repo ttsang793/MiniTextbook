@@ -8,7 +8,7 @@ public interface IOrderService
 {
     Task<IEnumerable<Order>> GetAll(Expression<Func<Order, bool>> expression = null);
 
-    Task<IEnumerable<Order>> GetAll(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? date, DateTime? dateReceived, DateTime? dateCanceled);
+    Task<IEnumerable<Order>> GetAll(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime dateStart, DateTime dateEnd);
 
     Task<Order> GetById(int id);
 

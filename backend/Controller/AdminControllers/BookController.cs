@@ -32,6 +32,27 @@ public class BookController : ControllerBase
         return new List<Book>() { await _service.Books.GetById((int)id) };
     }
 
+    [HttpGet("get/publisher")]
+    public async Task<IEnumerable<Publisher>> GetAllPublisher()
+    {
+        if (!Permission.Check(Permission.READ_BOOK, HttpContext)) return null;
+        return await _service.Publishers.GetAll();
+    }
+
+    [HttpGet("get/subject")]
+    public async Task<IEnumerable<Subject>> GetAllSubject()
+    {
+        if (!Permission.Check(Permission.READ_BOOK, HttpContext)) return null;
+        return await _service.Subjects.GetAll();
+    }
+
+    [HttpGet("get/series")]
+    public async Task<IEnumerable<Series>> GetAllSeries()
+    {
+        if (!Permission.Check(Permission.READ_BOOK, HttpContext)) return null;
+        return await _service.Series.GetAll();
+    }
+
     [HttpPost("insert")]
     public async Task<IActionResult> Insert([FromForm] [Bind("Name", "Image", "Grade", "Subject", "Publisher", "Price", "Series")] BookDTO bookDTO, IFormFile file)
     {

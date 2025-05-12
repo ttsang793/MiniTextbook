@@ -86,7 +86,8 @@ const Role = ({show, agroup}) => {
             <div className="mb-3">
               <label htmlFor="name" className="block font-bold italic">Tên vai trò:</label>
               <input type="text" id="name" required value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-                onChange={e => setName(e.target.value)} />
+                onChange={e => setName(e.target.value)} onInput={() => clearNameValidation()} />
+              <p id="error-name" className="text-red-700 italic text-base"></p>
             </div>
           </div>
 
@@ -153,15 +154,28 @@ const Role = ({show, agroup}) => {
     }
   }
 
+  function clearNameValidation() {
+    document.getElementById("error-name").innerHTML = "";
+    document.getElementById("name").classList.remove("focus-error");
+  }
+
   function cancel(e) {
     e.preventDefault();
     setID("");
     setName("");
+    clearNameValidation();
   }
 
   function saveRole(e) {
     e.preventDefault();
-    (id === "") ? insertRole() : updateRole();
+
+    clearNameValidation();
+    if (name === "") {
+      document.getElementById("error-name").innerHTML = "Vui lòng nhập tên cho vai trò.";
+      document.getElementById("name").classList.add("focus-error");
+      document.getElementById("name").focus();
+    }
+    else (id === "") ? insertRole() : updateRole();
   }
 
   function insertRole() {
@@ -206,11 +220,17 @@ const Role = ({show, agroup}) => {
       return;
     }
 
-    if (confirm(`Bạn có muốn cung cấp các quyền này cho ${name}?`)) {
-      const permissions = [];
+    const permissions = [];
 
-      for (const [key, value] of Object.entries(permission))
-        if (value) permissions.push(key);
+    for (const [key, value] of Object.entries(permission))
+      if (value) permissions.push(key);
+
+    if (permissions.length === 0) {
+      alert("Vui lòng cung cấp ít nhất 1 quyền cho vai trò!")
+      return;
+    }
+
+    if (confirm(`Bạn có muốn cung cấp các quyền này cho ${name}?`)) {
       
       const headers = { headers: { 'Content-Type': 'application/json' }}
       axios.post("/api/role/update/permission", { id, permissions }, headers).then(() => {

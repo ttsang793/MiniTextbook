@@ -41,11 +41,14 @@ const ASeries = () => {
           <div className="mb-3">
             <label htmlFor="name" className="block font-bold italic">Tên bộ sách:</label>
             <input type="text" id="name" required value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-              onChange={e => setName(e.target.value)} />
+              onChange={e => setName(e.target.value)} onInput={() => clearNameValidation()} />
+            <p id="error-name" className="text-red-700 italic text-base"></p>
           </div>
 
           <div>
+            <label htmlFor="file-upload" className="block font-bold italic">Ảnh bìa:</label>
             <img id="thumbnail-preview" src={image} alt="thumbnail" className="h-40" onClick={() => document.getElementById("file-upload").click()} />
+            <p id="error-image" className="text-red-700 italic text-base"></p>
           </div>
           <input type="file" id="file-upload" onChange={handleThumbnailUpload} accept="image/*" className="h-0" />
 
@@ -147,11 +150,41 @@ const ASeries = () => {
     catch {
       setImage(defaultThumbnail);
     }
+    finally {
+      clearImageValidation();
+    }
+  }
+
+  function clearNameValidation() {
+    document.getElementById("error-name").innerHTML = "";
+    document.getElementById("name").classList.remove("focus-error");
+  }
+
+  function clearImageValidation() {
+    document.getElementById("error-image").innerHTML = "";
   }
 
   function save(e) {
     e.preventDefault();
-    (id === "") ? insert() : update();
+
+    clearNameValidation();
+    clearImageValidation();
+
+    let errorFlag = false;
+
+    if (name === "") {
+      document.getElementById("error-name").innerHTML = "Vui lòng nhập tên cho bộ sách.";
+      document.getElementById("name").classList.add("focus-error");
+      document.getElementById("name").focus();
+      errorFlag = true;
+    }
+
+    if (document.getElementById("file-upload").value === "") {
+      document.getElementById("error-image").innerHTML = "Vui lòng tải hình minh họa.";
+      errorFlag = true;
+    }
+
+    if (!errorFlag) (id === "") ? insert() : update();
   }
 
   function cancel(e) {
@@ -159,6 +192,8 @@ const ASeries = () => {
     setID("");
     setName("");
     setImage(defaultThumbnail);
+    clearNameValidation();
+    clearImageValidation();
     document.getElementById("file-upload").value = "";
   }
 

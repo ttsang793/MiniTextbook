@@ -38,8 +38,9 @@ const APublisher = () => {
 
           <div className="mb-3">
             <label htmlFor="name" className="block font-bold italic">Tên nhà xuất bản:</label>
-            <input type="text" id="name" required value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-              onChange={e => setName(e.target.value)} />
+            <input type="text" id="name" value={name} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => setName(e.target.value)} onInput={() => clearNameValidation()} />
+            <p id="error-name" className="text-red-700 italic text-base"></p>
           </div>
 
           <div className="flex gap-x-4 justify-center">
@@ -47,7 +48,7 @@ const APublisher = () => {
               <FloppyDisk size={28} /> Lưu
             </button>
 
-            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={() => cancel()} >
+            <button className="bg-red-900 text-white flex gap-x-1 px-3 py-1 rounded-full cursor-pointer hover:bg-red-600 duration-150" onClick={e => cancel(e)} >
               <X size={28} /> Hủy
             </button>
           </div>          
@@ -124,14 +125,28 @@ const APublisher = () => {
     document.getElementById("name").focus();
   }
 
-  function save(e) {
-    e.preventDefault();
-    (id === "") ? insert() : update();
+  function clearNameValidation() {
+    document.getElementById("error-name").innerHTML = "";
+    document.getElementById("name").classList.remove("focus-error");
   }
 
-  function cancel() {
+  function save(e) {
+    e.preventDefault();
+
+    clearNameValidation();
+    if (name === "") {
+      document.getElementById("error-name").innerHTML = "Vui lòng nhập tên NXB.";
+      document.getElementById("name").classList.add("focus-error");
+      document.getElementById("name").focus();
+    }
+    else (id === "") ? insert() : update();
+  }
+
+  function cancel(e) {
+    e.preventDefault();
     setID("");
     setName("");
+    clearNameValidation();
   }
 
   function insert() {

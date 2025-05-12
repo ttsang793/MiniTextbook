@@ -4,11 +4,17 @@ import React, { useState, useEffect } from 'react';
 const Top5 = ({prop, post, title, dateFrom, dateTo}) => {  
   const [label, setLabel] = useState([]);
   const [data, setData] = useState([]);
+  const [dateParam, setDateParam] = useState([]);
 
   useEffect(() => {
     let url = `/api/statistic/${prop}`;
     url = url + (dateFrom === "" ? "" : `?from=${dateFrom}`);
     url = url + (dateTo === "" ? "" : (dateFrom === "" ? `?to=${dateTo}` : `&to=${dateTo}`));
+
+    let searchParam = "";
+    searchParam = (dateFrom === "" ? "" : `&dateStart=${dateFrom}`);
+    searchParam = searchParam + (dateTo === "" ? "" : `&dateEnd=${dateTo}`);
+    setDateParam(searchParam);
 
     axios.get(url).then(response => {
       setLabel(response.data.label);
@@ -28,7 +34,7 @@ const Top5 = ({prop, post, title, dateFrom, dateTo}) => {
                 <span className="bg-pink-700 text-white rounded-full px-3 py-1">{i + 1}</span>
                 <p className="text-left flex-1">{l}</p>
       
-                <a href={`/quan-tri/don-hang?${post}=${data[i]}`} className="bg-pink-900 text-pink-50 hover:bg-pink-800 duration-150 cursor-pointer px-2 py-1">
+                <a href={`/quan-tri/don-hang?${post}=${data[i]}${dateParam}`} className="bg-pink-900 text-pink-50 hover:bg-pink-800 duration-150 cursor-pointer px-2 py-1">
                   Xem đơn hàng
                 </a>
               </li>
@@ -37,7 +43,7 @@ const Top5 = ({prop, post, title, dateFrom, dateTo}) => {
                 <span className="bg-pink-200 rounded-full px-3 py-1">{i + 1}</span>
                 <p className="text-left flex-1">{l}</p>
 
-                <a href={`/quan-tri/don-hang?${post}=${data[i]}`} className="bg-pink-900 text-pink-50 hover:bg-pink-800 duration-150 cursor-pointer px-2 py-1">
+                <a href={`/quan-tri/don-hang?${post}=${data[i]}${dateParam}`} className="bg-pink-900 text-pink-50 hover:bg-pink-800 duration-150 cursor-pointer px-2 py-1">
                   Xem đơn hàng
                 </a>
               </li>

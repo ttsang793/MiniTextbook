@@ -190,7 +190,7 @@ const Cart = () => {
         product.push(cartList[i].id);
       }
     }
-    if (flagError) { alert("Vui lòng chọn ít nhất 1 sản phẩm để thanh toán"); return; }
+    if (flagError) { alert("Vui lòng chọn ít nhất 1 sản phẩm để thanh toán!"); return; }
 
     document.cookie = `item=${btoa(btoa(btoa(product.join("_"))))}; max-age=3`;
     location.href = "/nguoi-dung/thanh-toan?location=cart";

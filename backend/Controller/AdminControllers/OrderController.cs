@@ -18,10 +18,13 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IEnumerable<Order>> GetOrders(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? date, DateTime? dateReceived, DateTime? dateCanceled)
+    public async Task<IEnumerable<Order>> GetOrders(int? userID, string? receiver, string? address, int? product, int? grade, int? series, string? status, DateTime? dateStart, DateTime? dateEnd)
     {
         if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
-        return await _service.Orders.GetAll(userID, receiver, address, product, grade, series, status, date, dateReceived, dateCanceled);
+
+        if (dateStart == null) dateStart = new DateTime(2025, 1, 1);
+        if (dateEnd == null) dateEnd = DateTime.Today;
+        return await _service.Orders.GetAll(userID, receiver, address, product, grade, series, status, (DateTime)dateStart, (DateTime)dateEnd);
     }
 
     [HttpGet("search")]
@@ -49,6 +52,20 @@ public class OrderController : ControllerBase
     {
         if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
         return await _service.Orders.GetAllAddress();
+    }
+
+    [HttpGet("get/book")]
+    public async Task<IEnumerable<Book>> GetAllBook()
+    {
+        if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
+        return await _service.Books.GetAll();
+    }
+
+    [HttpGet("get/series")]
+    public async Task<IEnumerable<Series>> GetAllSeries()
+    {
+        if (!Permission.Check(Permission.READ_ORDER, HttpContext)) return null;
+        return await _service.Series.GetAll();
     }
 
     [HttpPut("update/status")]

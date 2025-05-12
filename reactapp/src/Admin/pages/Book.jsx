@@ -25,11 +25,11 @@ const ABook = () => {
   const [bId, setBID] = useState("");
   const [bName, setBName] = useState("");
   const [bImage, setBImage] = useState(defaultThumbnail);
-  const [bGrade, setBGrade] = useState(10);
-  const [bPublisher, setBPublisher] = useState(0);
+  const [bGrade, setBGrade] = useState(-1);
+  const [bPublisher, setBPublisher] = useState(-1);
   const [bPrice, setBPrice] = useState(0);
   let [bSeries, setBSeries] = useState({});
-  const [bSubject, setBSubject] = useState(0);
+  const [bSubject, setBSubject] = useState(-1);
 
   // Xử lý bộ sách
   const handleBSeries = (id, specific = null) => {
@@ -43,16 +43,10 @@ const ABook = () => {
     if (loadingRef.current) {
       document.title = "Quản lý sách";
       loadData();
-      axios.get("/api/publisher/get-all").then(response => {
-        setPublisherList(response.data);
-        setBPublisher(response.data[0].id);
-      });
-      axios.get("/api/subject/get-all").then(response => {
-        setSubjectList(response.data);
-        setBSubject(response.data[0].id);
-      });
+      axios.get("/api/book/get/publisher").then(response => setPublisherList(response.data));
+      axios.get("/api/book/get/subject").then(response => setSubjectList(response.data));
 
-      axios.get("/api/series/get-all").then(response => {
+      axios.get("/api/book/get/series").then(response => {
         let temp = {}
         setSeriesList(response.data);
         response.data.forEach(r => temp[`${r.id}`] = false);
@@ -77,28 +71,39 @@ const ABook = () => {
           
           <div className="mb-3">
             <label htmlFor="name" className="block font-bold italic">Tên:</label>
-            <input type="text" id="name" value={bName} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBName(e.target.value)} />
+            <input type="text" id="name" value={bName} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => setBName(e.target.value)} onInput={() => clearNameValidation()} />
+            <p id="error-name" className="text-red-700 italic text-base"></p>
           </div>
 
           <div className="mb-3">
             <label htmlFor="grade" className="block font-bold italic">Khối:</label>
-            <select id="grade" value={bGrade} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBGrade(e.target.value)}>
-            { gradeList.map(g => <option key={`grade-${g}`} value={g} className="hover:bg-pink-900 hover:text-pink-50">{g}</option>) }
+            <select id="grade" value={bGrade} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => { setBGrade(e.target.value); clearGradeValidation(); }}>
+              <option value="-1" hidden>-- Chọn khối --</option>
+              { gradeList.map(g => <option key={`grade-${g}`} value={g} className="hover:bg-pink-900 hover:text-pink-50">{g}</option>) }
             </select>
+            <p id="error-grade" className="text-red-700 italic text-base"></p>
           </div>
 
           <div className="mb-3">
             <label htmlFor="subject" className="block font-bold italic">Môn:</label>
-            <select id="subject" value={bSubject} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBSubject(e.target.value)}>
-            { subjectList.map(s => <option key={`sub-${s.id}`} value={s.id}>{s.name}</option>) }
+            <select id="subject" value={bSubject} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => { setBSubject(e.target.value); clearSubjectValidation(); }}>
+              <option value="-1" hidden>-- Chọn môn --</option>
+              { subjectList.map(s => <option key={`sub-${s.id}`} value={s.id}>{s.name}</option>) }
             </select>
+            <p id="error-subject" className="text-red-700 italic text-base"></p>
           </div>
 
           <div className="mb-3">
             <label htmlFor="publisher" className="block font-bold italic">Nhà xuất bản:</label>
-            <select id="publisher" value={bPublisher} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBPublisher(e.target.value)}>
-            { publisherList.map(p => <option key={`pub-${p.id}`} value={p.id}>{p.name}</option>) }
+            <select id="publisher" value={bPublisher} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => { setBPublisher(e.target.value); clearPublisherValidation(); }}>
+              <option value="-1" hidden>-- Chọn nhà xuất bản --</option>
+              { publisherList.map(p => <option key={`pub-${p.id}`} value={p.id}>{p.name}</option>) }
             </select>
+            <p id="error-publisher" className="text-red-700 italic text-base"></p>
           </div>
 
           <div className="mb-3">
@@ -106,20 +111,25 @@ const ABook = () => {
             {
               seriesList.map(s =>
                 <div key={`series-${s.id}`}>
-                  <input type="checkbox" className="accent-pink-700" id={`series-${s.id}`} checked={bSeries[`${s.id}`]} onChange={() => handleBSeries(s.id)} />
+                  <input type="checkbox" className="accent-pink-700" id={`series-${s.id}`} checked={bSeries[`${s.id}`]} onChange={() => { handleBSeries(s.id); clearSeriesValidation(); }} />
                   &nbsp;<label htmlFor={`series-${s.id}`}>{s.name}</label>
                 </div>
               )
             }
+            <p id="error-series" className="text-red-700 italic text-base"></p>
           </div>
           
           <div className="mb-6">
             <label htmlFor="price" className="block font-bold italic text-xl">Giá: </label>
-            <input type="number" id="price" value={bPrice} step={1000} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setBPrice(e.target.value)} />
+            <input type="number" id="price" value={bPrice} step={1000} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              onChange={e => setBPrice(e.target.value)} onInput={() => clearPriceValidation()} />
+            <p id="error-price" className="text-red-700 italic text-base"></p>
           </div>
           
           <div>
+            <label htmlFor="file-upload" className="block font-bold italic">Ảnh bìa:</label>
             <img id="thumbnail-preview" src={bImage} alt="thumbnail" className="aspect-7/10" onClick={() => document.getElementById("file-upload").click()} />
+            <p id="error-image" className="text-red-700 italic text-base"></p>
           </div>
           <input type="file" id="file-upload" onChange={handleThumbnailUpload} accept="image/*" className="h-0" />
 
@@ -248,22 +258,126 @@ const ABook = () => {
     catch {
       setBImage(defaultThumbnail);
     }
+    finally {
+      clearImageValidation();
+    }
+  }
+
+  function clearNameValidation() {
+    document.getElementById("error-name").innerHTML = "";
+    document.getElementById("name").classList.remove("focus-error");
+  }
+
+  function clearGradeValidation() {
+    document.getElementById("error-grade").innerHTML = "";
+    document.getElementById("grade").classList.remove("focus-error");
+  }
+
+  function clearSubjectValidation() {
+    document.getElementById("error-subject").innerHTML = "";
+    document.getElementById("subject").classList.remove("focus-error");
+  }
+
+  function clearPublisherValidation() {
+    document.getElementById("error-publisher").innerHTML = "";
+    document.getElementById("publisher").classList.remove("focus-error");
+  }
+
+  function clearSeriesValidation() {
+    document.getElementById("error-series").innerHTML = "";
+  }
+
+  function clearPriceValidation() {
+    document.getElementById("error-price").innerHTML = "";
+    document.getElementById("price").classList.remove("focus-error");
+  }
+
+  function clearImageValidation() {
+    document.getElementById("error-image").innerHTML = "";
   }
 
   function save(e) {
     e.preventDefault();
-    (bId === "") ? insert() : update();
+    clearNameValidation();
+    clearGradeValidation();
+    clearSubjectValidation();
+    clearPublisherValidation();
+    clearSeriesValidation();
+    clearPriceValidation();
+    clearImageValidation();
+    let errorFlag = false;
+
+    if (bName === "") {
+      document.getElementById("error-name").innerHTML = "Vui lòng nhập tên sách.";
+      document.getElementById("name").classList.add("focus-error");
+      document.getElementById("name").focus();
+      errorFlag = true;
+    }
+
+    if (bGrade == -1) {
+      document.getElementById("error-grade").innerHTML = "Vui lòng chọn khối.";
+      document.getElementById("grade").classList.add("focus-error");
+      errorFlag = true;
+    }
+
+    if (bSubject == -1) {
+      document.getElementById("error-subject").innerHTML = "Vui lòng chọn môn học.";
+      document.getElementById("subject").classList.add("focus-error");
+      errorFlag = true;
+    }
+
+    if (bPublisher == -1) {
+      document.getElementById("error-publisher").innerHTML = "Vui lòng chọn NXB.";
+      document.getElementById("publisher").classList.add("focus-error");
+      errorFlag = true;
+    }
+
+    let errorSeries = true;
+    for (const [key, value] of Object.entries(bSeries))
+      if (value) { errorSeries = false; break; }
+
+    if (errorSeries) {
+      document.getElementById("error-series").innerHTML = "Vui lòng chọn bộ sách.";
+      errorFlag = true;
+    }
+
+    if (bPrice === "" || bPrice === 0) {
+      document.getElementById("error-price").innerHTML = "Vui lòng nhập giá sản phẩm.";
+      document.getElementById("price").classList.add("focus-error");
+      errorFlag = true;
+    }
+    else if (bPrice % 1000 !== 0) {
+      document.getElementById("error-price").innerHTML = "Giá phải chia được cho 1000.";
+      document.getElementById("price").classList.add("focus-error");
+      errorFlag = true;
+    }
+
+    if (document.getElementById("file-upload").value === "") {
+      document.getElementById("error-image").innerHTML = "Vui lòng tải hình minh họa.";
+      errorFlag = true;
+    }
+
+    if (!errorFlag) (bId === "") ? insert() : update();
   }
 
   function cancel(e) {
     e.preventDefault()
     setBID("");
     setBName("");
-    setBImage(defaultThumbnail);
-    setBGrade(10);
-    setBPublisher(publisherList[0]);
-    setBSubject(subjectList[0]);
+    setBGrade(-1);
+    setBSubject(-1);
+    setBPublisher(-1);
     setBPrice(0);
+    setBImage(defaultThumbnail);
+
+    clearNameValidation();
+    clearGradeValidation();
+    clearSubjectValidation();
+    clearPublisherValidation();
+    clearSeriesValidation();
+    clearPriceValidation();
+    clearImageValidation();
+
     document.getElementById("file-upload").value = "";
 
     for (const [key, value] of Object.entries(bSeries)) if (value) handleBSeries(key);

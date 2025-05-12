@@ -4,16 +4,30 @@ import Admin from './Account/Admin';
 import Role from './Account/Role';
 import "./Account.css";
 
-const minPermission = agroup => {
-  if (agroup.includes(6)) return 6;
-  if (agroup.includes(7)) return 7;
-  return 8;
+const getMinPermission = agroup => {
+  const result = [0, 0];
+
+  if (agroup.includes(6)) {
+    result[0] = 6;
+    result[1]++;
+  }
+  if (agroup.includes(7)) {
+    result[0] = result[0] ? result[0] : 7;
+    result[1]++;
+  }
+  if (agroup.includes(8)) {
+    result[0] = result[0] ? result[0] : 8;
+    result[1]++;
+  }
+
+  return result;
 }
 
 const AAccount = ({agroup}) => {
-  const [showUser, setShowUser] = useState(minPermission(agroup) === 6);
-  const [showAdmin, setShowAdmin] = useState(minPermission(agroup) === 7);
-  const [showRole, setShowRole] = useState(minPermission(agroup) === 8);
+  const minPermission = getMinPermission(agroup)
+  const [showUser, setShowUser] = useState(minPermission[0] === 6);
+  const [showAdmin, setShowAdmin] = useState(minPermission[0] === 7);
+  const [showRole, setShowRole] = useState(minPermission[0] === 8);
 
   const changeCurrent = e => {
     document.querySelectorAll(".account-btn").forEach(btn => btn.classList.remove("account-current"));
@@ -49,27 +63,31 @@ const AAccount = ({agroup}) => {
     <main className="mx-20">
       <h1 className="text-center text-pink-900 font-bold text-4xl mt-4 mb-3">QUẢN LÝ TÀI KHOẢN</h1>
       <hr className="mb-3 border-pink-900" />
-
-      <div className="text-center">
-        {
-          agroup.includes(6) &&
-          <button className="account-btn me-2 account-current" onClick={handleShowUser}>
-            Khách hàng
-          </button>
-        }
-        {
-          agroup.includes(7) &&
-          <button className="account-btn me-2" onClick={handleShowAdmin}>
-            Nhân viên
-          </button>
-        }
-        {
-          agroup.includes(8) &&
-          <button className="account-btn" onClick={handleShowRole}>
-            Phân quyền
-          </button>
-        }
-      </div>
+      
+      {
+        minPermission[1] <= 1 ? <></> : (
+          <div className="text-center">
+            {
+              agroup.includes(6) &&
+              <button className={`account-btn me-2 ${minPermission[0] === 6 && "account-current"}`} onClick={handleShowUser}>
+                Khách hàng
+              </button>
+            }
+            {
+              agroup.includes(7) &&
+              <button className={`account-btn ${agroup.includes(8) && "me-2"} ${minPermission[0] === 7 && "account-current"}`} onClick={handleShowAdmin}>
+                Nhân viên
+              </button>
+            }
+            {
+              agroup.includes(8) &&
+              <button className="account-btn" onClick={handleShowRole}>
+                Phân quyền
+              </button>
+            }
+          </div>
+        )
+      }
 
       <User show={showUser} agroup={agroup} />
       <Admin show={showAdmin} agroup={agroup} />

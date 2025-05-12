@@ -16,7 +16,7 @@ const AdminRedelegate = ({show, roleId, roleList, onClose}) => {
   useEffect(() => {
     if (roleId !== "") {
       try {
-        axios.get(`/api/admin/get/role?roleId=${roleId}`).then(response => {
+        axios.get(`/api/role/get/admin?roleId=${roleId}`).then(response => {
           setAdmin(admin = response.data);
           handleAll(-1);
         });

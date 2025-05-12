@@ -3,6 +3,7 @@ using Application.DTO;
 using Application.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace Controller.AdminControllers;
 [ApiController]
@@ -59,10 +60,10 @@ public class AdminController : ControllerBase
     }
 
     [HttpGet("get/role")]
-    public async Task<IEnumerable<Admin>> GetAdminsByRole(int roleId)
+    public async Task<IEnumerable<Role>> GetAllRole()
     {
-        if (!Permission.Check(Permission.DELETE_ROLE, HttpContext)) return null;
-        return await _service.Admins.GetAll(a => a.Role == roleId);
+        if (!Permission.Check(Permission.READ_ADMIN, HttpContext)) return null;
+        return await _service.Roles.GetAllRoles();
     }
 
     [HttpPost("insert")]

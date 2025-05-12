@@ -19,7 +19,7 @@ const Admin = ({show, agroup}) => {
 
   useEffect(() => {
     if (agroup.includes(7)) {
-      axios.get("/api/role/get-all").then(response => setRoleList(response.data));
+      axios.get("/api/admin/get/role").then(response => setRoleList(response.data));
       loadData();
     }
   }, []);
@@ -30,25 +30,29 @@ const Admin = ({show, agroup}) => {
       <form className="text-lg border-r-2 border-r-pink-900 p-2 pe-4" style={{ height: "calc(100dvh - 206px)" }}>
         <div className="mb-3">
           <label htmlFor="id" className="block font-bold italic">ID:</label>
-          <input type="text" id="id" value={id} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" onChange={e => setID(e.target.value)} />
+          <input type="number" id="id" value={id} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+            onChange={e => setID(e.target.value)} onInput={() => clearIdValidation()} />            
+          <p id="error-id" className="text-red-700 italic text-base"></p>
         </div>
 
         <div className="mb-3">
           <label htmlFor="fullname" className="block font-bold italic">Họ và tên:</label>
           <input type="text" id="fullname" required value={fullname} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-            onChange={e => setFullname(e.target.value)} />
+            onChange={e => setFullname(e.target.value)} onInput={() => clearFullnameValidation()} />
+          <p id="error-fullname" className="text-red-700 italic text-base"></p>
         </div>
 
         <div className="mb-3">
           <label htmlFor="time-begin" className="block font-bold italic">Thời gian bắt đầu:</label>
           <input type="time" step={600} id="time-begin" required value={timeBegin} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-            onChange={e => setTimeBegin(e.target.value)} />
+            onChange={e => { setTimeBegin(e.target.value); clearTimeValidation(); }} />
         </div>
 
         <div className="mb-3">
           <label htmlFor="time-end" className="block font-bold italic">Thời gian kết thúc:</label>
           <input type="time" step={600} id="time-end" required value={timeEnd} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
-            onChange={e => setTimeEnd(e.target.value)} />
+            onChange={e => { setTimeEnd(e.target.value); clearTimeValidation(); }} />
+          <p id="error-time" className="text-red-700 italic text-base"></p>
         </div>
 
         <div className="mb-3">
@@ -145,11 +149,54 @@ const Admin = ({show, agroup}) => {
     document.getElementById("id").readOnly = true;
     document.getElementById("id").classList.add("cursor-not-allowed");
     document.getElementById("fullname").focus();
+    clearIdValidation();
+    clearFullnameValidation();
+    clearTimeValidation();
+  }
+
+  function clearIdValidation() {
+    document.getElementById("error-id").innerHTML = "";
+    document.getElementById("id").classList.remove("focus-error");
+  }
+
+  function clearFullnameValidation() {
+    document.getElementById("error-fullname").innerHTML = "";
+    document.getElementById("fullname").classList.remove("focus-error");
+  }
+
+  function clearTimeValidation() {
+    document.getElementById("error-time").innerHTML = "";
   }
 
   function save(e) {
     e.preventDefault();
-    (document.getElementById("id").classList.contains("cursor-not-allowed")) ? update() : insert();
+
+    clearIdValidation();
+    clearFullnameValidation();
+    clearTimeValidation();
+
+    let errorFlag = false;
+
+    if (id === "") {
+      document.getElementById("error-id").innerHTML = "Vui lòng nhập mã nhân viên.";
+      document.getElementById("id").classList.add("focus-error");
+      document.getElementById("id").focus();
+      errorFlag = true;
+    }
+
+    if (fullname === "") {
+      document.getElementById("error-fullname").innerHTML = "Vui lòng nhập họ tên.";
+      document.getElementById("fullname").classList.add("focus-error");
+      if (!errorFlag) document.getElementById("fullname").focus();
+      errorFlag = true;
+    }
+
+    if (timeEnd === timeBegin) {
+      document.getElementById("error-time").innerHTML = "Thời gian kết thúc phải khác thời gian bắt đầu.";
+      errorFlag = true;
+    }
+
+    if (!errorFlag) (document.getElementById("id").classList.contains("cursor-not-allowed")) ? update() : insert();
   }
 
   function cancel(e) {
@@ -161,6 +208,9 @@ const Admin = ({show, agroup}) => {
     setRole(1);
     document.getElementById("id").readOnly = false;
     document.getElementById("id").classList.remove("cursor-not-allowed");
+    clearIdValidation();
+    clearFullnameValidation();
+    clearTimeValidation();
   }
 
   function insert() {

@@ -27,7 +27,8 @@ const AOrder = () => {
   const [sGrade, setSGrade] = useState("");
   const [sSeries, setSSeries] = useState("");
   const [sStatus, setSStatus] = useState("");
-  const [sDate, setSDate] = useState("");
+  const [sDateStart, setSDateStart] = useState("");
+  const [sDateEnd, setSDateEnd] = useState("");
 
   const [advanced, setAdvanced] = useState(false);
 
@@ -63,12 +64,12 @@ const AOrder = () => {
         response.data.forEach(address => temp.push(address));
         setSAddressList(temp);
       })
-      axios.get("/api/book/get-all").then(response => {
+      axios.get("/api/order/get/book").then(response => {
         const temp = [];
         response.data.forEach(product => temp.push({id: product.id, name: product.name}));
         setSProductList(temp);
       })
-      axios.get("/api/series/get-all").then(response => {
+      axios.get("/api/order/get/series").then(response => {
         const temp = [];
         response.data.forEach(series => temp.push({id: series.id, name: series.name}));
         setSSeriesList(temp);
@@ -164,12 +165,20 @@ const AOrder = () => {
               }
               </datalist>
             </div>
-
           </section>
-          
+        </div>
+
+        <div className={`${advanced ? "grid" : "hidden"} grid-cols-1 lg:grid-cols-3 gap-x-4`}>
           <div className="mb-5">
-            <label htmlFor="status" className="block font-bold italic">Ngày đặt hàng:</label>
-            <input type="date" id="date" max={displayDateJS(new Date())} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150" value={sDate} onChange={e => setSDate(e.target.value)} />
+            <label htmlFor="date-start" className="block font-bold italic">Ngày bắt đầu:</label>
+            <input type="date" id="date-start" max={displayDateJS(new Date())} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              value={sDateStart} onChange={e => setSDateStart(e.target.value)} />
+          </div>
+
+          <div className="mb-5">
+            <label htmlFor="date-end" className="block font-bold italic">Ngày kết thúc:</label>
+            <input type="date" id="date-end" max={displayDateJS(new Date())} className="bg-pink-50 border-1 border-pink-50 rounded-full py-1 px-4 w-full focus:bg-pink-100 focus:border-pink-800 duration-150"
+              value={sDateEnd} onChange={e => setSDateEnd(e.target.value)} />
           </div>
 
           <div className="mb-5">
@@ -184,12 +193,12 @@ const AOrder = () => {
               <option>-1 - Đã hủy</option>
             </datalist>
           </div>
+        </div>
 
-          <div className="text-center col-span-2">
-            <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-xl" onClick={Filter}>
-              Lọc
-            </button>
-          </div>
+        <div className="text-center">
+          <button className="bg-radial px-4 py-1 cursor-pointer from-pink-700 to-pink-900 hover:from-pink-600 hover:to-pink-800 text-pink-50 text-xl" onClick={Filter}>
+            Lọc
+          </button>
         </div>
       </div>
 
@@ -282,6 +291,12 @@ const AOrder = () => {
   }
 
   function Filter() {
+    if (sDateStart !== "" && sDateEnd !== "" && (new Date(sDateStart) > new Date(sDateEnd))) {
+      alert("Ngày bắt đầu phải nhỏ hơn ngày kết thúc!")
+      document.getElementById("date-start").focus();
+      return;
+    }
+
     if (sUser !== "") searchParams.set("userid", sUser.substring(0, sUser.indexOf("-") - 1));
     if (sReceiver !== "") searchParams.set("receiver", sReceiver);
     if (sAddress !== "") searchParams.set("address", sAddress);
@@ -289,7 +304,8 @@ const AOrder = () => {
     if (sGrade !== "") searchParams.set("grade", sGrade);
     if (sSeries !== "") searchParams.set("series", sSeries.substring(0, sSeries.indexOf("-") - 1));
     if (sStatus !== "") searchParams.set("status", sStatus.substring(0, sStatus.indexOf("-") - 1));
-    if (sDate !== "") searchParams.set("date", sDate);
+    if (sDateStart !== "") searchParams.set("dateStart", sDateStart);
+    if (sDateEnd !== "") searchParams.set("dateEnd", sDateEnd);
 
     location.href = location.origin + location.pathname + "?" + searchParams.toString();
   }

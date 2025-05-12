@@ -32,6 +32,13 @@ public class RoleController : ControllerBase
         return await _service.Roles.GetAllPermissionGroups();
     }
 
+    [HttpGet("get/admin")]
+    public async Task<IEnumerable<Admin>> GetAdminsByRole(int roleId)
+    {
+        if (!Permission.Check(Permission.DELETE_ROLE, HttpContext)) return null;
+        return await _service.Admins.GetAll(a => a.Role == roleId);
+    }
+
     [HttpGet("get")]
     public async Task<Role> GetById(int id)
     {
